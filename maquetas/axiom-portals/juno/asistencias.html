@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JUNO - Attendance Management</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+          "Ubuntu", "Cantarell", sans-serif;
+        background-color: #f5f7fa;
+        color: #2c3e50;
+        line-height: 1.6;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 30px 0;
+        position: fixed;
+        height: 100vh;
+        color: white;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+      }
+
+      .logo {
+        padding: 0 30px 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 30px;
+      }
+
+      .logo-text {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 2px;
+      }
+
+      .sidebar-nav {
+        list-style: none;
+      }
+
+      .sidebar-nav li {
+        margin: 0;
+      }
+
+      .sidebar-nav a {
+        display: flex;
+        align-items: center;
+        padding: 15px 30px;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+      }
+
+      .sidebar-nav a:hover,
+      .sidebar-nav a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        border-left-color: white;
+      }
+
+      .nav-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .main {
+        margin-left: 280px;
+        flex: 1;
+        padding: 30px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        background: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .header h1 {
+        font-size: 28px;
+        color: #2c3e50;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #764ba2;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #e8eef5;
+        color: #667eea;
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+
+      .btn-secondary:hover {
+        background: #dde5ed;
+      }
+
+      .btn-small {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin: 0;
+      }
+
+      .btn-success {
+        background: #27ae60;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #229954;
+      }
+
+      .btn-warning {
+        background: #f39c12;
+        color: white;
+      }
+
+      .btn-warning:hover {
+        background: #e67e22;
+      }
+
+      .btn-danger {
+        background: #e74c3c;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #c0392b;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .stat-card:nth-child(2) {
+        background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      }
+
+      .stat-card:nth-child(3) {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+      }
+
+      .stat-card:nth-child(4) {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      }
+
+      .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        opacity: 0.9;
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e8eef5;
+        margin-bottom: 25px;
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: space-between;
+      }
+
+      .card-title svg {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+      }
+
+      .class-section {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+
+      .class-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e8eef5;
+      }
+
+      .class-name {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .class-time {
+        font-size: 13px;
+        color: #95a5a6;
+      }
+
+      .class-controls {
+        display: flex;
+        gap: 8px;
+      }
+
+      .attendance-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+
+      .student-attendance {
+        background: white;
+        padding: 12px;
+        border-radius: 6px;
+        border-left: 4px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .student-attendance:hover {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .student-attendance.present {
+        border-left-color: #27ae60;
+        background: #f0fdf4;
+      }
+
+      .student-attendance.late {
+        border-left-color: #f39c12;
+        background: #fffbf0;
+      }
+
+      .student-attendance.absent {
+        border-left-color: #e74c3c;
+        background: #fef2f2;
+      }
+
+      .student-name {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 14px;
+      }
+
+      .attendance-indicator {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .indicator-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+
+      .indicator-dot.present {
+        background: #27ae60;
+      }
+
+      .indicator-dot.late {
+        background: #f39c12;
+      }
+
+      .indicator-dot.absent {
+        background: #e74c3c;
+      }
+
+      .attendance-stats {
+        list-style: none;
+      }
+
+      .stat-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #e8eef5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .stat-item:last-child {
+        border-bottom: none;
+      }
+
+      .stat-item-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+      }
+
+      .stat-item-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+      }
+
+      .stat-item-value {
+        font-weight: 600;
+        color: #667eea;
+        font-size: 16px;
+      }
+
+      .export-section {
+        background: #fffbf0;
+        border: 1px dashed #f39c12;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .export-section p {
+        margin-bottom: 15px;
+        color: #7f8c8d;
+        font-size: 14px;
+      }
+
+      .attendance-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      .attendance-table thead {
+        background: #f8f9fa;
+        border-bottom: 2px solid #e8eef5;
+      }
+
+      .attendance-table th {
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 13px;
+        text-transform: uppercase;
+      }
+
+      .attendance-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e8eef5;
+        font-size: 13px;
+      }
+
+      .attendance-table tbody tr:hover {
+        background: #f8f9fa;
+      }
+
+      .percentage {
+        font-weight: 600;
+        color: #667eea;
+      }
+
+      .percentage-good {
+        color: #27ae60;
+      }
+
+      .percentage-warning {
+        color: #f39c12;
+      }
+
+      .percentage-bad {
+        color: #e74c3c;
+      }
+
+      @media (max-width: 1200px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .attendance-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+          padding: 15px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+
+        .attendance-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .card-title {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar Navigation -->
+      <div class="sidebar">
+        <div class="logo">
+          <div class="logo-text">JUNO</div>
+        </div>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="index.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </div>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="materias.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path
+                    d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                  ></path>
+                </svg>
+              </div>
+              Materias
+            </a>
+          </li>
+          <li>
+            <a href="grupos.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              Grupos
+            </a>
+          </li>
+          <li>
+            <a href="calificaciones.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                  ></path>
+                </svg>
+              </div>
+              Calificaciones
+            </a>
+          </li>
+          <li>
+            <a href="asistencias.html" class="active">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              Asistencias
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main">
+        <div class="header">
+          <h1>Gestión de Asistencias</h1>
+        </div>
+
+        <!-- Attendance Statistics -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">342</div>
+            <div class="stat-label">Total de Estudiantes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">297</div>
+            <div class="stat-label">Presentes Hoy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">23</div>
+            <div class="stat-label">Tardanzas Hoy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">22</div>
+            <div class="stat-label">Ausencias Hoy</div>
+          </div>
+        </div>
+
+        <!-- Today's Classes -->
+        <div class="card">
+          <div class="card-title">
+            <div style="display: flex; align-items: center; gap: 12px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="9"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Clases de Hoy
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-secondary btn-small">Guardar</button>
+            </div>
+          </div>
+
+          <!-- 4to A Class -->
+          <div class="class-section">
+            <div class="class-header">
+              <div>
+                <div class="class-name">4to A - Matemática</div>
+                <div class="class-time">08:00 - 09:30 • Aula 101</div>
+              </div>
+              <div class="class-controls">
+                <button class="btn btn-success btn-small">
+                  <svg
+                    style="width: 14px; height: 14px"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Marcar Todo Presente
+                </button>
+              </div>
+            </div>
+            <div class="attendance-grid">
+              <div class="student-attendance present">
+                <div class="student-name">María González</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance present">
+                <div class="student-name">Juan Pérez</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance late">
+                <div class="student-name">Sofia Martínez</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot late"></div>
+                  Tarde
+                </div>
+              </div>
+              <div class="student-attendance present">
+                <div class="student-name">Carlos López</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance present">
+                <div class="student-name">Ana Rodríguez</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance absent">
+                <div class="student-name">Roberto García</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot absent"></div>
+                  Ausente
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3ro B Class -->
+          <div class="class-section">
+            <div class="class-header">
+              <div>
+                <div class="class-name">3ro B - Física</div>
+                <div class="class-time">10:00 - 11:30 • Aula 102</div>
+              </div>
+              <div class="class-controls">
+                <button class="btn btn-success btn-small">
+                  <svg
+                    style="width: 14px; height: 14px"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Marcar Todo Presente
+                </button>
+              </div>
+            </div>
+            <div class="attendance-grid">
+              <div class="student-attendance present">
+                <div class="student-name">Elena Cruz</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance present">
+                <div class="student-name">Marco Díaz</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance absent">
+                <div class="student-name">Patricia Sánchez</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot absent"></div>
+                  Ausente
+                </div>
+              </div>
+              <div class="student-attendance present">
+                <div class="student-name">David Morales</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance late">
+                <div class="student-name">Valentina Torres</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot late"></div>
+                  Tarde
+                </div>
+              </div>
+              <div class="student-attendance present">
+                <div class="student-name">Miguel Flores</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5to A Class -->
+          <div class="class-section">
+            <div class="class-header">
+              <div>
+                <div class="class-name">5to A - Laboratorio</div>
+                <div class="class-time">12:00 - 13:30 • Lab-102</div>
+              </div>
+              <div class="class-controls">
+                <button class="btn btn-success btn-small">
+                  <svg
+                    style="width: 14px; height: 14px"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Marcar Todo Presente
+                </button>
+              </div>
+            </div>
+            <div class="attendance-grid">
+              <div class="student-attendance present">
+                <div class="student-name">Gabriela Ruiz</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance present">
+                <div class="student-name">Andrés Núñez</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance present">
+                <div class="student-name">Lucía Hernández</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance present">
+                <div class="student-name">Felipe Ramírez</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+              <div class="student-attendance late">
+                <div class="student-name">Isabella Castillo</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot late"></div>
+                  Tarde
+                </div>
+              </div>
+              <div class="student-attendance present">
+                <div class="student-name">Diego Medina</div>
+                <div class="attendance-indicator">
+                  <div class="indicator-dot present"></div>
+                  Presente
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="grid-2">
+          <!-- Attendance Summary -->
+          <div class="card">
+            <div class="card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Resumen de Asistencias
+            </div>
+            <ul class="attendance-stats">
+              <li class="stat-item">
+                <span class="stat-item-label">
+                  <span
+                    class="stat-item-dot"
+                    style="background: #27ae60"
+                  ></span>
+                  Presentes
+                </span>
+                <span class="stat-item-value" style="color: #27ae60"
+                  >297 (86.8%)</span
+                >
+              </li>
+              <li class="stat-item">
+                <span class="stat-item-label">
+                  <span
+                    class="stat-item-dot"
+                    style="background: #f39c12"
+                  ></span>
+                  Tardanzas
+                </span>
+                <span class="stat-item-value" style="color: #f39c12"
+                  >23 (6.7%)</span
+                >
+              </li>
+              <li class="stat-item">
+                <span class="stat-item-label">
+                  <span
+                    class="stat-item-dot"
+                    style="background: #e74c3c"
+                  ></span>
+                  Ausencias
+                </span>
+                <span class="stat-item-value" style="color: #e74c3c"
+                  >22 (6.4%)</span
+                >
+              </li>
+            </ul>
+            <div
+              style="
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 1px solid #e8eef5;
+              "
+            >
+              <div style="font-size: 13px; color: #7f8c8d; margin-bottom: 8px">
+                Promedio Semanal: 87.2%
+              </div>
+              <div style="font-size: 13px; color: #7f8c8d">
+                Promedio Mensual: 89.1%
+              </div>
+            </div>
+          </div>
+
+          <!-- Export Attendance -->
+          <div class="card">
+            <div class="card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                ></path>
+              </svg>
+              Exportar Asistencias
+            </div>
+            <div class="export-section">
+              <p>
+                Descarga un informe completo de asistencias en tu formato
+                preferido
+              </p>
+              <div
+                style="
+                  display: flex;
+                  gap: 10px;
+                  justify-content: center;
+                  flex-wrap: wrap;
+                "
+              >
+                <button class="btn btn-primary btn-small">
+                  <svg
+                    style="width: 14px; height: 14px"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  PDF
+                </button>
+                <button class="btn btn-secondary btn-small">
+                  <svg
+                    style="width: 14px; height: 14px"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Excel
+                </button>
+                <button class="btn btn-secondary btn-small">
+                  <svg
+                    style="width: 14px; height: 14px"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  CSV
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendance History -->
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path
+                d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+              ></path>
+              <path d="M21 3v5h-5"></path>
+              <path
+                d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+              ></path>
+              <path d="M3 21v-5h5"></path>
+            </svg>
+            Historial de Asistencias - Últimos 10 Días
+          </div>
+          <div style="overflow-x: auto; border-radius: 8px">
+            <table class="attendance-table">
+              <thead>
+                <tr>
+                  <th>Estudiante</th>
+                  <th>Lun 24</th>
+                  <th>Mar 25</th>
+                  <th>Mié 26</th>
+                  <th>Jue 27</th>
+                  <th>Vie 28</th>
+                  <th>Sáb 29</th>
+                  <th>Tasa</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>María González</strong></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-warning">T</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage">-</span></td>
+                  <td><span class="percentage percentage-good">100%</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Juan Pérez</strong></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage">-</span></td>
+                  <td><span class="percentage percentage-good">100%</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Sofia Martínez</strong></td>
+                  <td><span class="percentage percentage-warning">T</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-bad">A</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage">-</span></td>
+                  <td>
+                    <span class="percentage percentage-warning">80%</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Carlos López</strong></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage">-</span></td>
+                  <td><span class="percentage percentage-good">100%</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Ana Rodríguez</strong></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-warning">T</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage">-</span></td>
+                  <td><span class="percentage percentage-good">100%</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Roberto García</strong></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-bad">A</span></td>
+                  <td><span class="percentage percentage-good">P</span></td>
+                  <td><span class="percentage percentage-bad">A</span></td>
+                  <td><span class="percentage percentage-bad">A</span></td>
+                  <td><span class="percentage">-</span></td>
+                  <td><span class="percentage percentage-bad">60%</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

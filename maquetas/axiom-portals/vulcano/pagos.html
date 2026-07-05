@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VULCANO Parent Portal - Payments</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      /* Header */
+      header {
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 28px;
+        font-weight: 700;
+        color: #ff6b35;
+        letter-spacing: -1px;
+      }
+
+      .header-nav {
+        display: flex;
+        gap: 25px;
+        align-items: center;
+      }
+
+      .nav-link {
+        text-decoration: none;
+        color: #666;
+        font-weight: 500;
+        font-size: 14px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.3s;
+      }
+
+      .nav-link:hover {
+        background: #fff;
+        color: #ff6b35;
+      }
+
+      .nav-link.active {
+        background: #ff6b35;
+        color: white;
+      }
+
+      /* Page Title */
+      .page-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+      }
+
+      .page-subtitle {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 30px;
+      }
+
+      /* Grid */
+      .payment-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .payment-grid-wide {
+        grid-column: 1 / -1;
+      }
+
+      /* Card */
+      .card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s;
+      }
+
+      .card:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+      }
+
+      /* Card Title */
+      .card-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Summary Card */
+      .summary-card {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff8a5b 100%);
+        color: white;
+        text-align: center;
+      }
+
+      .summary-label {
+        font-size: 13px;
+        opacity: 0.9;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .summary-amount {
+        font-size: 48px;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 12px;
+      }
+
+      .summary-subtext {
+        font-size: 12px;
+        opacity: 0.85;
+      }
+
+      /* Status Box */
+      .status-box {
+        padding: 16px;
+        border-radius: 12px;
+        text-align: center;
+        margin-top: 16px;
+        font-weight: 600;
+        font-size: 13px;
+      }
+
+      .status-alert {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+
+      /* Pending Payments */
+      .payment-item {
+        padding: 16px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        border-left: 4px solid #ff6b35;
+        margin-bottom: 12px;
+      }
+
+      .payment-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .payment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+      }
+
+      .payment-name {
+        font-weight: 700;
+        color: #333;
+        font-size: 14px;
+      }
+
+      .payment-amount {
+        font-weight: 700;
+        color: #ff6b35;
+        font-size: 16px;
+      }
+
+      .payment-details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #999;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #eee;
+      }
+
+      .due-date {
+        font-weight: 600;
+      }
+
+      .overdue {
+        color: #c62828;
+      }
+
+      /* Payment History */
+      .history-item {
+        padding: 12px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        border-left: 3px solid #4caf50;
+      }
+
+      .history-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .history-info {
+        flex: 1;
+      }
+
+      .history-name {
+        font-weight: 600;
+        color: #333;
+        font-size: 13px;
+        margin-bottom: 4px;
+      }
+
+      .history-date {
+        font-size: 12px;
+        color: #999;
+      }
+
+      .history-amount {
+        text-align: right;
+        font-weight: 700;
+        color: #4caf50;
+        font-size: 14px;
+      }
+
+      .receipt-link {
+        text-align: right;
+        margin-top: 4px;
+        font-size: 11px;
+      }
+
+      .receipt-link a {
+        color: #ff6b35;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .receipt-link a:hover {
+        text-decoration: underline;
+      }
+
+      /* Payment Methods */
+      .method-item {
+        padding: 12px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border: 2px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .method-item:hover {
+        border-color: #ff6b35;
+        background: #fff;
+      }
+
+      .method-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .method-info {
+        flex: 1;
+      }
+
+      .method-name {
+        font-weight: 600;
+        color: #333;
+        font-size: 13px;
+        margin-bottom: 4px;
+      }
+
+      .method-details {
+        font-size: 12px;
+        color: #999;
+      }
+
+      .method-default {
+        background: #e8f5e9;
+        border-color: #4caf50;
+      }
+
+      .default-badge {
+        background: #4caf50;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      /* Setup Box */
+      .setup-box {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        margin-top: 12px;
+      }
+
+      .setup-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1565c0;
+        margin-bottom: 8px;
+      }
+
+      .setup-desc {
+        font-size: 12px;
+        color: #1565c0;
+        margin-bottom: 12px;
+      }
+
+      .button {
+        background: #2196f3;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .button:hover {
+        background: #1565c0;
+        transform: translateY(-1px);
+      }
+
+      /* Payment Stats */
+      .stat-box {
+        background: #f9f9f9;
+        padding: 16px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 12px;
+      }
+
+      .stat-box:last-child {
+        margin-bottom: 0;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #999;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #333;
+      }
+
+      /* Alerts */
+      .alert-box {
+        background: #ffebee;
+        border-left: 4px solid #f44336;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+
+      .alert-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #c62828;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .alert-message {
+        font-size: 13px;
+        color: #c62828;
+      }
+
+      /* Icon */
+      .icon {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header-nav {
+          gap: 12px;
+        }
+
+        .nav-link {
+          padding: 6px 12px;
+          font-size: 12px;
+        }
+
+        .page-title {
+          font-size: 24px;
+        }
+
+        .payment-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .payment-grid-wide {
+          grid-column: 1 !important;
+        }
+
+        .payment-header {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .payment-details {
+          flex-direction: column;
+          gap: 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <div class="logo">VULCANO</div>
+        <nav class="header-nav">
+          <a href="index.html" class="nav-link">Dashboard</a>
+          <a href="calificaciones.html" class="nav-link">Grades</a>
+          <a href="asistencias.html" class="nav-link">Attendance</a>
+          <a href="pagos.html" class="nav-link active">Payments</a>
+        </nav>
+      </header>
+
+      <!-- Page Title -->
+      <div class="page-title">Payment Management</div>
+      <div class="page-subtitle">Carlos Mendez - Account Status</div>
+
+      <!-- Alert -->
+      <div class="alert-box">
+        <div class="alert-title">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+          </svg>
+          Pending Payment Required
+        </div>
+        <div class="alert-message">
+          You have $285.00 in pending payments. Please process payment to avoid
+          service interruption.
+        </div>
+      </div>
+
+      <!-- Payment Grid -->
+      <div class="payment-grid">
+        <!-- Summary Card -->
+        <div class="card summary-card payment-grid-wide">
+          <div class="summary-label">Total Pending Balance</div>
+          <div class="summary-amount">$285.00</div>
+          <div class="summary-subtext">Due by June 30, 2024</div>
+          <div class="status-box status-alert">⚠️ Action Required</div>
+        </div>
+
+        <!-- Pending Payments -->
+        <div class="card payment-grid-wide">
+          <div class="card-title">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="12" cy="5" r="1"></circle>
+              <circle cx="12" cy="19" r="1"></circle>
+            </svg>
+            Pending Payments
+          </div>
+
+          <div class="payment-item">
+            <div class="payment-header">
+              <div class="payment-name">Monthly Tuition - June 2024</div>
+              <div class="payment-amount">$200.00</div>
+            </div>
+            <div class="payment-details">
+              <span>Invoice #: INV-2024-0642</span>
+              <span class="due-date overdue"
+                >Due: June 30, 2024 (OVERDUE 0 days)</span
+              >
+            </div>
+          </div>
+
+          <div class="payment-item">
+            <div class="payment-header">
+              <div class="payment-name">Activities & Materials Fee</div>
+              <div class="payment-amount">$85.00</div>
+            </div>
+            <div class="payment-details">
+              <span>Invoice #: INV-2024-0687</span>
+              <span class="due-date">Due: July 15, 2024</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Stats -->
+        <div class="card">
+          <div class="card-title">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline
+                points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"
+              ></polyline>
+              <polyline points="12 12 20 7.5"></polyline>
+              <polyline points="12 12 12 21"></polyline>
+              <polyline points="12 12 4 7.5"></polyline>
+            </svg>
+            Payment Statistics
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Total Paid This Year</div>
+            <div class="stat-value">$1,200.00</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Average Payment</div>
+            <div class="stat-value">$200.00</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">On-Time Payments</div>
+            <div class="stat-value" style="color: #4caf50">5 of 6</div>
+          </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="card">
+          <div class="card-title">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+              <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
+            Payment Methods
+          </div>
+
+          <div class="method-item method-default">
+            <div class="method-info">
+              <div class="method-name">💳 Visa Card</div>
+              <div class="method-details">**** **** **** 4242</div>
+            </div>
+            <div class="default-badge">Default</div>
+          </div>
+
+          <div class="method-item">
+            <div class="method-info">
+              <div class="method-name">🏦 Bank Transfer</div>
+              <div class="method-details">Account ending in 5678</div>
+            </div>
+          </div>
+
+          <div class="method-item">
+            <div class="method-info">
+              <div class="method-name">📱 Digital Wallet</div>
+              <div class="method-details">PayPal - registered@email.com</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="card payment-grid-wide">
+          <div class="card-title">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Payment History
+          </div>
+
+          <div class="history-item">
+            <div class="history-info">
+              <div class="history-name">Monthly Tuition - May 2024</div>
+              <div class="history-date">Paid on May 28, 2024</div>
+            </div>
+            <div>
+              <div class="history-amount">$200.00</div>
+              <div class="receipt-link"><a href="#">Download Receipt</a></div>
+            </div>
+          </div>
+
+          <div class="history-item">
+            <div class="history-info">
+              <div class="history-name">Monthly Tuition - April 2024</div>
+              <div class="history-date">Paid on April 30, 2024</div>
+            </div>
+            <div>
+              <div class="history-amount">$200.00</div>
+              <div class="receipt-link"><a href="#">Download Receipt</a></div>
+            </div>
+          </div>
+
+          <div class="history-item">
+            <div class="history-info">
+              <div class="history-name">Activities & Materials Fee</div>
+              <div class="history-date">Paid on April 15, 2024</div>
+            </div>
+            <div>
+              <div class="history-amount">$85.00</div>
+              <div class="receipt-link"><a href="#">Download Receipt</a></div>
+            </div>
+          </div>
+
+          <div class="history-item">
+            <div class="history-info">
+              <div class="history-name">Monthly Tuition - March 2024</div>
+              <div class="history-date">Paid on March 29, 2024</div>
+            </div>
+            <div>
+              <div class="history-amount">$200.00</div>
+              <div class="receipt-link"><a href="#">Download Receipt</a></div>
+            </div>
+          </div>
+
+          <div class="history-item">
+            <div class="history-info">
+              <div class="history-name">Monthly Tuition - February 2024</div>
+              <div class="history-date">Paid on February 29, 2024</div>
+            </div>
+            <div>
+              <div class="history-amount">$200.00</div>
+              <div class="receipt-link"><a href="#">Download Receipt</a></div>
+            </div>
+          </div>
+
+          <div class="history-item">
+            <div class="history-info">
+              <div class="history-name">Monthly Tuition - January 2024</div>
+              <div class="history-date">Paid on January 31, 2024</div>
+            </div>
+            <div>
+              <div class="history-amount">$200.00</div>
+              <div class="receipt-link"><a href="#">Download Receipt</a></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Automatic Payment Setup -->
+        <div class="card payment-grid-wide">
+          <div class="card-title">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="1"></circle>
+              <path d="M12 1v6m0 6v6"></path>
+              <path d="M4.22 4.22l4.24 4.24m5.08 5.08l4.24 4.24"></path>
+              <path d="M1 12h6m6 0h6"></path>
+              <path d="M4.22 19.78l4.24-4.24m5.08-5.08l4.24-4.24"></path>
+            </svg>
+            Automatic Payment Setup (Coming Soon)
+          </div>
+
+          <div class="setup-box">
+            <div class="setup-title">Enable Automatic Payments</div>
+            <div class="setup-desc">
+              Set up automatic monthly payments and never miss a due date. Your
+              payment will be automatically deducted on the 1st of each month.
+            </div>
+            <button class="button">Set Up Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CERES - Mis Materias</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #f5f7ff 0%, #f0f9ff 100%);
+        min-height: 100vh;
+        color: #2c3e50;
+      }
+
+      header {
+        background: white;
+        border-bottom: 2px solid #e8f0ff;
+        padding: 0.8rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .profile-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        box-shadow: 0 2px 8px rgba(255, 107, 157, 0.3);
+      }
+
+      .profile-avatar:hover {
+        transform: scale(1.1);
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2rem;
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .sidebar {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        height: fit-content;
+        position: sticky;
+        top: 90px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .user-card {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #f0f9ff;
+      }
+
+      .user-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+
+      .nav-item {
+        margin: 0.5rem 0;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+        color: #666;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .nav-link:hover {
+        background: linear-gradient(135deg, #f0f9ff, #f5f7ff);
+        color: #6366f1;
+      }
+
+      .nav-link.active {
+        color: #6366f1;
+        background: linear-gradient(135deg, #f0f9ff, #e8f0ff);
+      }
+
+      .nav-icon-svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .page-header {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .page-title {
+        font-size: 2rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .page-subtitle {
+        color: #999;
+        font-size: 1rem;
+      }
+
+      .subjects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .subject-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .subject-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      }
+
+      .subject-header {
+        height: 120px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1.5rem;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .subject-header.pink {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .subject-header.blue {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      .subject-header.green {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      }
+
+      .subject-header.orange {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      }
+
+      .subject-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+      }
+
+      .subject-code {
+        font-size: 0.85rem;
+        opacity: 0.9;
+      }
+
+      .subject-body {
+        padding: 1.5rem;
+      }
+
+      .teacher-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #f0f9ff;
+      }
+
+      .teacher-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+
+      .teacher-avatar.pink {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .teacher-avatar.blue {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      .teacher-avatar.green {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      }
+
+      .teacher-avatar.orange {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      }
+
+      .teacher-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      .teacher-title {
+        font-size: 0.8rem;
+        color: #999;
+      }
+
+      .progress-section {
+        margin-bottom: 1.5rem;
+      }
+
+      .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background: #f0f9ff;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+        width: 75%;
+        border-radius: 4px;
+      }
+
+      .progress-fill.pink {
+        background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .progress-fill.blue {
+        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      .progress-fill.green {
+        background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+      }
+
+      .progress-fill.orange {
+        background: linear-gradient(90deg, #fa709a 0%, #fee140 100%);
+      }
+
+      .grade-display {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: #f9fafb;
+        border-radius: 10px;
+      }
+
+      .grade-label {
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .grade-value {
+        font-weight: 700;
+        font-size: 1.2rem;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .subject-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .stat-item {
+        padding: 0.75rem;
+        background: #f9fafb;
+        border-radius: 10px;
+        text-align: center;
+      }
+
+      .stat-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #6366f1;
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 0.25rem;
+      }
+
+      .subject-actions {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .action-btn {
+        flex: 1;
+        padding: 0.6rem;
+        border: none;
+        background: linear-gradient(135deg, #f0f9ff, #e8f0ff);
+        color: #6366f1;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+      }
+
+      .action-btn:hover {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+      }
+
+      .discussions-section {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        margin-top: 1rem;
+      }
+
+      .discussions-title {
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+      }
+
+      .discussion-item {
+        padding: 1rem;
+        border: 1px solid #f0f9ff;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .discussion-item:hover {
+        background: #f9fafb;
+        border-color: #6366f1;
+      }
+
+      .discussion-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .discussion-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+      }
+
+      .discussion-meta {
+        font-size: 0.85rem;
+        color: #999;
+        display: flex;
+        gap: 1rem;
+      }
+
+      @media (max-width: 1024px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .subjects-grid {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        .subjects-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .page-header {
+          padding: 1.5rem;
+        }
+
+        .page-title {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">CERES</div>
+      <div class="header-actions">
+        <div class="profile-avatar">AR</div>
+      </div>
+    </header>
+
+    <div class="container">
+      <aside class="sidebar">
+        <div class="user-card">
+          <div class="user-avatar">AR</div>
+          <div class="user-name">Andrea Rodríguez</div>
+        </div>
+
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">
+              <svg
+                class="nav-icon-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 12a9 9 0 1 0 18 0A9 9 0 0 0 3 12Z"></path>
+                <path d="M9 9h6v6H9z"></path>
+              </svg>
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="materias.html" class="nav-link active">
+              <svg
+                class="nav-icon-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path
+                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                ></path>
+              </svg>
+              Mis Materias
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="horario.html" class="nav-link">
+              <svg
+                class="nav-icon-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              Mi Horario
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="calificaciones.html" class="nav-link">
+              <svg
+                class="nav-icon-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline
+                  points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"
+                ></polyline>
+                <line x1="12" y1="12" x2="20" y2="7.5"></line>
+                <line x1="12" y1="12" x2="12" y2="21"></line>
+                <line x1="12" y1="12" x2="4" y2="7.5"></line>
+              </svg>
+              Calificaciones
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="perfil.html" class="nav-link">
+              <svg
+                class="nav-icon-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Mi Perfil
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <main class="main-content">
+        <div class="page-header">
+          <h1 class="page-title">Mis Materias</h1>
+          <p class="page-subtitle">
+            Todas tus materias, calificaciones y recursos en un solo lugar
+          </p>
+        </div>
+
+        <div class="subjects-grid">
+          <div class="subject-card">
+            <div class="subject-header">
+              <div class="subject-name">Matemáticas</div>
+              <div class="subject-code">MAT-101</div>
+            </div>
+            <div class="subject-body">
+              <div class="teacher-info">
+                <div class="teacher-avatar">PM</div>
+                <div>
+                  <div class="teacher-name">Prof. Patricia Martínez</div>
+                  <div class="teacher-title">Docente</div>
+                </div>
+              </div>
+
+              <div class="progress-section">
+                <div class="progress-label">
+                  <span>Progreso del Curso</span>
+                  <span>75%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 75%"></div>
+                </div>
+              </div>
+
+              <div class="grade-display">
+                <span class="grade-label">Calificación Actual</span>
+                <span class="grade-value">8.5</span>
+              </div>
+
+              <div class="subject-stats">
+                <div class="stat-item">
+                  <div class="stat-value">5</div>
+                  <div class="stat-label">Trabajos</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">2</div>
+                  <div class="stat-label">Exámenes</div>
+                </div>
+              </div>
+
+              <div class="subject-actions">
+                <button class="action-btn">Ver Recursos</button>
+                <button class="action-btn">Chat</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="subject-card">
+            <div class="subject-header pink">
+              <div class="subject-name">Biología</div>
+              <div class="subject-code">BIO-205</div>
+            </div>
+            <div class="subject-body">
+              <div class="teacher-info">
+                <div class="teacher-avatar pink">JC</div>
+                <div>
+                  <div class="teacher-name">Dr. Juan Carlos Gómez</div>
+                  <div class="teacher-title">Docente</div>
+                </div>
+              </div>
+
+              <div class="progress-section">
+                <div class="progress-label">
+                  <span>Progreso del Curso</span>
+                  <span>82%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill pink" style="width: 82%"></div>
+                </div>
+              </div>
+
+              <div class="grade-display">
+                <span class="grade-label">Calificación Actual</span>
+                <span class="grade-value">9.2</span>
+              </div>
+
+              <div class="subject-stats">
+                <div class="stat-item">
+                  <div class="stat-value">4</div>
+                  <div class="stat-label">Prácticas</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">1</div>
+                  <div class="stat-label">Quiz</div>
+                </div>
+              </div>
+
+              <div class="subject-actions">
+                <button class="action-btn">Ver Recursos</button>
+                <button class="action-btn">Chat</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="subject-card">
+            <div class="subject-header blue">
+              <div class="subject-name">Literatura</div>
+              <div class="subject-code">LIT-150</div>
+            </div>
+            <div class="subject-body">
+              <div class="teacher-info">
+                <div class="teacher-avatar blue">LM</div>
+                <div>
+                  <div class="teacher-name">Lic. Laura Morales</div>
+                  <div class="teacher-title">Docente</div>
+                </div>
+              </div>
+
+              <div class="progress-section">
+                <div class="progress-label">
+                  <span>Progreso del Curso</span>
+                  <span>65%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill blue" style="width: 65%"></div>
+                </div>
+              </div>
+
+              <div class="grade-display">
+                <span class="grade-label">Calificación Actual</span>
+                <span class="grade-value">8.9</span>
+              </div>
+
+              <div class="subject-stats">
+                <div class="stat-item">
+                  <div class="stat-value">3</div>
+                  <div class="stat-label">Ensayos</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">6</div>
+                  <div class="stat-label">Lecturas</div>
+                </div>
+              </div>
+
+              <div class="subject-actions">
+                <button class="action-btn">Ver Recursos</button>
+                <button class="action-btn">Chat</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="subject-card">
+            <div class="subject-header green">
+              <div class="subject-name">Inglés</div>
+              <div class="subject-code">ENG-120</div>
+            </div>
+            <div class="subject-body">
+              <div class="teacher-info">
+                <div class="teacher-avatar green">MP</div>
+                <div>
+                  <div class="teacher-name">Prof. Margaret Phillips</div>
+                  <div class="teacher-title">Docente</div>
+                </div>
+              </div>
+
+              <div class="progress-section">
+                <div class="progress-label">
+                  <span>Progreso del Curso</span>
+                  <span>71%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill green" style="width: 71%"></div>
+                </div>
+              </div>
+
+              <div class="grade-display">
+                <span class="grade-label">Calificación Actual</span>
+                <span class="grade-value">8.1</span>
+              </div>
+
+              <div class="subject-stats">
+                <div class="stat-item">
+                  <div class="stat-value">12</div>
+                  <div class="stat-label">Diálogos</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">2</div>
+                  <div class="stat-label">Presentaciones</div>
+                </div>
+              </div>
+
+              <div class="subject-actions">
+                <button class="action-btn">Ver Recursos</button>
+                <button class="action-btn">Chat</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="subject-card">
+            <div class="subject-header orange">
+              <div class="subject-name">Química</div>
+              <div class="subject-code">QUI-310</div>
+            </div>
+            <div class="subject-body">
+              <div class="teacher-info">
+                <div class="teacher-avatar orange">CF</div>
+                <div>
+                  <div class="teacher-name">Dra. Carmen Flores</div>
+                  <div class="teacher-title">Docente</div>
+                </div>
+              </div>
+
+              <div class="progress-section">
+                <div class="progress-label">
+                  <span>Progreso del Curso</span>
+                  <span>58%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill orange" style="width: 58%"></div>
+                </div>
+              </div>
+
+              <div class="grade-display">
+                <span class="grade-label">Calificación Actual</span>
+                <span class="grade-value">8.3</span>
+              </div>
+
+              <div class="subject-stats">
+                <div class="stat-item">
+                  <div class="stat-value">7</div>
+                  <div class="stat-label">Laboratorios</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">3</div>
+                  <div class="stat-label">Informes</div>
+                </div>
+              </div>
+
+              <div class="subject-actions">
+                <button class="action-btn">Ver Recursos</button>
+                <button class="action-btn">Chat</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="subject-card">
+            <div class="subject-header">
+              <div class="subject-name">Historia</div>
+              <div class="subject-code">HIS-200</div>
+            </div>
+            <div class="subject-body">
+              <div class="teacher-info">
+                <div class="teacher-avatar">DG</div>
+                <div>
+                  <div class="teacher-name">Prof. David García</div>
+                  <div class="teacher-title">Docente</div>
+                </div>
+              </div>
+
+              <div class="progress-section">
+                <div class="progress-label">
+                  <span>Progreso del Curso</span>
+                  <span>88%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 88%"></div>
+                </div>
+              </div>
+
+              <div class="grade-display">
+                <span class="grade-label">Calificación Actual</span>
+                <span class="grade-value">9.0</span>
+              </div>
+
+              <div class="subject-stats">
+                <div class="stat-item">
+                  <div class="stat-value">4</div>
+                  <div class="stat-label">Proyectos</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">2</div>
+                  <div class="stat-label">Parciales</div>
+                </div>
+              </div>
+
+              <div class="subject-actions">
+                <button class="action-btn">Ver Recursos</button>
+                <button class="action-btn">Chat</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="discussions-section">
+          <h2 class="discussions-title">Discusiones Recientes</h2>
+          <div class="discussion-item">
+            <div class="discussion-title">
+              ¿Cómo resolver ecuaciones cuadráticas?
+            </div>
+            <div class="discussion-meta">
+              <span>Matemáticas</span>
+              <span>23 respuestas</span>
+              <span>Hace 2 horas</span>
+            </div>
+          </div>
+          <div class="discussion-item">
+            <div class="discussion-title">
+              Análisis del Mitocondria en clase
+            </div>
+            <div class="discussion-meta">
+              <span>Biología</span>
+              <span>15 respuestas</span>
+              <span>Hace 1 día</span>
+            </div>
+          </div>
+          <div class="discussion-item">
+            <div class="discussion-title">
+              Vocabulario del Tema: Movimientos Sociales
+            </div>
+            <div class="discussion-meta">
+              <span>Literatura</span>
+              <span>8 respuestas</span>
+              <span>Hace 2 días</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

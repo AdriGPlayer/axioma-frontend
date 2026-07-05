@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JUNO - My Groups</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+          "Ubuntu", "Cantarell", sans-serif;
+        background-color: #f5f7fa;
+        color: #2c3e50;
+        line-height: 1.6;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 30px 0;
+        position: fixed;
+        height: 100vh;
+        color: white;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+      }
+
+      .logo {
+        padding: 0 30px 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 30px;
+      }
+
+      .logo-text {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 2px;
+      }
+
+      .sidebar-nav {
+        list-style: none;
+      }
+
+      .sidebar-nav li {
+        margin: 0;
+      }
+
+      .sidebar-nav a {
+        display: flex;
+        align-items: center;
+        padding: 15px 30px;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+      }
+
+      .sidebar-nav a:hover,
+      .sidebar-nav a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        border-left-color: white;
+      }
+
+      .nav-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .main {
+        margin-left: 280px;
+        flex: 1;
+        padding: 30px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        background: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .header h1 {
+        font-size: 28px;
+        color: #2c3e50;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #764ba2;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #e8eef5;
+        color: #667eea;
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      .btn-secondary:hover {
+        background: #dde5ed;
+      }
+
+      .groups-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .group-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .group-card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        transform: translateY(-4px);
+      }
+
+      .group-header {
+        height: 100px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+
+      .group-card:nth-child(2) .group-header {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .group-card:nth-child(3) .group-header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      .group-card:nth-child(4) .group-header {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      }
+
+      .group-card:nth-child(5) .group-header {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      }
+
+      .group-card:nth-child(6) .group-header {
+        background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+      }
+
+      .group-name {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .group-subject {
+        font-size: 13px;
+        opacity: 0.9;
+      }
+
+      .group-body {
+        padding: 20px;
+      }
+
+      .group-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #e8eef5;
+      }
+
+      .group-stat:last-of-type {
+        border-bottom: none;
+      }
+
+      .stat-label {
+        color: #7f8c8d;
+        font-size: 13px;
+      }
+
+      .stat-value {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .group-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .group-actions button {
+        flex: 1;
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e8eef5;
+        margin-bottom: 25px;
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .card-title svg {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+      }
+
+      .student-list {
+        list-style: none;
+      }
+
+      .student-item {
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .student-name {
+        font-weight: 500;
+        color: #2c3e50;
+      }
+
+      .student-id {
+        font-size: 12px;
+        color: #95a5a6;
+      }
+
+      .attendance-status {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .attendance-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      .attendance-dot.present {
+        background: #27ae60;
+      }
+
+      .attendance-dot.absent {
+        background: #e74c3c;
+      }
+
+      .attendance-dot.late {
+        background: #f39c12;
+      }
+
+      .attendance-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        margin-bottom: 20px;
+      }
+
+      .attendance-header {
+        font-size: 11px;
+        font-weight: 600;
+        text-align: center;
+        color: #7f8c8d;
+        padding: 8px 0;
+      }
+
+      .attendance-cell {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .attendance-cell.present {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .attendance-cell.absent {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .attendance-cell.late {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .attendance-cell.empty {
+        background: #e8eef5;
+        color: #ddd;
+      }
+
+      .performance-chart {
+        list-style: none;
+      }
+
+      .performance-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .performance-name {
+        width: 120px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .performance-bar {
+        flex: 1;
+        height: 8px;
+        background: #e8eef5;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .performance-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 4px;
+      }
+
+      .performance-score {
+        width: 50px;
+        text-align: right;
+        font-weight: 600;
+        color: #667eea;
+      }
+
+      .group-info {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 13px;
+      }
+
+      .info-label {
+        color: #7f8c8d;
+      }
+
+      .info-value {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      @media (max-width: 1200px) {
+        .groups-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+          padding: 15px;
+        }
+
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar Navigation -->
+      <div class="sidebar">
+        <div class="logo">
+          <div class="logo-text">JUNO</div>
+        </div>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="index.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </div>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="materias.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path
+                    d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                  ></path>
+                </svg>
+              </div>
+              Materias
+            </a>
+          </li>
+          <li>
+            <a href="grupos.html" class="active">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              Grupos
+            </a>
+          </li>
+          <li>
+            <a href="calificaciones.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                  ></path>
+                </svg>
+              </div>
+              Calificaciones
+            </a>
+          </li>
+          <li>
+            <a href="asistencias.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              Asistencias
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main">
+        <div class="header">
+          <h1>Mis Grupos</h1>
+          <button class="btn btn-primary">
+            <svg
+              style="width: 18px; height: 18px"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Nuevo Grupo
+          </button>
+        </div>
+
+        <!-- Group Cards -->
+        <div class="groups-grid">
+          <!-- 4to A -->
+          <div class="group-card">
+            <div class="group-header">
+              <div class="group-name">4to A</div>
+              <div class="group-subject">Matemática • Aula 101</div>
+            </div>
+            <div class="group-body">
+              <div class="group-stat">
+                <span class="stat-label">Estudiantes</span>
+                <span class="stat-value">32</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Asistencia Promedio</span>
+                <span class="stat-value">91%</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Promedio Calificación</span>
+                <span class="stat-value">7.8</span>
+              </div>
+              <div class="group-actions">
+                <button class="btn btn-secondary">Ver Estudiantes</button>
+                <button class="btn btn-secondary">Detalles</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3ro B -->
+          <div class="group-card">
+            <div class="group-header">
+              <div class="group-name">3ro B</div>
+              <div class="group-subject">Física • Aula 102</div>
+            </div>
+            <div class="group-body">
+              <div class="group-stat">
+                <span class="stat-label">Estudiantes</span>
+                <span class="stat-value">28</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Asistencia Promedio</span>
+                <span class="stat-value">85%</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Promedio Calificación</span>
+                <span class="stat-value">7.2</span>
+              </div>
+              <div class="group-actions">
+                <button class="btn btn-secondary">Ver Estudiantes</button>
+                <button class="btn btn-secondary">Detalles</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5to A -->
+          <div class="group-card">
+            <div class="group-header">
+              <div class="group-name">5to A</div>
+              <div class="group-subject">Laboratorio • Lab-102</div>
+            </div>
+            <div class="group-body">
+              <div class="group-stat">
+                <span class="stat-label">Estudiantes</span>
+                <span class="stat-value">25</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Asistencia Promedio</span>
+                <span class="stat-value">94%</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Promedio Calificación</span>
+                <span class="stat-value">8.5</span>
+              </div>
+              <div class="group-actions">
+                <button class="btn btn-secondary">Ver Estudiantes</button>
+                <button class="btn btn-secondary">Detalles</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4to B -->
+          <div class="group-card">
+            <div class="group-header">
+              <div class="group-name">4to B</div>
+              <div class="group-subject">Química • Aula 104</div>
+            </div>
+            <div class="group-body">
+              <div class="group-stat">
+                <span class="stat-label">Estudiantes</span>
+                <span class="stat-value">29</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Asistencia Promedio</span>
+                <span class="stat-value">88%</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Promedio Calificación</span>
+                <span class="stat-value">7.5</span>
+              </div>
+              <div class="group-actions">
+                <button class="btn btn-secondary">Ver Estudiantes</button>
+                <button class="btn btn-secondary">Detalles</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3ro A -->
+          <div class="group-card">
+            <div class="group-header">
+              <div class="group-name">3ro A</div>
+              <div class="group-subject">Historia • Aula 201</div>
+            </div>
+            <div class="group-body">
+              <div class="group-stat">
+                <span class="stat-label">Estudiantes</span>
+                <span class="stat-value">30</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Asistencia Promedio</span>
+                <span class="stat-value">89%</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Promedio Calificación</span>
+                <span class="stat-value">7.3</span>
+              </div>
+              <div class="group-actions">
+                <button class="btn btn-secondary">Ver Estudiantes</button>
+                <button class="btn btn-secondary">Detalles</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4to C -->
+          <div class="group-card">
+            <div class="group-header">
+              <div class="group-name">4to C</div>
+              <div class="group-subject">Literatura • Aula 203</div>
+            </div>
+            <div class="group-body">
+              <div class="group-stat">
+                <span class="stat-label">Estudiantes</span>
+                <span class="stat-value">31</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Asistencia Promedio</span>
+                <span class="stat-value">92%</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Promedio Calificación</span>
+                <span class="stat-value">7.9</span>
+              </div>
+              <div class="group-actions">
+                <button class="btn btn-secondary">Ver Estudiantes</button>
+                <button class="btn btn-secondary">Detalles</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group Details Section -->
+        <div class="grid-2">
+          <!-- Attendance Quick View -->
+          <div class="card">
+            <div class="card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Asistencia Últimos 7 Días - 4to A
+            </div>
+            <div class="attendance-grid">
+              <div class="attendance-header">Lun</div>
+              <div class="attendance-header">Mar</div>
+              <div class="attendance-header">Mié</div>
+              <div class="attendance-header">Jue</div>
+              <div class="attendance-header">Vie</div>
+              <div class="attendance-header">Sáb</div>
+              <div class="attendance-header">Dom</div>
+
+              <div class="attendance-cell present">P</div>
+              <div class="attendance-cell present">P</div>
+              <div class="attendance-cell late">T</div>
+              <div class="attendance-cell present">P</div>
+              <div class="attendance-cell present">P</div>
+              <div class="attendance-cell empty">-</div>
+              <div class="attendance-cell empty">-</div>
+            </div>
+            <div style="font-size: 12px; color: #7f8c8d; margin-top: 15px">
+              <div style="margin-bottom: 8px">
+                <span
+                  style="
+                    display: inline-block;
+                    width: 12px;
+                    height: 12px;
+                    background: #27ae60;
+                    border-radius: 2px;
+                    margin-right: 5px;
+                  "
+                ></span>
+                Presente
+              </div>
+              <div style="margin-bottom: 8px">
+                <span
+                  style="
+                    display: inline-block;
+                    width: 12px;
+                    height: 12px;
+                    background: #f39c12;
+                    border-radius: 2px;
+                    margin-right: 5px;
+                  "
+                ></span>
+                Tarde
+              </div>
+              <div>
+                <span
+                  style="
+                    display: inline-block;
+                    width: 12px;
+                    height: 12px;
+                    background: #e74c3c;
+                    border-radius: 2px;
+                    margin-right: 5px;
+                  "
+                ></span>
+                Ausente
+              </div>
+            </div>
+          </div>
+
+          <!-- Group Performance -->
+          <div class="card">
+            <div class="card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path
+                  d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"
+                ></path>
+                <polyline points="13 2 13 9 20 9"></polyline>
+              </svg>
+              Rendimiento del Grupo - 4to A
+            </div>
+            <ul class="performance-chart">
+              <li class="performance-item">
+                <div class="performance-name">Excelente (8-10)</div>
+                <div class="performance-bar">
+                  <div class="performance-fill" style="width: 45%"></div>
+                </div>
+                <div class="performance-score">14 est.</div>
+              </li>
+              <li class="performance-item">
+                <div class="performance-name">Bueno (7-7.9)</div>
+                <div class="performance-bar">
+                  <div class="performance-fill" style="width: 35%"></div>
+                </div>
+                <div class="performance-score">11 est.</div>
+              </li>
+              <li class="performance-item">
+                <div class="performance-name">Regular (6-6.9)</div>
+                <div class="performance-bar">
+                  <div class="performance-fill" style="width: 15%"></div>
+                </div>
+                <div class="performance-score">5 est.</div>
+              </li>
+              <li class="performance-item">
+                <div class="performance-name">Necesita apoyo (-6)</div>
+                <div class="performance-bar">
+                  <div class="performance-fill" style="width: 5%"></div>
+                </div>
+                <div class="performance-score">2 est.</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Students List -->
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Estudiantes de 4to A
+          </div>
+          <ul class="student-list">
+            <li class="student-item">
+              <div>
+                <div class="student-name">María González</div>
+                <div class="student-id">Est. #2401</div>
+              </div>
+              <div class="attendance-status">
+                <div class="attendance-dot present"></div>
+                Presente
+              </div>
+            </li>
+            <li class="student-item">
+              <div>
+                <div class="student-name">Juan Pérez</div>
+                <div class="student-id">Est. #2402</div>
+              </div>
+              <div class="attendance-status">
+                <div class="attendance-dot present"></div>
+                Presente
+              </div>
+            </li>
+            <li class="student-item">
+              <div>
+                <div class="student-name">Sofia Martínez</div>
+                <div class="student-id">Est. #2403</div>
+              </div>
+              <div class="attendance-status">
+                <div class="attendance-dot late"></div>
+                Tarde
+              </div>
+            </li>
+            <li class="student-item">
+              <div>
+                <div class="student-name">Carlos López</div>
+                <div class="student-id">Est. #2404</div>
+              </div>
+              <div class="attendance-status">
+                <div class="attendance-dot present"></div>
+                Presente
+              </div>
+            </li>
+            <li class="student-item">
+              <div>
+                <div class="student-name">Ana Rodríguez</div>
+                <div class="student-id">Est. #2405</div>
+              </div>
+              <div class="attendance-status">
+                <div class="attendance-dot present"></div>
+                Presente
+              </div>
+            </li>
+            <li class="student-item">
+              <div>
+                <div class="student-name">Roberto García</div>
+                <div class="student-id">Est. #2406</div>
+              </div>
+              <div class="attendance-status">
+                <div class="attendance-dot absent"></div>
+                Ausente
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

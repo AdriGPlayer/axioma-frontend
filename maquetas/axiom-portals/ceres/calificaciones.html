@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CERES - Mis Calificaciones</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #f5f7ff 0%, #f0f9ff 100%);
+        min-height: 100vh;
+        color: #2c3e50;
+      }
+
+      header {
+        background: white;
+        border-bottom: 2px solid #e8f0ff;
+        padding: 0.8rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .profile-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        box-shadow: 0 2px 8px rgba(255, 107, 157, 0.3);
+      }
+
+      .profile-avatar:hover {
+        transform: scale(1.1);
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2rem;
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .sidebar {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        height: fit-content;
+        position: sticky;
+        top: 90px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .user-card {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #f0f9ff;
+      }
+
+      .user-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+
+      .nav-item {
+        margin: 0.5rem 0;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+        color: #666;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .nav-link:hover {
+        background: linear-gradient(135deg, #f0f9ff, #f5f7ff);
+        color: #6366f1;
+      }
+
+      .nav-link.active {
+        color: #6366f1;
+        background: linear-gradient(135deg, #f0f9ff, #e8f0ff);
+      }
+
+      .nav-icon-svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .page-header {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .page-title {
+        font-size: 2rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .page-subtitle {
+        color: #999;
+        font-size: 1rem;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        text-align: center;
+      }
+
+      .stat-card.gpa {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+      }
+
+      .stat-card.ranking {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+      }
+
+      .stat-card.attendance {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+      }
+
+      .stat-card.performance {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        color: white;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 0.75rem;
+      }
+
+      .stat-value {
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-detail {
+        font-size: 0.85rem;
+        opacity: 0.85;
+      }
+
+      .grades-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .section-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #2c3e50;
+      }
+
+      .subject-grades {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .grade-card {
+        background: white;
+        border: 2px solid #f0f9ff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .grade-card:hover {
+        border-color: #6366f1;
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.1);
+      }
+
+      .grade-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .grade-subject {
+        font-weight: 600;
+        font-size: 1.05rem;
+      }
+
+      .grade-main {
+        font-size: 1.8rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .grade-scale {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .grade-bar {
+        height: 6px;
+        background: #f0f9ff;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+
+      .grade-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+      }
+
+      .grade-fill.high {
+        background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+      }
+
+      .grade-fill.medium {
+        background: linear-gradient(90deg, #ffd89b 0%, #19547b 100%);
+      }
+
+      .grade-fill.low {
+        background: linear-gradient(90deg, #f5576c 0%, #f093fb 100%);
+      }
+
+      .grade-breakdown {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .grade-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: #f9fafb;
+        border-radius: 8px;
+        font-size: 0.9rem;
+      }
+
+      .grade-item-name {
+        color: #666;
+      }
+
+      .grade-item-score {
+        font-weight: 600;
+        color: #6366f1;
+      }
+
+      .performance-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        margin-top: 2rem;
+      }
+
+      .chart-container {
+        margin-top: 1.5rem;
+      }
+
+      .chart-bar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .chart-label {
+        width: 80px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #2c3e50;
+      }
+
+      .chart-bar-bg {
+        flex: 1;
+        height: 20px;
+        background: #f0f9ff;
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .chart-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+        border-radius: 10px;
+      }
+
+      .chart-bar-fill.high {
+        background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+      }
+
+      .chart-bar-fill.medium {
+        background: linear-gradient(90deg, #ffd89b 0%, #19547b 100%);
+      }
+
+      .chart-bar-fill.low {
+        background: linear-gradient(90deg, #f5576c 0%, #f093fb 100%);
+      }
+
+      .chart-value {
+        font-weight: 600;
+        color: #666;
+        min-width: 40px;
+        text-align: right;
+        font-size: 0.9rem;
+      }
+
+      .certificate-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        margin-top: 2rem;
+      }
+
+      .certificate-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .certificate-card {
+        background: linear-gradient(135deg, #f9fafb 0%, #f0f9ff 100%);
+        border: 2px solid #e8f0ff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .certificate-card:hover {
+        border-color: #6366f1;
+        transform: translateY(-4px);
+      }
+
+      .certificate-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .certificate-name {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #2c3e50;
+      }
+
+      .certificate-status {
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 0.5rem;
+      }
+
+      .progress-indicator {
+        width: 100%;
+        height: 4px;
+        background: #f0f9ff;
+        border-radius: 2px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+      }
+
+      .progress-indicator-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+      }
+
+      @media (max-width: 1024px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          display: none;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .page-header {
+          padding: 1.5rem;
+        }
+
+        .page-title {
+          font-size: 1.5rem;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .subject-grades {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">CERES</div>
+      <div class="header-actions">
+        <div class="profile-avatar">AR</div>
+      </div>
+    </header>
+
+    <div class="container">
+      <aside class="sidebar">
+        <div class="user-card">
+          <div class="user-avatar">AR</div>
+          <div class="user-name">Andrea Rodríguez</div>
+        </div>
+
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">
+              <svg
+                class="nav-icon-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 12a9 9 0 1 0 18 0A9 9 0 0 0 3 12Z"></path>
+                <path d="M9 9h6v6H9z"></path>
+              </svg>
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="materias.html" class="nav-link">
+              <svg
+                class="nav-icon-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path
+                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                ></path>
+              </svg>
+              Mis Materias
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="horario.html" class="nav-link">
+              <svg
+                class="nav-icon-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              Mi Horario
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="calificaciones.html" class="nav-link active">
+              <svg
+                class="nav-icon-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline
+                  points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"
+                ></polyline>
+                <line x1="12" y1="12" x2="20" y2="7.5"></line>
+                <line x1="12" y1="12" x2="12" y2="21"></line>
+                <line x1="12" y1="12" x2="4" y2="7.5"></line>
+              </svg>
+              Calificaciones
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="perfil.html" class="nav-link">
+              <svg
+                class="nav-icon-svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Mi Perfil
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <main class="main-content">
+        <div class="page-header">
+          <h1 class="page-title">Mis Calificaciones</h1>
+          <p class="page-subtitle">Resumen académico y desempeño</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card gpa">
+            <div class="stat-label">Promedio General (GPA)</div>
+            <div class="stat-value">8.7</div>
+            <div class="stat-detail">Excelente desempeño</div>
+          </div>
+          <div class="stat-card ranking">
+            <div class="stat-label">Tu Posición</div>
+            <div class="stat-value">12/250</div>
+            <div class="stat-detail">Top 5% de la clase</div>
+          </div>
+          <div class="stat-card attendance">
+            <div class="stat-label">Asistencia</div>
+            <div class="stat-value">95%</div>
+            <div class="stat-detail">Muy buen registro</div>
+          </div>
+          <div class="stat-card performance">
+            <div class="stat-label">Tendencia</div>
+            <div class="stat-value">+0.5</div>
+            <div class="stat-detail">Mejorando</div>
+          </div>
+        </div>
+
+        <div class="grades-section">
+          <h2 class="section-title">Calificaciones por Materia</h2>
+          <div class="subject-grades">
+            <div class="grade-card">
+              <div class="grade-header">
+                <div class="grade-subject">Matemáticas</div>
+                <div class="grade-main">8.5</div>
+              </div>
+              <div class="grade-scale">
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill medium" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill medium" style="width: 100%"></div>
+                </div>
+              </div>
+              <div class="grade-breakdown">
+                <div class="grade-item">
+                  <span class="grade-item-name">Tarea 1</span>
+                  <span class="grade-item-score">9.0</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Examen Parcial</span>
+                  <span class="grade-item-score">8.5</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Proyecto Final</span>
+                  <span class="grade-item-score">8.0</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grade-card">
+              <div class="grade-header">
+                <div class="grade-subject">Biología</div>
+                <div class="grade-main">9.2</div>
+              </div>
+              <div class="grade-scale">
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 80%"></div>
+                </div>
+              </div>
+              <div class="grade-breakdown">
+                <div class="grade-item">
+                  <span class="grade-item-name">Prácticas Lab</span>
+                  <span class="grade-item-score">9.5</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Quiz Conceptos</span>
+                  <span class="grade-item-score">9.0</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Informe Final</span>
+                  <span class="grade-item-score">9.2</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grade-card">
+              <div class="grade-header">
+                <div class="grade-subject">Literatura</div>
+                <div class="grade-main">8.9</div>
+              </div>
+              <div class="grade-scale">
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 90%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 90%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill medium" style="width: 80%"></div>
+                </div>
+              </div>
+              <div class="grade-breakdown">
+                <div class="grade-item">
+                  <span class="grade-item-name">Ensayo 1</span>
+                  <span class="grade-item-score">9.0</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Presentación</span>
+                  <span class="grade-item-score">8.8</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Análisis Texto</span>
+                  <span class="grade-item-score">8.9</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grade-card">
+              <div class="grade-header">
+                <div class="grade-subject">Inglés</div>
+                <div class="grade-main">8.1</div>
+              </div>
+              <div class="grade-scale">
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 90%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 80%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill medium" style="width: 80%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill medium" style="width: 75%"></div>
+                </div>
+              </div>
+              <div class="grade-breakdown">
+                <div class="grade-item">
+                  <span class="grade-item-name">Diálogos</span>
+                  <span class="grade-item-score">8.3</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Gramática</span>
+                  <span class="grade-item-score">8.0</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Presentación</span>
+                  <span class="grade-item-score">8.0</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grade-card">
+              <div class="grade-header">
+                <div class="grade-subject">Química</div>
+                <div class="grade-main">8.3</div>
+              </div>
+              <div class="grade-scale">
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 85%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 85%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill medium" style="width: 80%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill medium" style="width: 75%"></div>
+                </div>
+              </div>
+              <div class="grade-breakdown">
+                <div class="grade-item">
+                  <span class="grade-item-name">Laboratorios</span>
+                  <span class="grade-item-score">8.5</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Informes</span>
+                  <span class="grade-item-score">8.2</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Examen</span>
+                  <span class="grade-item-score">8.2</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grade-card">
+              <div class="grade-header">
+                <div class="grade-subject">Historia</div>
+                <div class="grade-main">9.0</div>
+              </div>
+              <div class="grade-scale">
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 100%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 95%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 90%"></div>
+                </div>
+                <div class="grade-bar">
+                  <div class="grade-fill high" style="width: 85%"></div>
+                </div>
+              </div>
+              <div class="grade-breakdown">
+                <div class="grade-item">
+                  <span class="grade-item-name">Proyectos</span>
+                  <span class="grade-item-score">9.2</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Parciales</span>
+                  <span class="grade-item-score">9.0</span>
+                </div>
+                <div class="grade-item">
+                  <span class="grade-item-name">Participación</span>
+                  <span class="grade-item-score">8.8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="performance-section">
+          <h2 class="section-title">Desempeño por Período</h2>
+          <div class="chart-container">
+            <div class="chart-bar">
+              <div class="chart-label">Período 1</div>
+              <div class="chart-bar-bg">
+                <div class="chart-bar-fill" style="width: 75%"></div>
+              </div>
+              <div class="chart-value">8.2</div>
+            </div>
+            <div class="chart-bar">
+              <div class="chart-label">Período 2</div>
+              <div class="chart-bar-bg">
+                <div class="chart-bar-fill high" style="width: 82%"></div>
+              </div>
+              <div class="chart-value">8.5</div>
+            </div>
+            <div class="chart-bar">
+              <div class="chart-label">Período 3</div>
+              <div class="chart-bar-bg">
+                <div class="chart-bar-fill high" style="width: 87%"></div>
+              </div>
+              <div class="chart-value">8.7</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="certificate-section">
+          <h2 class="section-title">Certificados y Logros</h2>
+          <div class="certificate-grid">
+            <div class="certificate-card">
+              <div class="certificate-icon">🏆</div>
+              <div class="certificate-name">Honor Roll</div>
+              <div class="certificate-status">Desbloqueado</div>
+              <div class="progress-indicator">
+                <div class="progress-indicator-fill" style="width: 100%"></div>
+              </div>
+            </div>
+            <div class="certificate-card">
+              <div class="certificate-icon">⭐</div>
+              <div class="certificate-name">Excelencia Académica</div>
+              <div class="certificate-status">Desbloqueado</div>
+              <div class="progress-indicator">
+                <div class="progress-indicator-fill" style="width: 100%"></div>
+              </div>
+            </div>
+            <div class="certificate-card">
+              <div class="certificate-icon">📚</div>
+              <div class="certificate-name">Lector Ávido</div>
+              <div class="certificate-status">75% Completado</div>
+              <div class="progress-indicator">
+                <div
+                  class="progress-indicator-fill high"
+                  style="width: 75%"
+                ></div>
+              </div>
+            </div>
+            <div class="certificate-card">
+              <div class="certificate-icon">🔬</div>
+              <div class="certificate-name">Científico Joven</div>
+              <div class="certificate-status">65% Completado</div>
+              <div class="progress-indicator">
+                <div
+                  class="progress-indicator-fill high"
+                  style="width: 65%"
+                ></div>
+              </div>
+            </div>
+            <div class="certificate-card">
+              <div class="certificate-icon">🎓</div>
+              <div class="certificate-name">Maestría del Semestre</div>
+              <div class="certificate-status">50% Completado</div>
+              <div class="progress-indicator">
+                <div
+                  class="progress-indicator-fill medium"
+                  style="width: 50%"
+                ></div>
+              </div>
+            </div>
+            <div class="certificate-card">
+              <div class="certificate-icon">💪</div>
+              <div class="certificate-name">Perseverancia</div>
+              <div class="certificate-status">40% Completado</div>
+              <div class="progress-indicator">
+                <div
+                  class="progress-indicator-fill low"
+                  style="width: 40%"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

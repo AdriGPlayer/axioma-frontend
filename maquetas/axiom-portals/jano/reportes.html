@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reportes - JANO Panel de Disciplina</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+          "Ubuntu", "Cantarell", sans-serif;
+        background: #f5f7fa;
+        color: #2c3e50;
+        line-height: 1.6;
+      }
+
+      header {
+        background: white;
+        border-bottom: 1px solid #e0e6ed;
+        padding: 1.5rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .header-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .header-nav {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .header-nav a {
+        text-decoration: none;
+        color: #546e7a;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: color 0.3s;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+      }
+
+      .header-nav a:hover,
+      .header-nav a.active {
+        color: #d32f2f;
+        background: #ffebee;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .page-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+      }
+
+      .page-subtitle {
+        color: #7a8b99;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #e0e6ed;
+      }
+
+      .tab-btn {
+        padding: 1rem 1.5rem;
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #546e7a;
+        transition: all 0.3s;
+      }
+
+      .tab-btn.active {
+        color: #d32f2f;
+        border-bottom-color: #d32f2f;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .report-types {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .report-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        border: 1px solid #e0e6ed;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .report-card:hover {
+        border-color: #d32f2f;
+        box-shadow: 0 4px 12px rgba(211, 47, 47, 0.15);
+      }
+
+      .report-icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f7fa;
+        border-radius: 8px;
+        color: #d32f2f;
+      }
+
+      .report-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+      }
+
+      .report-desc {
+        font-size: 0.85rem;
+        color: #7a8b99;
+      }
+
+      .form-section {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0e6ed;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .form-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #2c3e50;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+        font-size: 0.95rem;
+      }
+
+      .form-input,
+      .form-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        transition: border-color 0.3s;
+      }
+
+      .form-input:focus,
+      .form-select:focus {
+        outline: none;
+        border-color: #d32f2f;
+        box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .checkbox-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .checkbox-item input[type="checkbox"] {
+        cursor: pointer;
+      }
+
+      .checkbox-label {
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+
+      .submit-btn {
+        background: #d32f2f;
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .submit-btn:hover {
+        background: #b71c1c;
+        box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+      }
+
+      .chart-container {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0e6ed;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .chart-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #2c3e50;
+      }
+
+      .chart-placeholder {
+        width: 100%;
+        height: 300px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e0e6ed 100%);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7a8b99;
+        font-size: 0.95rem;
+        border: 2px dashed #e0e6ed;
+      }
+
+      .bar-chart {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        height: 250px;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .bar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        gap: 0.5rem;
+      }
+
+      .bar-fill {
+        width: 100%;
+        background: #d32f2f;
+        border-radius: 4px 4px 0 0;
+        transition: all 0.3s;
+        min-height: 20px;
+      }
+
+      .bar:hover .bar-fill {
+        background: #b71c1c;
+      }
+
+      .bar-label {
+        font-size: 0.8rem;
+        color: #7a8b99;
+        text-align: center;
+      }
+
+      .bar-value {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .reports-list {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0e6ed;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      .report-item {
+        padding: 1.5rem;
+        border-bottom: 1px solid #f0f3f7;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.3s;
+      }
+
+      .report-item:last-child {
+        border-bottom: none;
+      }
+
+      .report-item:hover {
+        background-color: #f9fafc;
+      }
+
+      .report-info {
+        flex: 1;
+      }
+
+      .report-name {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.25rem;
+      }
+
+      .report-meta {
+        font-size: 0.85rem;
+        color: #7a8b99;
+      }
+
+      .report-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .report-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid #e0e6ed;
+        background: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        color: #546e7a;
+        transition: all 0.3s;
+        text-decoration: none;
+      }
+
+      .report-btn:hover {
+        border-color: #d32f2f;
+        color: #d32f2f;
+        background: #ffebee;
+      }
+
+      .report-btn.download {
+        background: #d32f2f;
+        color: white;
+        border-color: #d32f2f;
+      }
+
+      .report-btn.download:hover {
+        background: #b71c1c;
+      }
+
+      .citatorio-section {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0e6ed;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+      }
+
+      .citatorio-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .citatorio-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e0e6ed;
+      }
+
+      .citatorio-institution {
+        font-size: 0.9rem;
+        color: #7a8b99;
+        margin-bottom: 0.5rem;
+      }
+
+      .citatorio-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2c3e50;
+      }
+
+      @media (max-width: 1024px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .report-types {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .report-item {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .report-actions {
+          margin-top: 1rem;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .header-nav {
+          gap: 0.5rem;
+          font-size: 0.85rem;
+        }
+
+        .tabs {
+          gap: 0;
+        }
+
+        .tab-btn {
+          padding: 0.75rem 1rem;
+          font-size: 0.85rem;
+        }
+
+        .report-types {
+          grid-template-columns: 1fr;
+        }
+
+        .chart-placeholder {
+          height: 200px;
+        }
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-container">
+        <div class="header-title">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            style="
+              display: inline-block;
+              margin-right: 0.5rem;
+              vertical-align: middle;
+            "
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"
+              fill="currentColor"
+            />
+          </svg>
+          JANO - Panel de Disciplina
+        </div>
+        <nav class="header-nav">
+          <a href="index.html">Dashboard</a>
+          <a href="alumnos.html">Estudiantes</a>
+          <a href="incidencias.html">Incidencias</a>
+          <a href="reportes.html" class="active">Reportes</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div>
+        <h1 class="page-title">Reportes Disciplinarios</h1>
+        <p class="page-subtitle">
+          Genera reportes analíticos, estadísticas y documentos formales de
+          disciplina
+        </p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'generate')">
+          Generar Reportes
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'stats')">
+          Estadísticas
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'generated')">
+          Reportes Generados
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'citatorio')">
+          Citatorio
+        </button>
+      </div>
+
+      <!-- Tab: Generar Reportes -->
+      <div id="generate" class="tab-content active">
+        <div class="report-types">
+          <div class="report-card">
+            <div class="report-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0z"
+                />
+              </svg>
+            </div>
+            <div class="report-title">Por Estudiante</div>
+            <div class="report-desc">
+              Historial completo de incidencias de un estudiante específico
+            </div>
+          </div>
+
+          <div class="report-card">
+            <div class="report-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2"
+                />
+              </svg>
+            </div>
+            <div class="report-title">Por Tipo de Incidencia</div>
+            <div class="report-desc">
+              Estadísticas de incidencias clasificadas por tipo
+            </div>
+          </div>
+
+          <div class="report-card">
+            <div class="report-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M9 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4M15 4h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M9 5v14M15 5v14"
+                />
+              </svg>
+            </div>
+            <div class="report-title">Por Grado/Sección</div>
+            <div class="report-desc">
+              Análisis de conducta por niveles educativos
+            </div>
+          </div>
+
+          <div class="report-card">
+            <div class="report-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 8v4l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
+              </svg>
+            </div>
+            <div class="report-title">Por Período</div>
+            <div class="report-desc">
+              Comparativa de incidencias entre periodos académicos
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="form-title">Generar Reporte Personalizado</h2>
+          <form>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Tipo de Reporte</label>
+                <select class="form-select">
+                  <option>-- Seleccionar tipo --</option>
+                  <option>Por Estudiante</option>
+                  <option>Por Tipo de Incidencia</option>
+                  <option>Por Grado/Sección</option>
+                  <option>Por Período</option>
+                  <option>Resumen General</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Período</label>
+                <select class="form-select">
+                  <option>-- Seleccionar período --</option>
+                  <option>Este Mes</option>
+                  <option>Últimos 3 Meses</option>
+                  <option>Este Año</option>
+                  <option>Año Anterior</option>
+                  <option>Personalizado</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Desde</label>
+                <input type="date" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Hasta</label>
+                <input type="date" class="form-input" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Seleccionar Opciones</label>
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="include-resolved" checked />
+                  <label for="include-resolved" class="checkbox-label"
+                    >Incluir Resueltos</label
+                  >
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="include-pending" checked />
+                  <label for="include-pending" class="checkbox-label"
+                    >Incluir Pendientes</label
+                  >
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="include-stats" />
+                  <label for="include-stats" class="checkbox-label"
+                    >Incluir Gráficos</label
+                  >
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="include-recommendations" />
+                  <label for="include-recommendations" class="checkbox-label"
+                    >Recomendaciones</label
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Formato de Descarga</label>
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input
+                    type="radio"
+                    name="format"
+                    value="pdf"
+                    id="format-pdf"
+                    checked
+                  />
+                  <label for="format-pdf" class="checkbox-label">PDF</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="radio"
+                    name="format"
+                    value="excel"
+                    id="format-excel"
+                  />
+                  <label for="format-excel" class="checkbox-label">Excel</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="radio"
+                    name="format"
+                    value="csv"
+                    id="format-csv"
+                  />
+                  <label for="format-csv" class="checkbox-label">CSV</label>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Generar Reporte</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab: Estadísticas -->
+      <div id="stats" class="tab-content">
+        <div class="chart-container">
+          <h3 class="chart-title">Tendencia de Incidencias por Mes</h3>
+          <div class="bar-chart">
+            <div class="bar">
+              <div class="bar-fill" style="height: 60%"></div>
+              <div class="bar-label">Enero</div>
+              <div class="bar-value">32</div>
+            </div>
+            <div class="bar">
+              <div class="bar-fill" style="height: 75%"></div>
+              <div class="bar-label">Febrero</div>
+              <div class="bar-value">40</div>
+            </div>
+            <div class="bar">
+              <div class="bar-fill" style="height: 85%"></div>
+              <div class="bar-label">Marzo</div>
+              <div class="bar-value">45</div>
+            </div>
+            <div class="bar">
+              <div class="bar-fill" style="height: 70%"></div>
+              <div class="bar-label">Abril</div>
+              <div class="bar-value">37</div>
+            </div>
+            <div class="bar">
+              <div class="bar-fill" style="height: 65%"></div>
+              <div class="bar-label">Mayo</div>
+              <div class="bar-value">35</div>
+            </div>
+            <div class="bar">
+              <div class="bar-fill" style="height: 100%"></div>
+              <div class="bar-label">Junio</div>
+              <div class="bar-value">53</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h3 class="chart-title">Distribución por Tipo de Incidencia</h3>
+          <div class="bar-chart">
+            <div class="bar">
+              <div class="bar-fill" style="height: 80%"></div>
+              <div class="bar-label">Indisciplina</div>
+              <div class="bar-value">85</div>
+            </div>
+            <div class="bar">
+              <div class="bar-fill" style="height: 60%"></div>
+              <div class="bar-label">Retraso</div>
+              <div class="bar-value">64</div>
+            </div>
+            <div class="bar">
+              <div class="bar-fill" style="height: 45%"></div>
+              <div class="bar-label">Bullying</div>
+              <div class="bar-value">48</div>
+            </div>
+            <div class="bar">
+              <div class="bar-fill" style="height: 35%"></div>
+              <div class="bar-label">Conducta Indebida</div>
+              <div class="bar-value">37</div>
+            </div>
+            <div class="bar">
+              <div class="bar-fill" style="height: 25%"></div>
+              <div class="bar-label">Vandalismo</div>
+              <div class="bar-value">27</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h3 class="chart-title">Severidad de Incidencias</h3>
+          <div class="bar-chart">
+            <div class="bar">
+              <div
+                class="bar-fill"
+                style="height: 70%; background: #2196f3"
+              ></div>
+              <div class="bar-label">Menor</div>
+              <div class="bar-value">148</div>
+            </div>
+            <div class="bar">
+              <div
+                class="bar-fill"
+                style="height: 85%; background: #ff9800"
+              ></div>
+              <div class="bar-label">Moderada</div>
+              <div class="bar-value">180</div>
+            </div>
+            <div class="bar">
+              <div
+                class="bar-fill"
+                style="height: 45%; background: #d32f2f"
+              ></div>
+              <div class="bar-label">Grave</div>
+              <div class="bar-value">96</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Reportes Generados -->
+      <div id="generated" class="tab-content">
+        <div class="reports-list">
+          <div class="report-item">
+            <div class="report-info">
+              <div class="report-name">Reporte Mensual - Junio 2024</div>
+              <div class="report-meta">
+                Generado: 29 Jun 2024, 10:15 | Por: Prefecto General | 53
+                incidencias
+              </div>
+            </div>
+            <div class="report-actions">
+              <button class="report-btn download">Descargar PDF</button>
+              <button class="report-btn">Ver</button>
+            </div>
+          </div>
+
+          <div class="report-item">
+            <div class="report-info">
+              <div class="report-name">Análisis de Conducta - Grado 10</div>
+              <div class="report-meta">
+                Generado: 25 Jun 2024, 14:30 | Por: Prefecto | 23 estudiantes
+                analizados
+              </div>
+            </div>
+            <div class="report-actions">
+              <button class="report-btn download">Descargar PDF</button>
+              <button class="report-btn">Ver</button>
+            </div>
+          </div>
+
+          <div class="report-item">
+            <div class="report-info">
+              <div class="report-name">
+                Reporte de Bullying - Segundo Trimestre
+              </div>
+              <div class="report-meta">
+                Generado: 20 Jun 2024, 11:00 | Por: Psicólogo | 12 casos
+                detectados
+              </div>
+            </div>
+            <div class="report-actions">
+              <button class="report-btn download">Descargar PDF</button>
+              <button class="report-btn">Ver</button>
+            </div>
+          </div>
+
+          <div class="report-item">
+            <div class="report-info">
+              <div class="report-name">
+                Comparativa Trimestral - Años 2023-2024
+              </div>
+              <div class="report-meta">
+                Generado: 15 Jun 2024, 09:45 | Por: Directiva | Análisis
+                comparativo
+              </div>
+            </div>
+            <div class="report-actions">
+              <button class="report-btn download">Descargar Excel</button>
+              <button class="report-btn">Ver</button>
+            </div>
+          </div>
+
+          <div class="report-item">
+            <div class="report-info">
+              <div class="report-name">
+                Reporte Individual - Carlos Méndez López
+              </div>
+              <div class="report-meta">
+                Generado: 10 Jun 2024, 13:20 | Por: Prefecto | 4 incidencias
+                registradas
+              </div>
+            </div>
+            <div class="report-actions">
+              <button class="report-btn download">Descargar PDF</button>
+              <button class="report-btn">Ver</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Citatorio -->
+      <div id="citatorio" class="tab-content">
+        <div class="citatorio-section">
+          <div class="citatorio-header">
+            <div class="citatorio-institution">Institución Educativa</div>
+            <div class="citatorio-title">GENERADOR DE CITATORIO</div>
+          </div>
+
+          <form class="citatorio-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Estudiante</label>
+                <select class="form-select">
+                  <option>-- Seleccionar estudiante --</option>
+                  <option>Carlos Méndez López</option>
+                  <option>María Rodríguez García</option>
+                  <option>Héctor González Morales</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Grado y Sección</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="Ej: 10-B"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Representante Legal</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="Nombre completo"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Cédula de Identidad</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="Ej: 1.234.567.890"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Fecha de Citación</label>
+                <input type="date" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Hora</label>
+                <input type="time" class="form-input" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Lugar de Reunión</label>
+              <input
+                type="text"
+                class="form-input"
+                placeholder="Ej: Oficina del Prefecto, Aula de Dirección"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Motivo de la Citación</label>
+              <select class="form-select">
+                <option>-- Seleccionar motivo --</option>
+                <option>Acumulación de incidencias</option>
+                <option>Conducta grave</option>
+                <option>Bullying</option>
+                <option>Falta grave comprobada</option>
+                <option>Seguimiento disciplinario</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Descripción del Motivo</label>
+              <textarea
+                class="form-input"
+                style="min-height: 100px; resize: vertical"
+                placeholder="Detalla las razones de la citación y las incidencias involucradas..."
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Notas Adicionales</label>
+              <textarea
+                class="form-input"
+                style="min-height: 80px; resize: vertical"
+                placeholder="Información adicional o instrucciones especiales..."
+              ></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">
+              Generar Citatorio en PDF
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function switchTab(event, tabName) {
+        event.preventDefault();
+
+        // Hide all tab contents
+        const contents = document.querySelectorAll(".tab-content");
+        contents.forEach((content) => {
+          content.classList.remove("active");
+        });
+
+        // Remove active class from all buttons
+        const buttons = document.querySelectorAll(".tab-btn");
+        buttons.forEach((button) => {
+          button.classList.remove("active");
+        });
+
+        // Show selected tab content
+        document.getElementById(tabName).classList.add("active");
+        event.target.classList.add("active");
+      }
+    </script>
+  </body>
+</html>

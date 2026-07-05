@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JUNO - Grades Management</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+          "Ubuntu", "Cantarell", sans-serif;
+        background-color: #f5f7fa;
+        color: #2c3e50;
+        line-height: 1.6;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 30px 0;
+        position: fixed;
+        height: 100vh;
+        color: white;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+      }
+
+      .logo {
+        padding: 0 30px 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 30px;
+      }
+
+      .logo-text {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 2px;
+      }
+
+      .sidebar-nav {
+        list-style: none;
+      }
+
+      .sidebar-nav li {
+        margin: 0;
+      }
+
+      .sidebar-nav a {
+        display: flex;
+        align-items: center;
+        padding: 15px 30px;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+      }
+
+      .sidebar-nav a:hover,
+      .sidebar-nav a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        border-left-color: white;
+      }
+
+      .nav-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .main {
+        margin-left: 280px;
+        flex: 1;
+        padding: 30px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        background: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .header h1 {
+        font-size: 28px;
+        color: #2c3e50;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #764ba2;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #e8eef5;
+        color: #667eea;
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+
+      .btn-secondary:hover {
+        background: #dde5ed;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .control-group {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .control-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #7f8c8d;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .select-input,
+      .date-input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e8eef5;
+        border-radius: 6px;
+        font-family: inherit;
+        color: #2c3e50;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .select-input:focus,
+      .date-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e8eef5;
+        margin-bottom: 25px;
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: space-between;
+      }
+
+      .card-title svg {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .table-responsive {
+        overflow-x: auto;
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: #f8f9fa;
+        border-bottom: 2px solid #e8eef5;
+      }
+
+      th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 13px;
+        text-transform: uppercase;
+      }
+
+      td {
+        padding: 15px;
+        border-bottom: 1px solid #e8eef5;
+        font-size: 14px;
+      }
+
+      tbody tr:hover {
+        background: #f8f9fa;
+      }
+
+      .student-name {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .student-id {
+        font-size: 12px;
+        color: #95a5a6;
+      }
+
+      .grade-input {
+        width: 70px;
+        padding: 8px 10px;
+        border: 1px solid #e8eef5;
+        border-radius: 4px;
+        text-align: center;
+        font-weight: 600;
+        color: #667eea;
+        font-size: 14px;
+      }
+
+      .grade-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .grade-status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .status-pending {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .status-graded {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-excellent {
+        background: #cfe2ff;
+        color: #084298;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .stat-card:nth-child(2) {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .stat-card:nth-child(3) {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      .stat-card:nth-child(4) {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      }
+
+      .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        opacity: 0.9;
+      }
+
+      .filter-tag {
+        display: inline-block;
+        background: #e8eef5;
+        color: #667eea;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-right: 8px;
+        margin-bottom: 8px;
+      }
+
+      .filter-tag:hover {
+        background: #dde5ed;
+        cursor: pointer;
+      }
+
+      @media (max-width: 1200px) {
+        .controls {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+          padding: 15px;
+        }
+
+        .controls {
+          grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        table {
+          font-size: 12px;
+        }
+
+        th,
+        td {
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar Navigation -->
+      <div class="sidebar">
+        <div class="logo">
+          <div class="logo-text">JUNO</div>
+        </div>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="index.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </div>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="materias.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path
+                    d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                  ></path>
+                </svg>
+              </div>
+              Materias
+            </a>
+          </li>
+          <li>
+            <a href="grupos.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              Grupos
+            </a>
+          </li>
+          <li>
+            <a href="calificaciones.html" class="active">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                  ></path>
+                </svg>
+              </div>
+              Calificaciones
+            </a>
+          </li>
+          <li>
+            <a href="asistencias.html">
+              <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              Asistencias
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main">
+        <div class="header">
+          <h1>Gestión de Calificaciones</h1>
+        </div>
+
+        <!-- Grade Statistics -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">34</div>
+            <div class="stat-label">Calificaciones Pendientes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">287</div>
+            <div class="stat-label">Calificaciones Completas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">7.6</div>
+            <div class="stat-label">Promedio General</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">92%</div>
+            <div class="stat-label">Tasa Finalización</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+          <div class="control-group">
+            <label class="control-label">Seleccionar Materia</label>
+            <select class="select-input">
+              <option>Matemática (4 grupos)</option>
+              <option>Física (3 grupos)</option>
+              <option>Química (2 grupos)</option>
+              <option>Biología (2 grupos)</option>
+              <option>Historia (3 grupos)</option>
+              <option>Literatura (3 grupos)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">Seleccionar Grupo</label>
+            <select class="select-input">
+              <option>4to A (32 estudiantes)</option>
+              <option>4to B (29 estudiantes)</option>
+              <option>4to C (31 estudiantes)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">Tipo de Evaluación</label>
+            <select class="select-input">
+              <option>Todas</option>
+              <option>Examen Parcial</option>
+              <option>Trabajo Práctico</option>
+              <option>Participación</option>
+              <option>Proyecto Final</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">Período</label>
+            <select class="select-input">
+              <option>Período Actual</option>
+              <option>1er Trimestre</option>
+              <option>2do Trimestre</option>
+              <option>3er Trimestre</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Grading Table -->
+        <div class="card">
+          <div class="card-title">
+            <div style="display: flex; align-items: center; gap: 12px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                ></path>
+              </svg>
+              Calificaciones - 4to A • Matemática
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-secondary">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  ></path>
+                </svg>
+                Exportar
+              </button>
+              <button class="btn btn-primary">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+                  ></path>
+                  <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                  <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                Guardar
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Estudiante</th>
+                  <th>Examen Parcial</th>
+                  <th>Trabajo 1</th>
+                  <th>Trabajo 2</th>
+                  <th>Participación</th>
+                  <th>Final</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="student-name">María González</div>
+                    <div class="student-id">Est. #2401</div>
+                  </td>
+                  <td><input type="text" class="grade-input" value="8.5" /></td>
+                  <td><input type="text" class="grade-input" value="8.0" /></td>
+                  <td><input type="text" class="grade-input" value="9.0" /></td>
+                  <td><input type="text" class="grade-input" value="8.5" /></td>
+                  <td style="font-weight: 600; color: #667eea">8.5</td>
+                  <td>
+                    <span class="grade-status status-graded">Completa</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="student-name">Juan Pérez</div>
+                    <div class="student-id">Est. #2402</div>
+                  </td>
+                  <td><input type="text" class="grade-input" value="7.5" /></td>
+                  <td><input type="text" class="grade-input" value="7.8" /></td>
+                  <td><input type="text" class="grade-input" value="" /></td>
+                  <td><input type="text" class="grade-input" value="7.5" /></td>
+                  <td>-</td>
+                  <td>
+                    <span class="grade-status status-pending">Pendiente</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="student-name">Sofia Martínez</div>
+                    <div class="student-id">Est. #2403</div>
+                  </td>
+                  <td><input type="text" class="grade-input" value="9.0" /></td>
+                  <td><input type="text" class="grade-input" value="9.2" /></td>
+                  <td><input type="text" class="grade-input" value="8.8" /></td>
+                  <td><input type="text" class="grade-input" value="9.0" /></td>
+                  <td style="font-weight: 600; color: #667eea">9.0</td>
+                  <td>
+                    <span class="grade-status status-excellent">Excelente</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="student-name">Carlos López</div>
+                    <div class="student-id">Est. #2404</div>
+                  </td>
+                  <td><input type="text" class="grade-input" value="7.0" /></td>
+                  <td><input type="text" class="grade-input" value="7.2" /></td>
+                  <td><input type="text" class="grade-input" value="" /></td>
+                  <td><input type="text" class="grade-input" value="7.0" /></td>
+                  <td>-</td>
+                  <td>
+                    <span class="grade-status status-pending">Pendiente</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="student-name">Ana Rodríguez</div>
+                    <div class="student-id">Est. #2405</div>
+                  </td>
+                  <td><input type="text" class="grade-input" value="8.0" /></td>
+                  <td><input type="text" class="grade-input" value="8.3" /></td>
+                  <td><input type="text" class="grade-input" value="8.0" /></td>
+                  <td><input type="text" class="grade-input" value="8.5" /></td>
+                  <td style="font-weight: 600; color: #667eea">8.2</td>
+                  <td>
+                    <span class="grade-status status-graded">Completa</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="student-name">Roberto García</div>
+                    <div class="student-id">Est. #2406</div>
+                  </td>
+                  <td><input type="text" class="grade-input" value="6.5" /></td>
+                  <td><input type="text" class="grade-input" value="6.8" /></td>
+                  <td><input type="text" class="grade-input" value="" /></td>
+                  <td><input type="text" class="grade-input" value="6.5" /></td>
+                  <td>-</td>
+                  <td>
+                    <span class="grade-status status-pending">Pendiente</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="student-name">Laura Fernández</div>
+                    <div class="student-id">Est. #2407</div>
+                  </td>
+                  <td><input type="text" class="grade-input" value="8.8" /></td>
+                  <td><input type="text" class="grade-input" value="8.5" /></td>
+                  <td><input type="text" class="grade-input" value="9.0" /></td>
+                  <td><input type="text" class="grade-input" value="9.0" /></td>
+                  <td style="font-weight: 600; color: #667eea">8.8</td>
+                  <td>
+                    <span class="grade-status status-excellent">Excelente</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Grade Distribution -->
+        <div class="card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="12" y1="2" x2="12" y2="22"></line>
+              <path
+                d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+              ></path>
+            </svg>
+            Distribución de Calificaciones
+          </div>
+
+          <div style="margin-bottom: 20px">
+            <div style="margin-bottom: 20px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  margin-bottom: 8px;
+                "
+              >
+                <span style="font-weight: 600; color: #2c3e50"
+                  >Excelente (9-10)</span
+                >
+                <span style="color: #667eea; font-weight: 600"
+                  >4 estudiantes (12.5%)</span
+                >
+              </div>
+              <div
+                style="
+                  height: 12px;
+                  background: #e8eef5;
+                  border-radius: 6px;
+                  overflow: hidden;
+                "
+              >
+                <div
+                  style="
+                    height: 100%;
+                    background: linear-gradient(
+                      90deg,
+                      #667eea 0%,
+                      #764ba2 100%
+                    );
+                    width: 45%;
+                  "
+                ></div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 20px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  margin-bottom: 8px;
+                "
+              >
+                <span style="font-weight: 600; color: #2c3e50"
+                  >Bueno (7-8.9)</span
+                >
+                <span style="color: #667eea; font-weight: 600"
+                  >18 estudiantes (56.2%)</span
+                >
+              </div>
+              <div
+                style="
+                  height: 12px;
+                  background: #e8eef5;
+                  border-radius: 6px;
+                  overflow: hidden;
+                "
+              >
+                <div
+                  style="
+                    height: 100%;
+                    background: linear-gradient(
+                      90deg,
+                      #4facfe 0%,
+                      #00f2fe 100%
+                    );
+                    width: 65%;
+                  "
+                ></div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 20px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  margin-bottom: 8px;
+                "
+              >
+                <span style="font-weight: 600; color: #2c3e50"
+                  >Regular (6-6.9)</span
+                >
+                <span style="color: #667eea; font-weight: 600"
+                  >8 estudiantes (25%)</span
+                >
+              </div>
+              <div
+                style="
+                  height: 12px;
+                  background: #e8eef5;
+                  border-radius: 6px;
+                  overflow: hidden;
+                "
+              >
+                <div
+                  style="
+                    height: 100%;
+                    background: linear-gradient(
+                      90deg,
+                      #f39c12 0%,
+                      #ffc300 100%
+                    );
+                    width: 28%;
+                  "
+                ></div>
+              </div>
+            </div>
+
+            <div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  margin-bottom: 8px;
+                "
+              >
+                <span style="font-weight: 600; color: #2c3e50"
+                  >Necesita Apoyo (-6)</span
+                >
+                <span style="color: #667eea; font-weight: 600"
+                  >2 estudiantes (6.2%)</span
+                >
+              </div>
+              <div
+                style="
+                  height: 12px;
+                  background: #e8eef5;
+                  border-radius: 6px;
+                  overflow: hidden;
+                "
+              >
+                <div
+                  style="
+                    height: 100%;
+                    background: linear-gradient(
+                      90deg,
+                      #e74c3c 0%,
+                      #c0392b 100%
+                    );
+                    width: 8%;
+                  "
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
