@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auditoría - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 250px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px 0;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: 20px 15px;
+        border-bottom: 1px solid #2d3e52;
+        margin-bottom: 20px;
+      }
+
+      .sidebar-header h1 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #faf8f5;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        padding: 0;
+      }
+
+      .sidebar-menu a {
+        display: block;
+        padding: 12px 20px;
+        color: #b0b8c4;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+      }
+
+      .sidebar-menu a:hover {
+        background-color: #2d3e52;
+        color: #faf8f5;
+        border-left-color: #c53030;
+      }
+
+      .sidebar-menu a.active {
+        color: #faf8f5;
+        background-color: #2d3e52;
+        border-left-color: #c53030;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 250px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e0e6ed;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .topbar-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .topbar-right {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 15px;
+        background-color: #f5f7fa;
+        border-radius: 6px;
+      }
+
+      /* Content Area */
+      .content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+      }
+
+      /* Header with Actions */
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background-color: #a01f1f;
+      }
+
+      .btn-secondary {
+        background-color: #38a169;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background-color: #2f7d56;
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: #1a2332;
+        border: 1px solid #e0e6ed;
+      }
+
+      .btn-outline:hover {
+        background-color: #f5f7fa;
+      }
+
+      /* Alerts */
+      .alert {
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        border-left: 4px solid;
+      }
+
+      .alert-warning {
+        background-color: #fffaf0;
+        border-left-color: #c53030;
+      }
+
+      .alert-success {
+        background-color: #f0fdf4;
+        border-left-color: #38a169;
+      }
+
+      .alert-info {
+        background-color: #f0f9ff;
+        border-left-color: #0084ff;
+      }
+
+      .alert-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .alert-text {
+        font-size: 14px;
+        color: #2d3748;
+      }
+
+      /* Compliance Indicators */
+      .compliance-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .compliance-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid;
+      }
+
+      .compliance-card.good {
+        border-left-color: #38a169;
+      }
+
+      .compliance-card.warning {
+        border-left-color: #c53030;
+      }
+
+      .compliance-card.info {
+        border-left-color: #0084ff;
+      }
+
+      .compliance-label {
+        font-size: 13px;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .compliance-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .status-indicator.active {
+        background-color: #38a169;
+      }
+
+      .status-indicator.warning {
+        background-color: #c53030;
+      }
+
+      .status-indicator.inactive {
+        background-color: #cbd5e0;
+      }
+
+      .status-text {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      /* Search and Filter */
+      .filters {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 200px;
+        position: relative;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      .filter-select {
+        padding: 10px 15px;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        font-size: 14px;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      /* Table */
+      .table-container {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        padding: 15px;
+        border-top: 1px solid #e0e6ed;
+      }
+
+      tbody tr:hover {
+        background-color: #f9fafb;
+      }
+
+      /* Severity Badge */
+      .badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .badge-critical {
+        background-color: #fed7d7;
+        color: #742a2a;
+      }
+
+      .badge-high {
+        background-color: #feebc8;
+        color: #7c2d12;
+      }
+
+      .badge-medium {
+        background-color: #fef3c7;
+        color: #78350f;
+      }
+
+      .badge-low {
+        background-color: #c6f6d5;
+        color: #22543d;
+      }
+
+      .badge-info {
+        background-color: #bee3f8;
+        color: #2c5282;
+      }
+
+      /* Action Type Badge */
+      .action-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        background-color: #edf2f7;
+        color: #2d3748;
+      }
+
+      /* Comparison Section */
+      .comparison-section {
+        background-color: white;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .comparison-section h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0e6ed;
+      }
+
+      .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 20px;
+      }
+
+      .comparison-column {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .comparison-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e0e6ed;
+      }
+
+      .comparison-item {
+        margin-bottom: 15px;
+        padding: 12px;
+        background-color: #f9fafb;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+
+      .comparison-label {
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 4px;
+      }
+
+      .comparison-value {
+        color: #666;
+        font-family: "Courier New", monospace;
+        word-break: break-all;
+      }
+
+      .comparison-before {
+        background-color: #fed7d7;
+      }
+
+      .comparison-after {
+        background-color: #c6f6d5;
+      }
+
+      /* Forms */
+      .form-section {
+        background-color: white;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .form-section h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0e6ed;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .form-group input,
+      .form-group select {
+        padding: 10px 12px;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      /* SVG Icon Styles */
+      svg {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .timestamp {
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+        color: #666;
+      }
+
+      /* Expandable Row */
+      .expandable-icon {
+        cursor: pointer;
+        color: #c53030;
+        font-weight: bold;
+      }
+
+      .details-row {
+        display: none;
+        background-color: #f9fafb;
+      }
+
+      .details-row.visible {
+        display: table-row;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h1>AXIOMA</h1>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="usuarios.html">Usuarios</a></li>
+          <li><a href="roles.html">Roles</a></li>
+          <li><a href="permisos.html">Permisos</a></li>
+          <li><a href="bitacora.html">Bitácora</a></li>
+          <li><a href="auditoria.html" class="active">Auditoría</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main">
+        <!-- Topbar -->
+        <header class="topbar">
+          <h2 class="topbar-title">Auditoría del Sistema</h2>
+          <div class="topbar-right">
+            <div class="user-profile">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Admin</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Critical Alerts -->
+          <div class="alert alert-warning">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-text">
+              <strong>Alerta Crítica:</strong> Se detectaron 3 intentos fallidos
+              de acceso al sistema en las últimas 2 horas desde la IP
+              203.0.113.45. Revisa la bitácora de auditoría inmediatamente.
+            </div>
+          </div>
+
+          <!-- Compliance Status -->
+          <h4
+            style="
+              font-size: 16px;
+              font-weight: 600;
+              color: #1a2332;
+              margin-bottom: 20px;
+            "
+          >
+            Estado de Cumplimiento
+          </h4>
+          <div class="compliance-grid">
+            <div class="compliance-card good">
+              <div class="compliance-label">Registros de Auditoría</div>
+              <div class="compliance-status">
+                <div class="status-indicator active"></div>
+                <div class="status-text">Activo (100%)</div>
+              </div>
+            </div>
+            <div class="compliance-card good">
+              <div class="compliance-label">Encriptación de Datos</div>
+              <div class="compliance-status">
+                <div class="status-indicator active"></div>
+                <div class="status-text">TLS 1.3 Habilitado</div>
+              </div>
+            </div>
+            <div class="compliance-card good">
+              <div class="compliance-label">Respaldos</div>
+              <div class="compliance-status">
+                <div class="status-indicator active"></div>
+                <div class="status-text">Últ. Hace 2 horas</div>
+              </div>
+            </div>
+            <div class="compliance-card warning">
+              <div class="compliance-label">Políticas de Contraseña</div>
+              <div class="compliance-status">
+                <div class="status-indicator warning"></div>
+                <div class="status-text">5 usuarios incumplen</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filters">
+            <div class="search-box">
+              <input type="text" placeholder="Buscar evento de auditoría..." />
+            </div>
+            <select class="filter-select">
+              <option>Todos los Niveles</option>
+              <option>Crítico</option>
+              <option>Alto</option>
+              <option>Medio</option>
+              <option>Bajo</option>
+              <option>Información</option>
+            </select>
+            <select class="filter-select">
+              <option>Últimas 24 horas</option>
+              <option>Últimos 7 días</option>
+              <option>Últimos 30 días</option>
+              <option>Este año</option>
+            </select>
+          </div>
+
+          <!-- Audit Events Table -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 20px"></th>
+                  <th>Fecha/Hora</th>
+                  <th>Evento</th>
+                  <th>Nivel</th>
+                  <th>Usuario</th>
+                  <th>Recurso Afectado</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 15:42:18</td>
+                  <td>Cambio de datos sensibles - Empleado</td>
+                  <td><span class="badge badge-high">ALTO</span></td>
+                  <td><strong>admin01</strong></td>
+                  <td>Salario de Empleado #2145</td>
+                  <td><span class="action-badge">Modificado</span></td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7" style="padding: 20px">
+                    <div class="comparison-grid">
+                      <div class="comparison-column">
+                        <div class="comparison-title">Valor Anterior</div>
+                        <div class="comparison-item comparison-before">
+                          <div class="comparison-label">Salario Base:</div>
+                          <div class="comparison-value">$15,000.00</div>
+                        </div>
+                      </div>
+                      <div class="comparison-column">
+                        <div class="comparison-title">Valor Nuevo</div>
+                        <div class="comparison-item comparison-after">
+                          <div class="comparison-label">Salario Base:</div>
+                          <div class="comparison-value">$16,500.00</div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 14:28:45</td>
+                  <td>Eliminación de datos - Estudiante</td>
+                  <td><span class="badge badge-critical">CRÍTICO</span></td>
+                  <td><strong>director01</strong></td>
+                  <td>Registro de Estudiante #5847</td>
+                  <td><span class="action-badge">Eliminado</span></td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7" style="padding: 20px">
+                    <div
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                      "
+                    >
+                      <div>
+                        <h4
+                          style="
+                            font-weight: 600;
+                            margin-bottom: 10px;
+                            color: #1a2332;
+                          "
+                        >
+                          Detalles del Evento
+                        </h4>
+                        <div style="font-size: 13px; color: #666">
+                          <p>
+                            <strong>Recurso:</strong> Juan Carlos Mendoza García
+                          </p>
+                          <p style="margin-top: 8px">
+                            <strong>ID Estudiante:</strong> 5847
+                          </p>
+                          <p style="margin-top: 8px">
+                            <strong>Razón:</strong> Baja de institución - Cambio
+                            de residencia
+                          </p>
+                          <p style="margin-top: 8px">
+                            <strong>IP Origen:</strong> 192.168.1.105
+                          </p>
+                        </div>
+                      </div>
+                      <div>
+                        <h4
+                          style="
+                            font-weight: 600;
+                            margin-bottom: 10px;
+                            color: #1a2332;
+                          "
+                        >
+                          Impacto
+                        </h4>
+                        <div style="font-size: 13px; color: #666">
+                          <p>
+                            ⚠️ <strong>Datos Eliminados Permanentemente</strong>
+                          </p>
+                          <p style="margin-top: 8px">
+                            Registros académicos, asistencia y calificaciones
+                            eliminadas de la base de datos.
+                          </p>
+                          <p style="margin-top: 8px; color: #38a169">
+                            <strong>✓ Copia de seguridad disponible</strong>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 13:15:33</td>
+                  <td>Acceso a datos sensibles - RRHH</td>
+                  <td><span class="badge badge-medium">MEDIO</span></td>
+                  <td><strong>director01</strong></td>
+                  <td>Módulo Recursos Humanos</td>
+                  <td><span class="action-badge">Acceso Exitoso</span></td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7" style="padding: 20px">
+                    <div style="font-size: 13px; color: #666">
+                      <p>
+                        <strong>Módulo Accedido:</strong> Recursos Humanos -
+                        Nómina
+                      </p>
+                      <p style="margin-top: 8px">
+                        <strong>Acciones Realizadas:</strong> Visualización de
+                        45 registros de empleados (salarios, bonificaciones,
+                        deducciones)
+                      </p>
+                      <p style="margin-top: 8px">
+                        <strong>Duración:</strong> 23 minutos
+                      </p>
+                      <p style="margin-top: 8px">
+                        <strong>IP Origen:</strong> 192.168.1.105
+                      </p>
+                      <p style="margin-top: 8px">
+                        <strong>Dispositivo:</strong> Chrome 121 - Windows 10
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 11:45:22</td>
+                  <td>Cambio de permisos - Usuario</td>
+                  <td><span class="badge badge-high">ALTO</span></td>
+                  <td><strong>admin01</strong></td>
+                  <td>Usuario jsmith</td>
+                  <td><span class="action-badge">Modificado</span></td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7" style="padding: 20px">
+                    <div class="comparison-grid">
+                      <div class="comparison-column">
+                        <div class="comparison-title">Permisos Anteriores</div>
+                        <div class="comparison-item comparison-before">
+                          <div class="comparison-label">Rol:</div>
+                          <div class="comparison-value">Docente</div>
+                        </div>
+                        <div class="comparison-item comparison-before">
+                          <div class="comparison-label">Acceso a:</div>
+                          <div class="comparison-value">
+                            Control Escolar (Lectura/Escritura)
+                          </div>
+                        </div>
+                      </div>
+                      <div class="comparison-column">
+                        <div class="comparison-title">Permisos Nuevos</div>
+                        <div class="comparison-item comparison-after">
+                          <div class="comparison-label">Rol:</div>
+                          <div class="comparison-value">
+                            Coordinador Académico
+                          </div>
+                        </div>
+                        <div class="comparison-item comparison-after">
+                          <div class="comparison-label">Acceso a:</div>
+                          <div class="comparison-value">
+                            Control Escolar, Finanzas, Reportes (Admin)
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 10:30:11</td>
+                  <td>Intento fallido de acceso - Fuerza Bruta</td>
+                  <td><span class="badge badge-critical">CRÍTICO</span></td>
+                  <td>Desconocido</td>
+                  <td>Autenticación del Sistema</td>
+                  <td><span class="action-badge">Bloqueado</span></td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7" style="padding: 20px">
+                    <div
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                      "
+                    >
+                      <div>
+                        <h4
+                          style="
+                            font-weight: 600;
+                            margin-bottom: 10px;
+                            color: #1a2332;
+                          "
+                        >
+                          Detalles del Ataque
+                        </h4>
+                        <div style="font-size: 13px; color: #666">
+                          <p><strong>IP Atacante:</strong> 203.0.113.45</p>
+                          <p style="margin-top: 8px">
+                            <strong>Intentos Fallidos:</strong> 15 en 5 minutos
+                          </p>
+                          <p style="margin-top: 8px">
+                            <strong>Cuentas Objetivo:</strong> admin, root,
+                            director
+                          </p>
+                          <p style="margin-top: 8px">
+                            <strong>Acción Automática:</strong> IP bloqueada por
+                            24 horas
+                          </p>
+                        </div>
+                      </div>
+                      <div>
+                        <h4
+                          style="
+                            font-weight: 600;
+                            margin-bottom: 10px;
+                            color: #1a2332;
+                          "
+                        >
+                          Estado de Seguridad
+                        </h4>
+                        <div style="font-size: 13px; color: #666">
+                          <p style="color: #c53030">
+                            <strong>🔒 Alerta de Seguridad Activa</strong>
+                          </p>
+                          <p style="margin-top: 8px">
+                            Se notificó al equipo de seguridad
+                          </p>
+                          <p style="margin-top: 8px">
+                            Se recomienda revisar logs de intruso
+                          </p>
+                          <p style="margin-top: 8px; color: #38a169">
+                            ✓ Perímetro de seguridad intacto
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 09:12:44</td>
+                  <td>Exportación masiva de datos</td>
+                  <td><span class="badge badge-medium">MEDIO</span></td>
+                  <td><strong>lmoreno</strong></td>
+                  <td>Control Escolar - 2,458 registros</td>
+                  <td><span class="action-badge">Exportado</span></td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7" style="padding: 20px">
+                    <div style="font-size: 13px; color: #666">
+                      <p>
+                        <strong>Datos Exportados:</strong> Lista completa de
+                        estudiantes (nombres, emails, calificaciones)
+                      </p>
+                      <p style="margin-top: 8px">
+                        <strong>Formato:</strong> Excel (.xlsx)
+                      </p>
+                      <p style="margin-top: 8px">
+                        <strong>Tamaño del Archivo:</strong> 4.2 MB
+                      </p>
+                      <p style="margin-top: 8px">
+                        <strong>Destino:</strong> Descargado a dispositivo local
+                      </p>
+                      <p style="margin-top: 8px">
+                        <strong>Justificación:</strong> Reporte de evaluación
+                        final
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Advanced Audit Filters -->
+          <div class="form-section">
+            <h3>Búsqueda Avanzada de Auditoría</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Tipo de Evento</label>
+                <select>
+                  <option>Todos los eventos</option>
+                  <option>Login/Logout</option>
+                  <option>Cambios de datos</option>
+                  <option>Eliminación de datos</option>
+                  <option>Cambios de permisos</option>
+                  <option>Exportación de datos</option>
+                  <option>Cambios de configuración</option>
+                  <option>Intentos fallidos</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Desde Fecha</label>
+                <input type="date" />
+              </div>
+              <div class="form-group">
+                <label>Hasta Fecha</label>
+                <input type="date" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Usuario</label>
+                <select>
+                  <option>Todos los usuarios</option>
+                  <option>admin01</option>
+                  <option>director01</option>
+                  <option>jsmith</option>
+                  <option>lmoreno</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Módulo Afectado</label>
+                <select>
+                  <option>Todos los módulos</option>
+                  <option>Usuarios</option>
+                  <option>Roles</option>
+                  <option>Control Escolar</option>
+                  <option>Recursos Humanos</option>
+                  <option>Finanzas</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Nivel de Severidad</label>
+                <select>
+                  <option>Todos los niveles</option>
+                  <option>Crítico</option>
+                  <option>Alto</option>
+                  <option>Medio</option>
+                  <option>Bajo</option>
+                  <option>Información</option>
+                </select>
+              </div>
+            </div>
+            <div style="display: flex; gap: 15px; margin-top: 25px">
+              <button class="btn btn-primary">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                Buscar Eventos
+              </button>
+              <button class="btn btn-secondary">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Exportar Reporte
+              </button>
+              <button class="btn btn-outline">Limpiar Filtros</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

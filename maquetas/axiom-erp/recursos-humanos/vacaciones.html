@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vacaciones - AXIOMA HR</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background-color: #f5f3f0;
+        color: #1a2332;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background-color: #1a2332;
+        padding: 24px 16px;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        font-size: 20px;
+        font-weight: 700;
+        color: #faf8f5;
+        margin-bottom: 32px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .nav-item {
+        padding: 12px 16px;
+        border-radius: 8px;
+        color: #cbd5e0;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .nav-item:hover {
+        background-color: rgba(250, 248, 245, 0.1);
+        color: #faf8f5;
+      }
+
+      .nav-item.active {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .nav-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 260px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: #faf8f5;
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e8dfd7;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .topbar-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a2332;
+      }
+
+      .topbar-actions {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background-color: #a01e1e;
+        box-shadow: 0 4px 12px rgba(197, 48, 48, 0.3);
+      }
+
+      .btn-secondary {
+        background-color: #e8dfd7;
+        color: #1a2332;
+      }
+
+      .btn-secondary:hover {
+        background-color: #ddd0c5;
+      }
+
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .btn-success {
+        background-color: #38a169;
+        color: #faf8f5;
+      }
+
+      .btn-success:hover {
+        background-color: #276749;
+      }
+
+      .btn-danger {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-danger:hover {
+        background-color: #a01e1e;
+      }
+
+      /* Content Area */
+      .content {
+        flex: 1;
+        padding: 32px;
+        overflow-y: auto;
+      }
+
+      /* Sections */
+      .section {
+        margin-bottom: 32px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #1a2332;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Balance Cards */
+      .balance-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      .balance-card {
+        background-color: #faf8f5;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e8dfd7;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .card-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .card-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-top: 8px;
+      }
+
+      .card-values {
+        display: flex;
+        gap: 16px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #e8dfd7;
+      }
+
+      .value-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .value-label {
+        font-size: 11px;
+        color: #999;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      .value-number {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a2332;
+      }
+
+      .value-number.used {
+        color: #c53030;
+      }
+
+      .value-number.available {
+        color: #38a169;
+      }
+
+      /* Calendar */
+      .calendar-section {
+        background-color: #faf8f5;
+        border-radius: 12px;
+        padding: 24px;
+        border: 1px solid #e8dfd7;
+        margin-bottom: 32px;
+      }
+
+      .calendar-header {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #1a2332;
+      }
+
+      .weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .weekday {
+        text-align: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: #999;
+        padding: 8px;
+        text-transform: uppercase;
+      }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+      }
+
+      .calendar-day {
+        aspect-ratio: 1;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid #e8dfd7;
+        background-color: #fff;
+        transition: all 0.2s;
+      }
+
+      .calendar-day:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .calendar-day.other-month {
+        color: #ddd;
+        background-color: #f9f7f3;
+      }
+
+      .calendar-day.approved {
+        background-color: #c6f6d5;
+        color: #22543d;
+        border-color: #38a169;
+      }
+
+      .calendar-day.pending {
+        background-color: #fed7aa;
+        color: #7c2d12;
+        border-color: #d69e2e;
+      }
+
+      /* Table */
+      .table-section {
+        background-color: #faf8f5;
+        border-radius: 12px;
+        border: 1px solid #e8dfd7;
+        overflow: hidden;
+        margin-bottom: 32px;
+      }
+
+      .table-header {
+        padding: 16px 24px;
+        background-color: #f0ebe5;
+        border-bottom: 1px solid #e8dfd7;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .table-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a2332;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background-color: #f0ebe5;
+        border-bottom: 2px solid #e8dfd7;
+      }
+
+      th {
+        padding: 12px 24px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 700;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        padding: 14px 24px;
+        border-bottom: 1px solid #e8dfd7;
+        font-size: 14px;
+      }
+
+      tr:hover {
+        background-color: #f9f7f3;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .emp-name {
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .emp-dept {
+        font-size: 13px;
+        color: #999;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-pending {
+        background-color: #fed7aa;
+        color: #7c2d12;
+      }
+
+      .badge-approved {
+        background-color: #c6f6d5;
+        color: #22543d;
+      }
+
+      .badge-rejected {
+        background-color: #fed7d7;
+        color: #742a2a;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 8px;
+      }
+
+      /* Chart Container */
+      .chart-section {
+        background-color: #faf8f5;
+        border-radius: 12px;
+        padding: 24px;
+        border: 1px solid #e8dfd7;
+      }
+
+      .chart-title {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #1a2332;
+      }
+
+      .chart-placeholder {
+        height: 200px;
+        background: linear-gradient(135deg, #f0ebe5 0%, #f9f7f3 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 14px;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+        }
+
+        .balance-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          padding: 12px;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .sidebar-nav {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        .nav-item {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+
+        .content {
+          padding: 16px;
+        }
+
+        .balance-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .table-header {
+          flex-direction: column;
+          gap: 12px;
+          align-items: flex-start;
+        }
+
+        table {
+          font-size: 12px;
+        }
+
+        th,
+        td {
+          padding: 10px 12px;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .btn-sm {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <svg
+            class="nav-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          AXIOMA HR
+        </div>
+        <nav class="sidebar-nav">
+          <a href="asistencias.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+              ></path>
+              <path d="M21 3v5h-5"></path>
+              <path
+                d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+              ></path>
+              <path d="M3 21v-5h5"></path>
+            </svg>
+            Asistencias
+          </a>
+          <a href="vacaciones.html" class="nav-item active">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Vacaciones
+          </a>
+          <a href="permisos.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 12l2 2 4-4"></path>
+              <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            Permisos
+          </a>
+          <a href="nomina.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+              ></path>
+            </svg>
+            Nómina
+          </a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <h1 class="topbar-title">Gestión de Vacaciones</h1>
+          <div class="topbar-actions">
+            <button class="btn btn-primary">
+              <svg
+                style="width: 16px; height: 16px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 5v14M5 12h14"></path>
+              </svg>
+              Solicitar Vacaciones
+            </button>
+          </div>
+        </header>
+
+        <div class="content">
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"
+                ></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+              Saldo de Vacaciones por Empleado
+            </div>
+            <div class="balance-grid">
+              <div class="balance-card">
+                <div class="card-header">
+                  <div class="card-label">Empleado</div>
+                  <span class="status-badge badge-approved">2026</span>
+                </div>
+                <div class="card-name">Carlos García</div>
+                <div class="card-values">
+                  <div class="value-item">
+                    <span class="value-label">Disponibles</span>
+                    <span class="value-number available">12</span>
+                  </div>
+                  <div class="value-item">
+                    <span class="value-label">Usados</span>
+                    <span class="value-number used">8</span>
+                  </div>
+                  <div class="value-item">
+                    <span class="value-label">Total</span>
+                    <span class="value-number">20</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="balance-card">
+                <div class="card-header">
+                  <div class="card-label">Empleado</div>
+                  <span class="status-badge badge-approved">2026</span>
+                </div>
+                <div class="card-name">María López</div>
+                <div class="card-values">
+                  <div class="value-item">
+                    <span class="value-label">Disponibles</span>
+                    <span class="value-number available">15</span>
+                  </div>
+                  <div class="value-item">
+                    <span class="value-label">Usados</span>
+                    <span class="value-number used">5</span>
+                  </div>
+                  <div class="value-item">
+                    <span class="value-label">Total</span>
+                    <span class="value-number">20</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="balance-card">
+                <div class="card-header">
+                  <div class="card-label">Empleado</div>
+                  <span class="status-badge badge-approved">2026</span>
+                </div>
+                <div class="card-name">Juan Rodríguez</div>
+                <div class="card-values">
+                  <div class="value-item">
+                    <span class="value-label">Disponibles</span>
+                    <span class="value-number available">10</span>
+                  </div>
+                  <div class="value-item">
+                    <span class="value-label">Usados</span>
+                    <span class="value-number used">10</span>
+                  </div>
+                  <div class="value-item">
+                    <span class="value-label">Total</span>
+                    <span class="value-number">20</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="balance-card">
+                <div class="card-header">
+                  <div class="card-label">Empleado</div>
+                  <span class="status-badge badge-pending">Pendiente</span>
+                </div>
+                <div class="card-name">Ana Martínez</div>
+                <div class="card-values">
+                  <div class="value-item">
+                    <span class="value-label">Disponibles</span>
+                    <span class="value-number available">18</span>
+                  </div>
+                  <div class="value-item">
+                    <span class="value-label">Usados</span>
+                    <span class="value-number used">2</span>
+                  </div>
+                  <div class="value-item">
+                    <span class="value-label">Total</span>
+                    <span class="value-number">20</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              Calendario de Vacaciones - Junio 2026
+            </div>
+            <div class="calendar-section">
+              <div class="calendar-header">Junio 2026</div>
+              <div class="weekdays">
+                <div class="weekday">Dom</div>
+                <div class="weekday">Lun</div>
+                <div class="weekday">Mar</div>
+                <div class="weekday">Mié</div>
+                <div class="weekday">Jue</div>
+                <div class="weekday">Vie</div>
+                <div class="weekday">Sáb</div>
+              </div>
+              <div class="calendar-grid">
+                <div class="calendar-day other-month">31</div>
+                <div class="calendar-day">1</div>
+                <div class="calendar-day">2</div>
+                <div class="calendar-day approved">3</div>
+                <div class="calendar-day approved">4</div>
+                <div class="calendar-day approved">5</div>
+                <div class="calendar-day">6</div>
+
+                <div class="calendar-day">7</div>
+                <div class="calendar-day">8</div>
+                <div class="calendar-day">9</div>
+                <div class="calendar-day pending">10</div>
+                <div class="calendar-day pending">11</div>
+                <div class="calendar-day">12</div>
+                <div class="calendar-day">13</div>
+
+                <div class="calendar-day">14</div>
+                <div class="calendar-day">15</div>
+                <div class="calendar-day">16</div>
+                <div class="calendar-day">17</div>
+                <div class="calendar-day">18</div>
+                <div class="calendar-day">19</div>
+                <div class="calendar-day">20</div>
+
+                <div class="calendar-day">21</div>
+                <div class="calendar-day">22</div>
+                <div class="calendar-day">23</div>
+                <div class="calendar-day">24</div>
+                <div class="calendar-day">25</div>
+                <div class="calendar-day">26</div>
+                <div class="calendar-day approved">27</div>
+
+                <div class="calendar-day approved">28</div>
+                <div class="calendar-day approved">29</div>
+                <div class="calendar-day approved">30</div>
+                <div class="calendar-day other-month">1</div>
+                <div class="calendar-day other-month">2</div>
+                <div class="calendar-day other-month">3</div>
+                <div class="calendar-day other-month">4</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-3 7h3m-3 4h3"
+                ></path>
+              </svg>
+              Solicitudes Pendientes
+            </div>
+            <div class="table-section">
+              <div class="table-header">
+                <div class="table-title">
+                  3 solicitudes pendientes de aprobación
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Empleado</th>
+                    <th>Departamento</th>
+                    <th>Fechas</th>
+                    <th>Días</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Carlos García</div>
+                      <div class="emp-dept">carlos.garcia@axioma.com</div>
+                    </td>
+                    <td>Operaciones</td>
+                    <td>10 Jun - 11 Jun</td>
+                    <td>2</td>
+                    <td>
+                      <span class="status-badge badge-pending">Pendiente</span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-success">Aprobar</button>
+                        <button class="btn btn-sm btn-danger">Rechazar</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Ana Martínez</div>
+                      <div class="emp-dept">ana.martinez@axioma.com</div>
+                    </td>
+                    <td>Finanzas</td>
+                    <td>27 Jun - 30 Jun</td>
+                    <td>4</td>
+                    <td>
+                      <span class="status-badge badge-pending">Pendiente</span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-success">Aprobar</button>
+                        <button class="btn btn-sm btn-danger">Rechazar</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Diego Flores</div>
+                      <div class="emp-dept">diego.flores@axioma.com</div>
+                    </td>
+                    <td>Operaciones</td>
+                    <td>15 Jul - 18 Jul</td>
+                    <td>4</td>
+                    <td>
+                      <span class="status-badge badge-pending">Pendiente</span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-success">Aprobar</button>
+                        <button class="btn btn-sm btn-danger">Rechazar</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+              Resumen Anual 2026
+            </div>
+            <div class="chart-section">
+              <div class="chart-title">Vacaciones Usadas vs Disponibles</div>
+              <div class="chart-placeholder">
+                <div style="text-align: center">
+                  <div style="font-size: 12px; margin-bottom: 8px">
+                    Gráfico de comparación
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 16px;
+                      justify-content: center;
+                      align-items: center;
+                    "
+                  >
+                    <div style="text-align: center">
+                      <div
+                        style="
+                          width: 40px;
+                          height: 120px;
+                          background: #38a169;
+                          margin: 0 auto 8px;
+                          border-radius: 4px;
+                        "
+                      ></div>
+                      <div style="font-size: 11px">Disponibles</div>
+                    </div>
+                    <div style="text-align: center">
+                      <div
+                        style="
+                          width: 40px;
+                          height: 60px;
+                          background: #c53030;
+                          margin: 0 auto 8px;
+                          border-radius: 4px;
+                        "
+                      ></div>
+                      <div style="font-size: 11px">Usadas</div>
+                    </div>
+                    <div style="text-align: center">
+                      <div
+                        style="
+                          width: 40px;
+                          height: 30px;
+                          background: #d69e2e;
+                          margin: 0 auto 8px;
+                          border-radius: 4px;
+                        "
+                      ></div>
+                      <div style="font-size: 11px">Pendiente</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="1"></circle>
+                <path d="M12 1v6m0 6v6"></path>
+                <path d="M4.22 4.22l4.24 4.24m4.24 4.24l4.24 4.24"></path>
+                <path d="M1 12h6m6 0h6"></path>
+                <path d="M4.22 19.78l4.24-4.24m4.24-4.24l4.24-4.24"></path>
+              </svg>
+              Historial de Vacaciones
+            </div>
+            <div class="table-section">
+              <div class="table-header">
+                <div class="table-title">Últimas solicitudes autorizadas</div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Empleado</th>
+                    <th>Período</th>
+                    <th>Días</th>
+                    <th>Aprobado Por</th>
+                    <th>Fecha Aprobación</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="emp-name">María López</div>
+                      <div class="emp-dept">maria.lopez@axioma.com</div>
+                    </td>
+                    <td>3 Jun - 5 Jun 2026</td>
+                    <td>3</td>
+                    <td>Juan Rodríguez</td>
+                    <td>1 Jun 2026</td>
+                    <td>
+                      <span class="status-badge badge-approved">Aprobada</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Carlos García</div>
+                      <div class="emp-dept">carlos.garcia@axioma.com</div>
+                    </td>
+                    <td>27 Jun - 30 Jun 2026</td>
+                    <td>4</td>
+                    <td>Juan Rodríguez</td>
+                    <td>15 Jun 2026</td>
+                    <td>
+                      <span class="status-badge badge-approved">Aprobada</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Juan Rodríguez</div>
+                      <div class="emp-dept">juan.rodriguez@axioma.com</div>
+                    </td>
+                    <td>1 Ago - 5 Ago 2026</td>
+                    <td>5</td>
+                    <td>Juan Rodríguez</td>
+                    <td>20 Jun 2026</td>
+                    <td>
+                      <span class="status-badge badge-approved">Aprobada</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Diego Flores</div>
+                      <div class="emp-dept">diego.flores@axioma.com</div>
+                    </td>
+                    <td>10 May - 12 May 2026</td>
+                    <td>3</td>
+                    <td>Juan Rodríguez</td>
+                    <td>5 May 2026</td>
+                    <td>
+                      <span class="status-badge badge-approved">Aprobada</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

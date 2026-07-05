@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inscripciones - AXIOMA Control Escolar</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px 0;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-logo {
+        padding: 20px;
+        text-align: center;
+        border-bottom: 2px solid #c53030;
+        margin-bottom: 30px;
+      }
+
+      .sidebar-logo h1 {
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        margin: 10px 0;
+      }
+
+      .sidebar-menu a {
+        display: block;
+        padding: 12px 20px;
+        color: #faf8f5;
+        text-decoration: none;
+        transition: background-color 0.3s;
+      }
+
+      .sidebar-menu a:hover,
+      .sidebar-menu a.active {
+        background-color: #c53030;
+        border-left: 4px solid #d69e2e;
+        padding-left: 16px;
+      }
+
+      /* Main Content */
+      .main {
+        flex: 1;
+        margin-left: 260px;
+      }
+
+      /* Top Bar */
+      .topbar {
+        background-color: #fff;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .topbar h2 {
+        color: #1a2332;
+        font-size: 24px;
+      }
+
+      .topbar-right {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #c53030;
+        color: #faf8f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      /* Content Area */
+      .content {
+        padding: 30px;
+      }
+
+      /* Tabs */
+      .tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #e0e0e0;
+      }
+
+      .tab-button {
+        padding: 15px 20px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: #666;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
+
+      .tab-button:hover {
+        color: #1a2332;
+      }
+
+      .tab-button.active {
+        color: #c53030;
+        border-bottom-color: #c53030;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Cards */
+      .card {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .card-title {
+        color: #1a2332;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Form */
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        margin-bottom: 8px;
+        color: #1a2332;
+        font-weight: 600;
+        font-size: 13px;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: inherit;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background-color: #a82828;
+      }
+
+      .btn-secondary {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background-color: #0f1419;
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: #c53030;
+        border: 1px solid #c53030;
+      }
+
+      .btn-outline:hover {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-success {
+        background-color: #38a169;
+        color: #faf8f5;
+      }
+
+      .btn-success:hover {
+        background-color: #2f8659;
+      }
+
+      /* Tables */
+      .table-responsive {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      thead {
+        background-color: #f8f8f8;
+        border-bottom: 2px solid #ddd;
+      }
+
+      th {
+        padding: 12px;
+        text-align: left;
+        color: #1a2332;
+        font-weight: 700;
+      }
+
+      td {
+        padding: 12px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      tr:hover {
+        background-color: #fafafa;
+      }
+
+      /* Status Badges */
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .badge-pending {
+        background-color: #fed7d7;
+        color: #c53030;
+      }
+
+      .badge-approved {
+        background-color: #c6f6d5;
+        color: #38a169;
+      }
+
+      .badge-processing {
+        background-color: #feebc8;
+        color: #d69e2e;
+      }
+
+      /* Checklist */
+      .checklist {
+        list-style: none;
+      }
+
+      .checklist li {
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .checklist li:last-child {
+        border-bottom: none;
+      }
+
+      .checklist-checkbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #38a169;
+      }
+
+      /* Stats Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #1a2332 0%, #2a3a4d 100%);
+        color: #faf8f5;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        font-size: 13px;
+        opacity: 0.9;
+      }
+
+      /* Queue */
+      .queue-item {
+        background-color: #f9f9f9;
+        border-left: 4px solid #c53030;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 0 4px 4px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .queue-item.processed {
+        border-left-color: #38a169;
+      }
+
+      .queue-info {
+        flex: 1;
+      }
+
+      .queue-name {
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 5px;
+      }
+
+      .queue-meta {
+        font-size: 12px;
+        color: #999;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          left: -260px;
+          z-index: 1000;
+          transition: left 0.3s;
+        }
+
+        .sidebar.active {
+          left: 0;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .topbar {
+          padding: 15px;
+        }
+
+        .content {
+          padding: 15px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .tabs {
+          overflow-x: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <h1>AXIOMA</h1>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="#" class="active">Inscripciones</a></li>
+          <li><a href="#">Reinscripciones</a></li>
+          <li><a href="#">Grupos</a></li>
+          <li><a href="#">Horarios</a></li>
+          <li><a href="#">Estudiantes</a></li>
+          <li><a href="#">Calificaciones</a></li>
+          <li><a href="#">Asistencia</a></li>
+          <li><a href="#">Reportes</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Top Bar -->
+        <div class="topbar">
+          <h2>Inscripciones</h2>
+          <div class="topbar-right">
+            <div class="user-info">
+              <span>Admin User</span>
+              <div class="avatar">AU</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Stats -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-number">145</div>
+              <div class="stat-label">Total Inscripciones</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">23</div>
+              <div class="stat-label">Pendientes</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">112</div>
+              <div class="stat-label">Completadas</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">10</div>
+              <div class="stat-label">En Proceso</div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="tabs">
+            <button class="tab-button active" data-tab="form">
+              Nuevo Estudiante
+            </button>
+            <button class="tab-button" data-tab="pending">
+              Cola Pendiente
+            </button>
+            <button class="tab-button" data-tab="recent">Recientes</button>
+            <button class="tab-button" data-tab="stats">Estadísticas</button>
+          </div>
+
+          <!-- Tab: Form -->
+          <div id="form" class="tab-content active">
+            <div class="card">
+              <div class="card-title">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Formulario de Inscripción
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="student">Seleccionar Estudiante</label>
+                  <select id="student" required>
+                    <option value="">Selecciona un estudiante</option>
+                    <option value="1">Juan García López</option>
+                    <option value="2">María Rodríguez Pérez</option>
+                    <option value="3">Carlos Martínez Silva</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="grade">Grado</label>
+                  <select id="grade" required>
+                    <option value="">Selecciona un grado</option>
+                    <option value="1">1º Primaria</option>
+                    <option value="2">2º Primaria</option>
+                    <option value="3">3º Primaria</option>
+                    <option value="4">4º Primaria</option>
+                    <option value="5">5º Primaria</option>
+                    <option value="6">6º Primaria</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="group">Grupo</label>
+                  <select id="group" required>
+                    <option value="">Selecciona un grupo</option>
+                    <option value="A">Grupo A</option>
+                    <option value="B">Grupo B</option>
+                    <option value="C">Grupo C</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="cycle">Ciclo Escolar</label>
+                  <select id="cycle" required>
+                    <option value="">Selecciona un ciclo</option>
+                    <option value="2025-2026">2025-2026</option>
+                    <option value="2026-2027">2026-2027</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Documents Checklist -->
+              <div class="card">
+                <div class="card-title">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M9 11l3 3L22 4" />
+                    <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Documentos Requeridos
+                </div>
+                <ul class="checklist">
+                  <li>
+                    <input
+                      type="checkbox"
+                      class="checklist-checkbox"
+                      id="doc1"
+                    />
+                    <label for="doc1" style="flex: 1; margin: 0"
+                      >Certificado de Nacimiento</label
+                    >
+                    <span class="badge badge-processing">Pendiente</span>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      class="checklist-checkbox"
+                      id="doc2"
+                    />
+                    <label for="doc2" style="flex: 1; margin: 0"
+                      >Cartilla de Vacunación</label
+                    >
+                    <span class="badge badge-approved">Completo</span>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      class="checklist-checkbox"
+                      id="doc3"
+                    />
+                    <label for="doc3" style="flex: 1; margin: 0"
+                      >Boletas Anterior</label
+                    >
+                    <span class="badge badge-processing">Pendiente</span>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      class="checklist-checkbox"
+                      id="doc4"
+                    />
+                    <label for="doc4" style="flex: 1; margin: 0">CURP</label>
+                    <span class="badge badge-approved">Completo</span>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      class="checklist-checkbox"
+                      id="doc5"
+                    />
+                    <label for="doc5" style="flex: 1; margin: 0"
+                      >Foto 4x4</label
+                    >
+                    <span class="badge badge-processing">Pendiente</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Fees Summary -->
+              <div class="card">
+                <div class="card-title">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                    />
+                  </svg>
+                  Resumen de Cuotas
+                </div>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td style="color: #1a2332; font-weight: 600">
+                        Matrícula
+                      </td>
+                      <td style="text-align: right">$3,500.00</td>
+                    </tr>
+                    <tr>
+                      <td style="color: #1a2332; font-weight: 600">
+                        Mensualidad
+                      </td>
+                      <td style="text-align: right">$1,200.00 x 10</td>
+                    </tr>
+                    <tr>
+                      <td style="color: #1a2332; font-weight: 600">
+                        Uniformes
+                      </td>
+                      <td style="text-align: right">$800.00</td>
+                    </tr>
+                    <tr style="border-top: 2px solid #ddd">
+                      <td
+                        style="
+                          color: #c53030;
+                          font-weight: 700;
+                          font-size: 14px;
+                        "
+                      >
+                        TOTAL
+                      </td>
+                      <td
+                        style="
+                          color: #c53030;
+                          font-weight: 700;
+                          font-size: 14px;
+                          text-align: right;
+                        "
+                      >
+                        $16,800.00
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div style="display: flex; gap: 10px">
+                <button class="btn btn-primary">Registrar Inscripción</button>
+                <button class="btn btn-outline">Cancelar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Pending Queue -->
+          <div id="pending" class="tab-content">
+            <div class="card">
+              <div class="card-title">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                Cola de Inscripciones Pendientes
+              </div>
+
+              <div class="queue-item">
+                <div class="queue-info">
+                  <div class="queue-name">Laura Martínez González</div>
+                  <div class="queue-meta">
+                    Grado: 3º | Grupo: B | Falta: Certificado de Nacimiento
+                  </div>
+                </div>
+                <div>
+                  <span class="badge badge-pending">Documentos</span>
+                </div>
+              </div>
+
+              <div class="queue-item">
+                <div class="queue-info">
+                  <div class="queue-name">Diego Pérez López</div>
+                  <div class="queue-meta">
+                    Grado: 5º | Grupo: A | Falta: Pago de Matrícula
+                  </div>
+                </div>
+                <div>
+                  <span class="badge badge-pending">Pago</span>
+                </div>
+              </div>
+
+              <div class="queue-item">
+                <div class="queue-info">
+                  <div class="queue-name">Sofia Rodríguez Vargas</div>
+                  <div class="queue-meta">
+                    Grado: 2º | Grupo: C | Falta: Cartilla de Vacunación
+                  </div>
+                </div>
+                <div>
+                  <span class="badge badge-pending">Documentos</span>
+                </div>
+              </div>
+
+              <div class="queue-item">
+                <div class="queue-info">
+                  <div class="queue-name">Pablo Sánchez García</div>
+                  <div class="queue-meta">
+                    Grado: 4º | Grupo: A | Esperando confirmación de padre
+                  </div>
+                </div>
+                <div>
+                  <span class="badge badge-processing">Confirmación</span>
+                </div>
+              </div>
+
+              <div class="queue-item processed">
+                <div class="queue-info">
+                  <div class="queue-name">Andrés Morales Silva</div>
+                  <div class="queue-meta">
+                    Grado: 1º | Grupo: B | Inscripción completada
+                  </div>
+                </div>
+                <div>
+                  <span class="badge badge-approved">Completo</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Recent Enrollments -->
+          <div id="recent" class="tab-content">
+            <div class="card">
+              <div class="card-title">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+                Inscripciones Recientes
+              </div>
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Estudiante</th>
+                      <th>Grado</th>
+                      <th>Grupo</th>
+                      <th>Fecha</th>
+                      <th>Estado</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Andrés Morales Silva</td>
+                      <td>1º Primaria</td>
+                      <td>B</td>
+                      <td>29/06/2026</td>
+                      <td>
+                        <span class="badge badge-approved">Completada</span>
+                      </td>
+                      <td>
+                        <a
+                          href="#"
+                          style="color: #c53030; text-decoration: none"
+                          >Ver</a
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Carmen Ruiz García</td>
+                      <td>3º Primaria</td>
+                      <td>A</td>
+                      <td>28/06/2026</td>
+                      <td>
+                        <span class="badge badge-approved">Completada</span>
+                      </td>
+                      <td>
+                        <a
+                          href="#"
+                          style="color: #c53030; text-decoration: none"
+                          >Ver</a
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Felipe López Hernández</td>
+                      <td>5º Primaria</td>
+                      <td>C</td>
+                      <td>27/06/2026</td>
+                      <td>
+                        <span class="badge badge-approved">Completada</span>
+                      </td>
+                      <td>
+                        <a
+                          href="#"
+                          style="color: #c53030; text-decoration: none"
+                          >Ver</a
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Gabriela Mendoza Torres</td>
+                      <td>2º Primaria</td>
+                      <td>B</td>
+                      <td>26/06/2026</td>
+                      <td>
+                        <span class="badge badge-processing">En Proceso</span>
+                      </td>
+                      <td>
+                        <a
+                          href="#"
+                          style="color: #c53030; text-decoration: none"
+                          >Ver</a
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Héctor Navarro Ruiz</td>
+                      <td>4º Primaria</td>
+                      <td>A</td>
+                      <td>25/06/2026</td>
+                      <td>
+                        <span class="badge badge-approved">Completada</span>
+                      </td>
+                      <td>
+                        <a
+                          href="#"
+                          style="color: #c53030; text-decoration: none"
+                          >Ver</a
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Stats by Level -->
+          <div id="stats" class="tab-content">
+            <div class="card">
+              <div class="card-title">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="12" y1="2" x2="12" y2="22" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+                Estadísticas de Inscripción por Nivel
+              </div>
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nivel</th>
+                      <th>Total Grupos</th>
+                      <th>Inscritos</th>
+                      <th>Capacidad</th>
+                      <th>% Ocupación</th>
+                      <th>Pendientes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="font-weight: 600; color: #1a2332">
+                        1º Primaria
+                      </td>
+                      <td>3</td>
+                      <td>85</td>
+                      <td>90</td>
+                      <td>
+                        <div
+                          style="
+                            background-color: #f0f0f0;
+                            border-radius: 4px;
+                            overflow: hidden;
+                          "
+                        >
+                          <div
+                            style="
+                              background-color: #38a169;
+                              height: 20px;
+                              width: 94.4%;
+                              display: flex;
+                              align-items: center;
+                              justify-content: flex-end;
+                              padding-right: 5px;
+                              color: white;
+                              font-size: 11px;
+                              font-weight: 600;
+                            "
+                          >
+                            94.4%
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="badge badge-processing">3</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600; color: #1a2332">
+                        2º Primaria
+                      </td>
+                      <td>3</td>
+                      <td>78</td>
+                      <td>90</td>
+                      <td>
+                        <div
+                          style="
+                            background-color: #f0f0f0;
+                            border-radius: 4px;
+                            overflow: hidden;
+                          "
+                        >
+                          <div
+                            style="
+                              background-color: #38a169;
+                              height: 20px;
+                              width: 86.7%;
+                              display: flex;
+                              align-items: center;
+                              justify-content: flex-end;
+                              padding-right: 5px;
+                              color: white;
+                              font-size: 11px;
+                              font-weight: 600;
+                            "
+                          >
+                            86.7%
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="badge badge-processing">5</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600; color: #1a2332">
+                        3º Primaria
+                      </td>
+                      <td>3</td>
+                      <td>82</td>
+                      <td>90</td>
+                      <td>
+                        <div
+                          style="
+                            background-color: #f0f0f0;
+                            border-radius: 4px;
+                            overflow: hidden;
+                          "
+                        >
+                          <div
+                            style="
+                              background-color: #38a169;
+                              height: 20px;
+                              width: 91.1%;
+                              display: flex;
+                              align-items: center;
+                              justify-content: flex-end;
+                              padding-right: 5px;
+                              color: white;
+                              font-size: 11px;
+                              font-weight: 600;
+                            "
+                          >
+                            91.1%
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="badge badge-processing">4</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600; color: #1a2332">
+                        4º Primaria
+                      </td>
+                      <td>3</td>
+                      <td>88</td>
+                      <td>90</td>
+                      <td>
+                        <div
+                          style="
+                            background-color: #f0f0f0;
+                            border-radius: 4px;
+                            overflow: hidden;
+                          "
+                        >
+                          <div
+                            style="
+                              background-color: #38a169;
+                              height: 20px;
+                              width: 97.8%;
+                              display: flex;
+                              align-items: center;
+                              justify-content: flex-end;
+                              padding-right: 5px;
+                              color: white;
+                              font-size: 11px;
+                              font-weight: 600;
+                            "
+                          >
+                            97.8%
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="badge badge-pending">2</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600; color: #1a2332">
+                        5º Primaria
+                      </td>
+                      <td>3</td>
+                      <td>75</td>
+                      <td>90</td>
+                      <td>
+                        <div
+                          style="
+                            background-color: #f0f0f0;
+                            border-radius: 4px;
+                            overflow: hidden;
+                          "
+                        >
+                          <div
+                            style="
+                              background-color: #38a169;
+                              height: 20px;
+                              width: 83.3%;
+                              display: flex;
+                              align-items: center;
+                              justify-content: flex-end;
+                              padding-right: 5px;
+                              color: white;
+                              font-size: 11px;
+                              font-weight: 600;
+                            "
+                          >
+                            83.3%
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="badge badge-processing">6</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600; color: #1a2332">
+                        6º Primaria
+                      </td>
+                      <td>3</td>
+                      <td>80</td>
+                      <td>90</td>
+                      <td>
+                        <div
+                          style="
+                            background-color: #f0f0f0;
+                            border-radius: 4px;
+                            overflow: hidden;
+                          "
+                        >
+                          <div
+                            style="
+                              background-color: #38a169;
+                              height: 20px;
+                              width: 88.9%;
+                              display: flex;
+                              align-items: center;
+                              justify-content: flex-end;
+                              padding-right: 5px;
+                              color: white;
+                              font-size: 11px;
+                              font-weight: 600;
+                            "
+                          >
+                            88.9%
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="badge badge-processing">4</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1144 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grupos - AXIOMA Control Escolar</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px 0;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-logo {
+        padding: 20px;
+        text-align: center;
+        border-bottom: 2px solid #c53030;
+        margin-bottom: 30px;
+      }
+
+      .sidebar-logo h1 {
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        margin: 10px 0;
+      }
+
+      .sidebar-menu a {
+        display: block;
+        padding: 12px 20px;
+        color: #faf8f5;
+        text-decoration: none;
+        transition: background-color 0.3s;
+      }
+
+      .sidebar-menu a:hover,
+      .sidebar-menu a.active {
+        background-color: #c53030;
+        border-left: 4px solid #d69e2e;
+        padding-left: 16px;
+      }
+
+      /* Main Content */
+      .main {
+        flex: 1;
+        margin-left: 260px;
+      }
+
+      /* Top Bar */
+      .topbar {
+        background-color: #fff;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .topbar h2 {
+        color: #1a2332;
+        font-size: 24px;
+      }
+
+      .topbar-right {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #c53030;
+        color: #faf8f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      /* Content Area */
+      .content {
+        padding: 30px;
+      }
+
+      /* Filters */
+      .filters {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .filter-group label {
+        font-weight: 600;
+        color: #1a2332;
+        font-size: 13px;
+      }
+
+      .filter-group select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: inherit;
+        transition: border-color 0.3s;
+      }
+
+      .filter-group select:focus {
+        outline: none;
+        border-color: #c53030;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background-color: #a82828;
+      }
+
+      .btn-secondary {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background-color: #0f1419;
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: #c53030;
+        border: 1px solid #c53030;
+      }
+
+      .btn-outline:hover {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      /* Groups Grid */
+      .groups-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      /* Group Card */
+      .group-card {
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+
+      .group-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      }
+
+      .group-card-header {
+        background: linear-gradient(135deg, #1a2332 0%, #2a3a4d 100%);
+        color: #faf8f5;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+      }
+
+      .group-card-title {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .group-card-level {
+        font-size: 11px;
+        opacity: 0.8;
+        margin-top: 4px;
+      }
+
+      .group-badge {
+        background-color: #c53030;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .group-card-body {
+        padding: 20px;
+      }
+
+      .group-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 13px;
+      }
+
+      .group-info-row:last-child {
+        border-bottom: none;
+      }
+
+      .group-info-label {
+        color: #666;
+        font-weight: 500;
+      }
+
+      .group-info-value {
+        color: #1a2332;
+        font-weight: 600;
+      }
+
+      /* Capacity Bar */
+      .capacity-bar {
+        margin: 15px 0;
+        margin-top: 15px;
+      }
+
+      .capacity-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 12px;
+      }
+
+      .capacity-bar-container {
+        background-color: #f0f0f0;
+        border-radius: 8px;
+        height: 8px;
+        overflow: hidden;
+      }
+
+      .capacity-bar-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          #38a169 0%,
+          #d69e2e 70%,
+          #c53030 100%
+        );
+        transition: width 0.3s;
+      }
+
+      /* Schedule Preview */
+      .schedule-preview {
+        font-size: 11px;
+        color: #666;
+        margin: 15px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 4px;
+        border-left: 3px solid #d69e2e;
+      }
+
+      /* Card Actions */
+      .group-card-footer {
+        padding: 15px 20px;
+        border-top: 1px solid #f0f0f0;
+        display: flex;
+        gap: 10px;
+      }
+
+      .card-btn {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        color: #1a2332;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-align: center;
+      }
+
+      .card-btn:hover {
+        background-color: #f9f9f9;
+        border-color: #c53030;
+        color: #c53030;
+      }
+
+      .card-btn.primary {
+        background-color: #c53030;
+        color: #faf8f5;
+        border-color: #c53030;
+      }
+
+      .card-btn.primary:hover {
+        background-color: #a82828;
+      }
+
+      /* Modal Backdrop */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .modal-header {
+        background: linear-gradient(135deg, #1a2332 0%, #2a3a4d 100%);
+        color: #faf8f5;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .modal-title {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        color: #faf8f5;
+        cursor: pointer;
+        font-size: 24px;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #1a2332;
+        font-weight: 600;
+        font-size: 13px;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: inherit;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .modal-footer {
+        padding: 20px;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      /* Add Group Card */
+      .add-group-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        min-height: 300px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .add-group-card:hover {
+        border-color: #c53030;
+        background-color: #fafafa;
+      }
+
+      .add-group-content {
+        text-align: center;
+      }
+
+      .add-group-icon {
+        font-size: 32px;
+        color: #c53030;
+        margin-bottom: 10px;
+      }
+
+      .add-group-text {
+        color: #666;
+        font-weight: 600;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+        }
+
+        .groups-grid {
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          left: -260px;
+          z-index: 1000;
+          transition: left 0.3s;
+        }
+
+        .sidebar.active {
+          left: 0;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .topbar {
+          padding: 15px;
+        }
+
+        .topbar h2 {
+          font-size: 18px;
+        }
+
+        .content {
+          padding: 15px;
+        }
+
+        .filters {
+          flex-direction: column;
+        }
+
+        .filter-group {
+          flex-direction: column;
+        }
+
+        .groups-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <h1>AXIOMA</h1>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="#">Inscripciones</a></li>
+          <li><a href="#">Reinscripciones</a></li>
+          <li><a href="#" class="active">Grupos</a></li>
+          <li><a href="#">Horarios</a></li>
+          <li><a href="#">Estudiantes</a></li>
+          <li><a href="#">Calificaciones</a></li>
+          <li><a href="#">Asistencia</a></li>
+          <li><a href="#">Reportes</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Top Bar -->
+        <div class="topbar">
+          <h2>Grupos / Clases</h2>
+          <div class="topbar-right">
+            <div class="user-info">
+              <span>Admin User</span>
+              <div class="avatar">AU</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Filters -->
+          <div class="filters">
+            <div class="filter-group">
+              <label for="level">Nivel:</label>
+              <select id="level">
+                <option value="">Todos</option>
+                <option value="primaria">Primaria</option>
+                <option value="secundaria">Secundaria</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="grade">Grado:</label>
+              <select id="grade">
+                <option value="">Todos</option>
+                <option value="1">1º</option>
+                <option value="2">2º</option>
+                <option value="3">3º</option>
+                <option value="4">4º</option>
+                <option value="5">5º</option>
+                <option value="6">6º</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="teacher">Docente:</label>
+              <select id="teacher">
+                <option value="">Todos</option>
+                <option value="1">Lic. María González</option>
+                <option value="2">Lic. Carlos Romero</option>
+                <option value="3">Lic. Sandra López</option>
+              </select>
+            </div>
+            <button
+              class="btn btn-primary"
+              onclick="
+                document.getElementById('addGroupModal').classList.add('active')
+              "
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Nuevo Grupo
+            </button>
+          </div>
+
+          <!-- Groups Grid -->
+          <div class="groups-grid">
+            <!-- Group Card 1 -->
+            <div class="group-card">
+              <div class="group-card-header">
+                <div>
+                  <div class="group-card-title">1º A</div>
+                  <div class="group-card-level">Primaria</div>
+                </div>
+                <span class="group-badge">Primaria</span>
+              </div>
+              <div class="group-card-body">
+                <div class="group-info-row">
+                  <span class="group-info-label">Docente:</span>
+                  <span class="group-info-value">Lic. María González</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Estudiantes:</span>
+                  <span class="group-info-value">28 / 30</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Aula:</span>
+                  <span class="group-info-value">101</span>
+                </div>
+                <div class="capacity-bar">
+                  <div class="capacity-label">
+                    <span>Ocupación</span>
+                    <span>93%</span>
+                  </div>
+                  <div class="capacity-bar-container">
+                    <div class="capacity-bar-fill" style="width: 93%"></div>
+                  </div>
+                </div>
+                <div class="schedule-preview">
+                  <strong>Horario:</strong> 8:00 - 12:30
+                </div>
+              </div>
+              <div class="group-card-footer">
+                <button class="card-btn">Editar</button>
+                <button
+                  class="card-btn primary"
+                  onclick="
+                    document
+                      .getElementById('groupDetailsModal')
+                      .classList.add('active')
+                  "
+                >
+                  Ver Detalles
+                </button>
+              </div>
+            </div>
+
+            <!-- Group Card 2 -->
+            <div class="group-card">
+              <div class="group-card-header">
+                <div>
+                  <div class="group-card-title">1º B</div>
+                  <div class="group-card-level">Primaria</div>
+                </div>
+                <span class="group-badge">Primaria</span>
+              </div>
+              <div class="group-card-body">
+                <div class="group-info-row">
+                  <span class="group-info-label">Docente:</span>
+                  <span class="group-info-value">Lic. Carlos Romero</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Estudiantes:</span>
+                  <span class="group-info-value">25 / 30</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Aula:</span>
+                  <span class="group-info-value">102</span>
+                </div>
+                <div class="capacity-bar">
+                  <div class="capacity-label">
+                    <span>Ocupación</span>
+                    <span>83%</span>
+                  </div>
+                  <div class="capacity-bar-container">
+                    <div class="capacity-bar-fill" style="width: 83%"></div>
+                  </div>
+                </div>
+                <div class="schedule-preview">
+                  <strong>Horario:</strong> 8:00 - 12:30
+                </div>
+              </div>
+              <div class="group-card-footer">
+                <button class="card-btn">Editar</button>
+                <button
+                  class="card-btn primary"
+                  onclick="
+                    document
+                      .getElementById('groupDetailsModal')
+                      .classList.add('active')
+                  "
+                >
+                  Ver Detalles
+                </button>
+              </div>
+            </div>
+
+            <!-- Group Card 3 -->
+            <div class="group-card">
+              <div class="group-card-header">
+                <div>
+                  <div class="group-card-title">1º C</div>
+                  <div class="group-card-level">Primaria</div>
+                </div>
+                <span class="group-badge">Primaria</span>
+              </div>
+              <div class="group-card-body">
+                <div class="group-info-row">
+                  <span class="group-info-label">Docente:</span>
+                  <span class="group-info-value">Lic. Sandra López</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Estudiantes:</span>
+                  <span class="group-info-value">30 / 30</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Aula:</span>
+                  <span class="group-info-value">103</span>
+                </div>
+                <div class="capacity-bar">
+                  <div class="capacity-label">
+                    <span>Ocupación</span>
+                    <span>100%</span>
+                  </div>
+                  <div class="capacity-bar-container">
+                    <div class="capacity-bar-fill" style="width: 100%"></div>
+                  </div>
+                </div>
+                <div class="schedule-preview">
+                  <strong>Horario:</strong> 8:00 - 12:30
+                </div>
+              </div>
+              <div class="group-card-footer">
+                <button class="card-btn">Editar</button>
+                <button
+                  class="card-btn primary"
+                  onclick="
+                    document
+                      .getElementById('groupDetailsModal')
+                      .classList.add('active')
+                  "
+                >
+                  Ver Detalles
+                </button>
+              </div>
+            </div>
+
+            <!-- Group Card 4 -->
+            <div class="group-card">
+              <div class="group-card-header">
+                <div>
+                  <div class="group-card-title">3º A</div>
+                  <div class="group-card-level">Primaria</div>
+                </div>
+                <span class="group-badge">Primaria</span>
+              </div>
+              <div class="group-card-body">
+                <div class="group-info-row">
+                  <span class="group-info-label">Docente:</span>
+                  <span class="group-info-value">Lic. María González</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Estudiantes:</span>
+                  <span class="group-info-value">27 / 30</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Aula:</span>
+                  <span class="group-info-value">201</span>
+                </div>
+                <div class="capacity-bar">
+                  <div class="capacity-label">
+                    <span>Ocupación</span>
+                    <span>90%</span>
+                  </div>
+                  <div class="capacity-bar-container">
+                    <div class="capacity-bar-fill" style="width: 90%"></div>
+                  </div>
+                </div>
+                <div class="schedule-preview">
+                  <strong>Horario:</strong> 8:00 - 12:30
+                </div>
+              </div>
+              <div class="group-card-footer">
+                <button class="card-btn">Editar</button>
+                <button
+                  class="card-btn primary"
+                  onclick="
+                    document
+                      .getElementById('groupDetailsModal')
+                      .classList.add('active')
+                  "
+                >
+                  Ver Detalles
+                </button>
+              </div>
+            </div>
+
+            <!-- Group Card 5 -->
+            <div class="group-card">
+              <div class="group-card-header">
+                <div>
+                  <div class="group-card-title">5º A</div>
+                  <div class="group-card-level">Primaria</div>
+                </div>
+                <span class="group-badge">Primaria</span>
+              </div>
+              <div class="group-card-body">
+                <div class="group-info-row">
+                  <span class="group-info-label">Docente:</span>
+                  <span class="group-info-value">Lic. Carlos Romero</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Estudiantes:</span>
+                  <span class="group-info-value">22 / 30</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Aula:</span>
+                  <span class="group-info-value">301</span>
+                </div>
+                <div class="capacity-bar">
+                  <div class="capacity-label">
+                    <span>Ocupación</span>
+                    <span>73%</span>
+                  </div>
+                  <div class="capacity-bar-container">
+                    <div class="capacity-bar-fill" style="width: 73%"></div>
+                  </div>
+                </div>
+                <div class="schedule-preview">
+                  <strong>Horario:</strong> 8:00 - 12:30
+                </div>
+              </div>
+              <div class="group-card-footer">
+                <button class="card-btn">Editar</button>
+                <button
+                  class="card-btn primary"
+                  onclick="
+                    document
+                      .getElementById('groupDetailsModal')
+                      .classList.add('active')
+                  "
+                >
+                  Ver Detalles
+                </button>
+              </div>
+            </div>
+
+            <!-- Group Card 6 -->
+            <div class="group-card">
+              <div class="group-card-header">
+                <div>
+                  <div class="group-card-title">6º B</div>
+                  <div class="group-card-level">Primaria</div>
+                </div>
+                <span class="group-badge">Primaria</span>
+              </div>
+              <div class="group-card-body">
+                <div class="group-info-row">
+                  <span class="group-info-label">Docente:</span>
+                  <span class="group-info-value">Lic. Sandra López</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Estudiantes:</span>
+                  <span class="group-info-value">26 / 30</span>
+                </div>
+                <div class="group-info-row">
+                  <span class="group-info-label">Aula:</span>
+                  <span class="group-info-value">305</span>
+                </div>
+                <div class="capacity-bar">
+                  <div class="capacity-label">
+                    <span>Ocupación</span>
+                    <span>87%</span>
+                  </div>
+                  <div class="capacity-bar-container">
+                    <div class="capacity-bar-fill" style="width: 87%"></div>
+                  </div>
+                </div>
+                <div class="schedule-preview">
+                  <strong>Horario:</strong> 8:00 - 12:30
+                </div>
+              </div>
+              <div class="group-card-footer">
+                <button class="card-btn">Editar</button>
+                <button
+                  class="card-btn primary"
+                  onclick="
+                    document
+                      .getElementById('groupDetailsModal')
+                      .classList.add('active')
+                  "
+                >
+                  Ver Detalles
+                </button>
+              </div>
+            </div>
+
+            <!-- Add Group Card -->
+            <div
+              class="group-card add-group-card"
+              onclick="
+                document.getElementById('addGroupModal').classList.add('active')
+              "
+            >
+              <div class="add-group-content">
+                <div class="add-group-icon">+</div>
+                <div class="add-group-text">Agregar Nuevo Grupo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add Group Modal -->
+    <div id="addGroupModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="modal-title">Crear Nuevo Grupo</span>
+          <button
+            class="modal-close"
+            onclick="
+              document
+                .getElementById('addGroupModal')
+                .classList.remove('active')
+            "
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="groupName">Nombre del Grupo</label>
+              <input type="text" id="groupName" placeholder="Ej: 1º A" />
+            </div>
+            <div class="form-group">
+              <label for="grade">Grado</label>
+              <select id="grade">
+                <option value="">Selecciona un grado</option>
+                <option value="1">1º Primaria</option>
+                <option value="2">2º Primaria</option>
+                <option value="3">3º Primaria</option>
+                <option value="4">4º Primaria</option>
+                <option value="5">5º Primaria</option>
+                <option value="6">6º Primaria</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="teacher">Docente Asignado</label>
+              <select id="teacher">
+                <option value="">Selecciona un docente</option>
+                <option value="1">Lic. María González</option>
+                <option value="2">Lic. Carlos Romero</option>
+                <option value="3">Lic. Sandra López</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="classroom">Aula</label>
+              <input type="text" id="classroom" placeholder="Ej: 101" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="capacity">Capacidad Máxima</label>
+              <input type="number" id="capacity" placeholder="30" value="30" />
+            </div>
+            <div class="form-group">
+              <label for="shift">Turno</label>
+              <select id="shift">
+                <option value="morning">Matutino</option>
+                <option value="afternoon">Vespertino</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="schedule">Horario</label>
+            <input type="text" id="schedule" placeholder="Ej: 8:00 - 12:30" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-outline"
+            onclick="
+              document
+                .getElementById('addGroupModal')
+                .classList.remove('active')
+            "
+          >
+            Cancelar
+          </button>
+          <button class="btn btn-primary">Crear Grupo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group Details Modal -->
+    <div id="groupDetailsModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="modal-title">Detalles del Grupo 1º A</span>
+          <button
+            class="modal-close"
+            onclick="
+              document
+                .getElementById('groupDetailsModal')
+                .classList.remove('active')
+            "
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <h3 style="color: #1a2332; margin-bottom: 15px">
+            Información General
+          </h3>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 15px;
+              margin-bottom: 20px;
+            "
+          >
+            <div>
+              <strong style="color: #666; font-size: 12px"
+                >Nombre del Grupo</strong
+              >
+              <div style="color: #1a2332; font-weight: 600; margin-top: 5px">
+                1º A
+              </div>
+            </div>
+            <div>
+              <strong style="color: #666; font-size: 12px">Grado</strong>
+              <div style="color: #1a2332; font-weight: 600; margin-top: 5px">
+                1º Primaria
+              </div>
+            </div>
+            <div>
+              <strong style="color: #666; font-size: 12px">Docente</strong>
+              <div style="color: #1a2332; font-weight: 600; margin-top: 5px">
+                Lic. María González
+              </div>
+            </div>
+            <div>
+              <strong style="color: #666; font-size: 12px">Aula</strong>
+              <div style="color: #1a2332; font-weight: 600; margin-top: 5px">
+                101
+              </div>
+            </div>
+            <div>
+              <strong style="color: #666; font-size: 12px">Estudiantes</strong>
+              <div style="color: #1a2332; font-weight: 600; margin-top: 5px">
+                28 / 30
+              </div>
+            </div>
+            <div>
+              <strong style="color: #666; font-size: 12px">Horario</strong>
+              <div style="color: #1a2332; font-weight: 600; margin-top: 5px">
+                8:00 - 12:30
+              </div>
+            </div>
+          </div>
+
+          <h3 style="color: #1a2332; margin-bottom: 15px; margin-top: 20px">
+            Estudiantes Inscritos
+          </h3>
+          <div
+            style="
+              background-color: #f9f9f9;
+              border-radius: 4px;
+              padding: 15px;
+              font-size: 13px;
+              color: #666;
+            "
+          >
+            <div style="margin-bottom: 8px">• Juan García López</div>
+            <div style="margin-bottom: 8px">• María Rodríguez Pérez</div>
+            <div style="margin-bottom: 8px">• Carlos Martínez Silva</div>
+            <div style="margin-bottom: 8px">• Laura Martínez González</div>
+            <div style="margin-bottom: 8px">• Diego Pérez López</div>
+            <div style="margin-bottom: 8px; color: #999">[y 23 más]</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-outline"
+            onclick="
+              document
+                .getElementById('groupDetailsModal')
+                .classList.remove('active')
+            "
+          >
+            Cerrar
+          </button>
+          <button class="btn btn-primary">Editar Grupo</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

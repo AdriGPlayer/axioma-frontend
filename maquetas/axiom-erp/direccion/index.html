@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AXIOMA - Dirección Ejecutiva</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background-color: #faf8f5;
+        color: #1a2332;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background: linear-gradient(180deg, #1a2332 0%, #0f1419 100%);
+        padding: 2rem 1rem;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #faf8f5;
+        margin-bottom: 2rem;
+        padding: 0 0.5rem;
+        letter-spacing: 1px;
+      }
+
+      .nav-section {
+        margin-bottom: 2rem;
+      }
+
+      .nav-section-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #8b8b8b;
+        text-transform: uppercase;
+        padding: 1rem 0.5rem;
+        letter-spacing: 0.5px;
+      }
+
+      .nav-item {
+        padding: 0.75rem 0.5rem;
+        margin-bottom: 0.5rem;
+        color: #ccc;
+        text-decoration: none;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      .nav-item:hover {
+        background: rgba(198, 48, 48, 0.15);
+        color: #faf8f5;
+      }
+
+      .nav-item.active {
+        background: #c53030;
+        color: #faf8f5;
+        font-weight: 600;
+      }
+
+      .nav-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+
+      /* Main content */
+      .main {
+        flex: 1;
+        margin-left: 260px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .topbar {
+        background: #faf8f5;
+        border-bottom: 1px solid #e8e6e1;
+        padding: 1.5rem 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .topbar-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .topbar-actions {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      .action-btn {
+        background: #1a2332;
+        color: #faf8f5;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .action-btn:hover {
+        background: #0f1419;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 35, 50, 0.2);
+      }
+
+      .action-btn.secondary {
+        background: transparent;
+        color: #1a2332;
+        border: 1px solid #c53030;
+      }
+
+      .action-btn.secondary:hover {
+        background: rgba(197, 48, 48, 0.1);
+      }
+
+      /* Content area */
+      .content {
+        flex: 1;
+        padding: 2.5rem;
+        overflow-y: auto;
+      }
+
+      /* Header with date */
+      .dashboard-header {
+        margin-bottom: 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .header-info h1 {
+        font-size: 2rem;
+        color: #1a2332;
+        margin-bottom: 0.5rem;
+      }
+
+      .header-info p {
+        color: #666;
+        font-size: 0.95rem;
+      }
+
+      .period-selector {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .period-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid #c53030;
+        background: transparent;
+        color: #1a2332;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .period-btn.active {
+        background: #c53030;
+        color: #faf8f5;
+      }
+
+      /* KPI Grid */
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .kpi-card {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid #c53030;
+      }
+
+      .kpi-card:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        transform: translateY(-4px);
+      }
+
+      .kpi-label {
+        font-size: 0.85rem;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.5px;
+      }
+
+      .kpi-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1a2332;
+        margin-bottom: 0.75rem;
+      }
+
+      .kpi-change {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .kpi-change.positive {
+        color: #38a169;
+      }
+
+      .kpi-change.negative {
+        color: #c53030;
+      }
+
+      .arrow {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Charts Grid */
+      .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .chart-card {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .chart-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 1.5rem;
+      }
+
+      .chart-container {
+        height: 300px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        gap: 1rem;
+      }
+
+      .bar-chart {
+        flex: 1;
+        background: linear-gradient(180deg, #c53030 0%, #a02020 100%);
+        border-radius: 6px 6px 0 0;
+        position: relative;
+        min-height: 100px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .bar-label {
+        position: absolute;
+        bottom: -30px;
+        font-size: 0.8rem;
+        color: #666;
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Enrollment chart bars */
+      .bar-1 {
+        height: 85%;
+      }
+      .bar-2 {
+        height: 72%;
+      }
+      .bar-3 {
+        height: 95%;
+      }
+      .bar-4 {
+        height: 88%;
+      }
+      .bar-5 {
+        height: 78%;
+      }
+      .bar-6 {
+        height: 92%;
+      }
+
+      /* Line chart simulation */
+      .line-chart {
+        position: relative;
+        width: 100%;
+        height: 250px;
+        background: linear-gradient(
+          to bottom,
+          rgba(197, 48, 48, 0.1) 0%,
+          transparent 100%
+        );
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .line-point {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #c53030;
+        border-radius: 50%;
+        border: 2px solid white;
+      }
+
+      .point-1 {
+        bottom: 20%;
+        left: 5%;
+      }
+      .point-2 {
+        bottom: 35%;
+        left: 20%;
+      }
+      .point-3 {
+        bottom: 45%;
+        left: 35%;
+      }
+      .point-4 {
+        bottom: 60%;
+        left: 50%;
+      }
+      .point-5 {
+        bottom: 55%;
+        left: 65%;
+      }
+      .point-6 {
+        bottom: 75%;
+        left: 80%;
+      }
+      .point-7 {
+        bottom: 85%;
+        left: 95%;
+      }
+
+      /* Pie chart simulation */
+      .pie-chart {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: conic-gradient(
+          #c53030 0deg 120deg,
+          #38a169 120deg 240deg,
+          #d69e2e 240deg 360deg
+        );
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .pie-legend {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+      }
+
+      /* Metrics table */
+      .metrics-table {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2.5rem;
+      }
+
+      .table-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 1.5rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        text-align: left;
+        padding: 1rem;
+        border-bottom: 2px solid #e8e6e1;
+        color: #1a2332;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        padding: 1.2rem 1rem;
+        border-bottom: 1px solid #e8e6e1;
+        color: #666;
+        font-size: 0.95rem;
+      }
+
+      tr:hover {
+        background: #faf8f5;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .status-good {
+        background: rgba(56, 161, 105, 0.1);
+        color: #38a169;
+      }
+
+      .status-warning {
+        background: rgba(214, 158, 46, 0.1);
+        color: #d69e2e;
+      }
+
+      .status-critical {
+        background: rgba(197, 48, 48, 0.1);
+        color: #c53030;
+      }
+
+      /* Footer */
+      .dashboard-footer {
+        text-align: center;
+        padding: 1.5rem 0;
+        color: #999;
+        font-size: 0.85rem;
+        border-top: 1px solid #e8e6e1;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 1400px) {
+        .kpi-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+        }
+
+        .charts-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .kpi-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 160px;
+        }
+
+        .main {
+          margin-left: 160px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 1rem;
+          text-align: center;
+        }
+
+        .content {
+          padding: 1.5rem;
+        }
+
+        .kpi-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard-header {
+          flex-direction: column;
+        }
+
+        .period-selector {
+          margin-top: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo">AXIOMA</div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Dirección</div>
+          <a href="index.html" class="nav-item active">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            </svg>
+            Dashboard
+          </a>
+          <a href="indicadores.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="2" x2="12" y2="22"></line>
+              <path
+                d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+              ></path>
+            </svg>
+            Indicadores
+          </a>
+          <a href="estadisticas.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Estadísticas
+          </a>
+          <a href="graficas.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline
+                points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"
+              ></polyline>
+            </svg>
+            Gráficas
+          </a>
+          <a href="kpi.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="1"></circle>
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12"></path>
+              <polyline points="2 21 2 11 12 11"></polyline>
+            </svg>
+            KPI Detallado
+          </a>
+          <a href="reportes.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              ></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            Reportes
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Académico</div>
+          <a href="#" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+              ></path>
+            </svg>
+            Estudiantes
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Docentes
+          </a>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="main">
+        <!-- Top bar -->
+        <div class="topbar">
+          <div class="topbar-title">Dashboard Ejecutivo</div>
+          <div class="topbar-actions">
+            <button class="action-btn secondary">
+              <svg
+                style="width: 16px; height: 16px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                ></path>
+              </svg>
+              Reportar
+            </button>
+            <button class="action-btn">
+              <svg
+                style="width: 16px; height: 16px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Descargar
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Header -->
+          <div class="dashboard-header">
+            <div class="header-info">
+              <h1>Panel de Control Ejecutivo</h1>
+              <p>Período: Junio 2026 | Última actualización: hace 2 minutos</p>
+            </div>
+            <div class="period-selector">
+              <button class="period-btn active">Mes</button>
+              <button class="period-btn">Trimestre</button>
+              <button class="period-btn">Año</button>
+            </div>
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-label">Crecimiento Matrícula</div>
+              <div class="kpi-value">+12.5%</div>
+              <div class="kpi-change positive">
+                <svg
+                  class="arrow"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="23 6 13.46 15.54 8 10 1 17"></polyline>
+                  <polyline points="23 6 23 16 13 16"></polyline>
+                </svg>
+                +245 estudiantes este mes
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-label">Ingresos Mensuales</div>
+              <div class="kpi-value">$487K</div>
+              <div class="kpi-change positive">
+                <svg
+                  class="arrow"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="23 6 13.46 15.54 8 10 1 17"></polyline>
+                  <polyline points="23 6 23 16 13 16"></polyline>
+                </svg>
+                +8.2% vs mes anterior
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-label">Índice Desempeño</div>
+              <div class="kpi-value">8.7/10</div>
+              <div class="kpi-change positive">
+                <svg
+                  class="arrow"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="23 6 13.46 15.54 8 10 1 17"></polyline>
+                  <polyline points="23 6 23 16 13 16"></polyline>
+                </svg>
+                +0.3 puntos
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-label">Eficiencia Docente</div>
+              <div class="kpi-value">92%</div>
+              <div class="kpi-change negative">
+                <svg
+                  class="arrow"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="23 18 13.46 8.46 8 14 1 7"></polyline>
+                  <polyline points="23 18 23 8 13 8"></polyline>
+                </svg>
+                -1.2% vs mes anterior
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="charts-grid">
+            <div class="chart-card">
+              <div class="chart-title">Matrícula por Nivel Educativo</div>
+              <div class="chart-container">
+                <div
+                  style="
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                  "
+                >
+                  <div class="bar-chart bar-1">
+                    <span style="position: absolute; top: 5px">1,240</span>
+                  </div>
+                  <div class="bar-label">Primaria</div>
+                </div>
+                <div
+                  style="
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                  "
+                >
+                  <div class="bar-chart bar-2">
+                    <span style="position: absolute; top: 5px">1,085</span>
+                  </div>
+                  <div class="bar-label">Secundaria</div>
+                </div>
+                <div
+                  style="
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                  "
+                >
+                  <div class="bar-chart bar-3">
+                    <span style="position: absolute; top: 5px">1,452</span>
+                  </div>
+                  <div class="bar-label">Técnico</div>
+                </div>
+                <div
+                  style="
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                  "
+                >
+                  <div class="bar-chart bar-4">
+                    <span style="position: absolute; top: 5px">1,345</span>
+                  </div>
+                  <div class="bar-label">Superior</div>
+                </div>
+                <div
+                  style="
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                  "
+                >
+                  <div class="bar-chart bar-5">
+                    <span style="position: absolute; top: 5px">1,190</span>
+                  </div>
+                  <div class="bar-label">Educación Continua</div>
+                </div>
+                <div
+                  style="
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                  "
+                >
+                  <div class="bar-chart bar-6">
+                    <span style="position: absolute; top: 5px">1,402</span>
+                  </div>
+                  <div class="bar-label">Certificación</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-title">Tendencia de Ingresos (6 meses)</div>
+              <div class="line-chart">
+                <div class="line-point point-1"></div>
+                <div class="line-point point-2"></div>
+                <div class="line-point point-3"></div>
+                <div class="line-point point-4"></div>
+                <div class="line-point point-5"></div>
+                <div class="line-point point-6"></div>
+                <div class="line-point point-7"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metrics Table -->
+          <div class="metrics-table">
+            <div class="table-title">Resumen de Métricas Estratégicas</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Métrica</th>
+                  <th>Valor Actual</th>
+                  <th>Meta</th>
+                  <th>% Cumplimiento</th>
+                  <th>Tendencia</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Tasa de Matrícula</strong></td>
+                  <td>6,714 estudiantes</td>
+                  <td>6,500</td>
+                  <td>103.3%</td>
+                  <td>↑ +2.1%</td>
+                  <td>
+                    <span class="status-badge status-good">Excelente</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Retención Estudiantil</strong></td>
+                  <td>94.2%</td>
+                  <td>92%</td>
+                  <td>102.4%</td>
+                  <td>↑ +1.8%</td>
+                  <td>
+                    <span class="status-badge status-good">Excelente</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Tasa Graduación</strong></td>
+                  <td>88.6%</td>
+                  <td>85%</td>
+                  <td>104.2%</td>
+                  <td>→ +0.2%</td>
+                  <td>
+                    <span class="status-badge status-good">Excelente</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Satisfacción Estudiantes</strong></td>
+                  <td>8.4/10</td>
+                  <td>8.5</td>
+                  <td>98.8%</td>
+                  <td>→ -0.1%</td>
+                  <td>
+                    <span class="status-badge status-warning">Aceptable</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Presupuesto Ejecutado</strong></td>
+                  <td>68.5%</td>
+                  <td>70%</td>
+                  <td>97.9%</td>
+                  <td>↑ +3.2%</td>
+                  <td><span class="status-badge status-good">Normal</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Eficiencia Operativa</strong></td>
+                  <td>91.2%</td>
+                  <td>93%</td>
+                  <td>98.1%</td>
+                  <td>↓ -0.8%</td>
+                  <td>
+                    <span class="status-badge status-warning">Monitorear</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="dashboard-footer">
+            Datos actualizados automáticamente. AXIOMA ERP v2.0.1 | © 2024-2026
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AXIOMA - Devoluciones</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background: #1a2332;
+        color: #faf8f5;
+        padding: 30px 20px;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 40px;
+        color: #d69e2e;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        margin-bottom: 15px;
+      }
+
+      .sidebar-menu a {
+        color: #faf8f5;
+        text-decoration: none;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 15px;
+        border-radius: 6px;
+        transition: background 0.3s;
+      }
+
+      .sidebar-menu a:hover,
+      .sidebar-menu a.active {
+        background: #38a169;
+      }
+
+      .sidebar-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 280px;
+        flex: 1;
+      }
+
+      /* Topbar */
+      .topbar {
+        background: #faf8f5;
+        border-bottom: 2px solid #e0e0e0;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .topbar-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #1a2332;
+      }
+
+      .topbar-user {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 14px;
+        color: #666;
+      }
+
+      /* Content Area */
+      .content {
+        padding: 30px;
+      }
+
+      /* Section */
+      .section {
+        background: white;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .section-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #1a2332;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* Forms */
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+      }
+
+      input,
+      select,
+      textarea {
+        padding: 10px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: border-color 0.3s;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #38a169;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        background: #38a169;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #2d8659;
+      }
+
+      .btn-secondary {
+        background: #d69e2e;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #c05621;
+      }
+
+      .btn-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Tables */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      thead {
+        background: #f5f5f5;
+      }
+
+      th {
+        text-align: left;
+        padding: 12px 15px;
+        font-weight: 600;
+        color: #1a2332;
+        border-bottom: 2px solid #e0e0e0;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 14px;
+      }
+
+      tbody tr:hover {
+        background: #f9f9f9;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-perfect {
+        background: #c6f6d5;
+        color: #22543d;
+      }
+
+      .status-good {
+        background: #bee3f8;
+        color: #2c5282;
+      }
+
+      .status-fair {
+        background: #feebc8;
+        color: #7c2d12;
+      }
+
+      .status-poor {
+        background: #fed7d7;
+        color: #742a2a;
+      }
+
+      /* Scanner Box */
+      .scanner-box {
+        border: 2px dashed #d69e2e;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        background: #fffbf0;
+        margin-bottom: 20px;
+      }
+
+      .scanner-icon {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 15px;
+        color: #d69e2e;
+      }
+
+      .scanner-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 8px;
+      }
+
+      .scanner-desc {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 15px;
+      }
+
+      /* Grid Layout */
+      .form-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      /* Info Box */
+      .info-box {
+        background: #f0f7ff;
+        border-left: 4px solid #38a169;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+      }
+
+      .info-title {
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 5px;
+      }
+
+      .info-text {
+        font-size: 13px;
+        color: #666;
+      }
+
+      /* Late Fee Calculator */
+      .fee-calculator {
+        background: #fffbf0;
+        border-left: 4px solid #c53030;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+      }
+
+      .fee-title {
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 10px;
+      }
+
+      .fee-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 14px;
+      }
+
+      .fee-row:last-child {
+        border-bottom: none;
+        font-weight: 600;
+        font-size: 15px;
+        color: #c53030;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          padding: 15px;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-section {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 15px;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">AXIOMA</div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="index.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="catalogo.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path
+                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                ></path>
+              </svg>
+              Catálogo
+            </a>
+          </li>
+          <li>
+            <a href="prestamos.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="1"></circle>
+                <path d="M12 1v6m0 6v6"></path>
+                <path d="M4.22 4.22l4.24 4.24m3.08 3.08l4.24 4.24"></path>
+                <path d="M19.78 4.22l-4.24 4.24m-3.08 3.08l-4.24 4.24"></path>
+              </svg>
+              Préstamos
+            </a>
+          </li>
+          <li>
+            <a href="devoluciones.html" class="active">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                ></path>
+                <path d="M21 3v5h-5"></path>
+                <path
+                  d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                ></path>
+                <path d="M3 21v-5h5"></path>
+              </svg>
+              Devoluciones
+            </a>
+          </li>
+          <li>
+            <a href="historial.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Historial
+            </a>
+          </li>
+          <li>
+            <a href="vencidos.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+                <line x1="12" y1="2" x2="12" y2="22"></line>
+              </svg>
+              Vencidos
+            </a>
+          </li>
+          <li>
+            <a href="reservaciones.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                ></path>
+                <polyline points="16 2 16 6 8 6 8 2"></polyline>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              Reservaciones
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Topbar -->
+        <div class="topbar">
+          <h1 class="topbar-title">Gestión de Devoluciones</h1>
+          <div class="topbar-user">
+            <svg
+              style="width: 20px; height: 20px"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>Administrador</span>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Return Form -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                ></path>
+                <path d="M21 3v5h-5"></path>
+              </svg>
+              Formulario de Devolución
+            </h2>
+            <div class="form-section">
+              <div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Libro Devuelto *</label>
+                    <select required>
+                      <option value="">Seleccionar libro...</option>
+                      <option value="book1">1984 - Sofia Martínez</option>
+                      <option value="book2">El Quijote - Juan García</option>
+                      <option value="book3">Sapiens - Carlos Rodríguez</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Fecha de Devolución *</label>
+                    <input type="date" required value="2026-06-29" />
+                  </div>
+                  <div class="form-group">
+                    <label>Estado del Libro *</label>
+                    <select required>
+                      <option value="">Seleccionar estado...</option>
+                      <option value="perfect">Perfecto</option>
+                      <option value="good">Bueno</option>
+                      <option value="fair">Regular</option>
+                      <option value="poor">Dañado</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 20px">
+                  <label>Observaciones de Condición</label>
+                  <textarea
+                    placeholder="Detallar rayones, manchas, páginas rotas, etc..."
+                  ></textarea>
+                </div>
+                <button class="btn btn-primary">
+                  <svg
+                    class="btn-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Procesar Devolución
+                </button>
+              </div>
+              <div class="scanner-box">
+                <svg
+                  class="scanner-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <polyline points="3 7 3 5a2 2 0 0 1 2-2h2"></polyline>
+                  <polyline points="17 3 19 3 19 5"></polyline>
+                  <polyline points="21 17 21 19a2 2 0 0 1-2 2h-2"></polyline>
+                  <polyline points="7 21 5 21 5 19"></polyline>
+                  <rect x="5" y="5" width="14" height="14" rx="2" ry="2"></rect>
+                </svg>
+                <div class="scanner-title">Escanear Código de Barras</div>
+                <div class="scanner-desc">
+                  Apunta el escáner a este área para buscar automáticamente el
+                  ISBN del libro a devolver
+                </div>
+                <button class="btn btn-secondary">
+                  <svg
+                    class="btn-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+                    ></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                  Usar Cámara
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Returns -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              Devoluciones de Hoy (29 Jun 2026)
+            </h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Libro</th>
+                  <th>Usuario</th>
+                  <th>Fecha de Vencimiento</th>
+                  <th>Días Retrasado</th>
+                  <th>Estado Libro</th>
+                  <th>Multa</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Cien Años de Soledad</td>
+                  <td>Juan García</td>
+                  <td>28 Jun 2026</td>
+                  <td>1</td>
+                  <td>
+                    <span class="status-badge status-perfect">Perfecto</span>
+                  </td>
+                  <td>$1.50</td>
+                  <td>
+                    <span class="status-badge status-perfect">Procesada</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>El Coraje de Ser</td>
+                  <td>Sofia Martínez</td>
+                  <td>29 Jun 2026</td>
+                  <td>0</td>
+                  <td><span class="status-badge status-good">Bueno</span></td>
+                  <td>$0.00</td>
+                  <td>
+                    <span class="status-badge status-perfect">Procesada</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Sapiens</td>
+                  <td>Roberto López</td>
+                  <td>27 Jun 2026</td>
+                  <td>2</td>
+                  <td><span class="status-badge status-fair">Regular</span></td>
+                  <td>$3.00</td>
+                  <td>
+                    <span class="status-badge status-perfect">Procesada</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>The Midnight Library</td>
+                  <td>Francisco Ruiz</td>
+                  <td>25 Jun 2026</td>
+                  <td>4</td>
+                  <td><span class="status-badge status-poor">Dañado</span></td>
+                  <td>$6.00 + Daño</td>
+                  <td>
+                    <span class="status-badge status-poor"
+                      >Requiere Revisión</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Condition Assessment Guide -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              Guía de Evaluación de Condición
+            </h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+              "
+            >
+              <div class="info-box">
+                <div class="info-title">Perfecto</div>
+                <div class="info-text">
+                  El libro está en condición de como nuevo. Sin marcas, rayones,
+                  manchas, páginas sueltas o dobladas.
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Bueno</div>
+                <div class="info-text">
+                  Ligeros signos de uso. Algunas marcas de página, portada
+                  ligeramente gastada, pero completamente legible y funcional.
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Regular</div>
+                <div class="info-text">
+                  Muestra signos notables de uso. Páginas dobladas, manchas de
+                  tinta, rayones, pero sigue siendo totalmente funcional.
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Dañado</div>
+                <div class="info-text">
+                  Daño significativo. Páginas rotas, falta de páginas,
+                  encuadernación dañada u otros problemas graves.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Late Fee Calculator -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <line x1="12" y1="2" x2="12" y2="22"></line>
+                <path
+                  d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                ></path>
+              </svg>
+              Calculadora de Multas
+            </h2>
+            <p style="margin-bottom: 15px; font-size: 14px; color: #666">
+              Las multas se calculan automáticamente en función de los días de
+              retraso desde la fecha de vencimiento.
+            </p>
+            <div class="fee-calculator">
+              <div class="fee-title">Desglose de Multa - Ejemplo</div>
+              <div class="fee-row">
+                <span>Días de Retraso:</span>
+                <span>5 días</span>
+              </div>
+              <div class="fee-row">
+                <span>Tarifa por Día:</span>
+                <span>$0.75</span>
+              </div>
+              <div class="fee-row">
+                <span>Multa Subtotal:</span>
+                <span>$3.75</span>
+              </div>
+              <div class="fee-row">
+                <span>Estado del Libro:</span>
+                <span>Daño (+$10.00)</span>
+              </div>
+              <div class="fee-row">
+                <span>TOTAL A PAGAR:</span>
+                <span>$13.75</span>
+              </div>
+            </div>
+            <p style="font-size: 13px; color: #666; margin-top: 15px">
+              <strong>Nota:</strong> Los daños al libro pueden incurrir en
+              cargos adicionales por reemplazo o reparación. Máximo por día:
+              $1.50. Máximo por libro: $25.00 (después de esto, se considera
+              daño irrecuperable).
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

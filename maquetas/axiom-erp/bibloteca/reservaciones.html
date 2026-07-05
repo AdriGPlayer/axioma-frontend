@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AXIOMA - Reservaciones</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background: #1a2332;
+        color: #faf8f5;
+        padding: 30px 20px;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 40px;
+        color: #d69e2e;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        margin-bottom: 15px;
+      }
+
+      .sidebar-menu a {
+        color: #faf8f5;
+        text-decoration: none;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 15px;
+        border-radius: 6px;
+        transition: background 0.3s;
+      }
+
+      .sidebar-menu a:hover,
+      .sidebar-menu a.active {
+        background: #38a169;
+      }
+
+      .sidebar-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 280px;
+        flex: 1;
+      }
+
+      /* Topbar */
+      .topbar {
+        background: #faf8f5;
+        border-bottom: 2px solid #e0e0e0;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .topbar-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #1a2332;
+      }
+
+      .topbar-user {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 14px;
+        color: #666;
+      }
+
+      /* Content Area */
+      .content {
+        padding: 30px;
+      }
+
+      /* Section */
+      .section {
+        background: white;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .section-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #1a2332;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* Forms */
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+      }
+
+      input,
+      select,
+      textarea {
+        padding: 10px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: border-color 0.3s;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #38a169;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        background: #38a169;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #2d8659;
+      }
+
+      .btn-secondary {
+        background: #d69e2e;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #c05621;
+      }
+
+      .btn-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      .btn-small {
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 4px;
+      }
+
+      /* Tables */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      thead {
+        background: #f5f5f5;
+      }
+
+      th {
+        text-align: left;
+        padding: 12px 15px;
+        font-weight: 600;
+        color: #1a2332;
+        border-bottom: 2px solid #e0e0e0;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 14px;
+      }
+
+      tbody tr:hover {
+        background: #f9f9f9;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-active {
+        background: #c6f6d5;
+        color: #22543d;
+      }
+
+      .status-pending {
+        background: #feebc8;
+        color: #7c2d12;
+      }
+
+      .status-fulfilled {
+        background: #bee3f8;
+        color: #2c5282;
+      }
+
+      .status-cancelled {
+        background: #fed7d7;
+        color: #742a2a;
+      }
+
+      /* Priority Badge */
+      .priority-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .priority-high {
+        background: #fed7d7;
+        color: #742a2a;
+      }
+
+      .priority-medium {
+        background: #feebc8;
+        color: #7c2d12;
+      }
+
+      .priority-low {
+        background: #bee3f8;
+        color: #2c5282;
+      }
+
+      /* Availability Counter */
+      .availability-counter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .counter-circle {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        font-size: 14px;
+      }
+
+      .counter-available {
+        background: #38a169;
+      }
+
+      .counter-reserved {
+        background: #d69e2e;
+      }
+
+      /* Info Box */
+      .info-box {
+        background: #f0f7ff;
+        border-left: 4px solid #38a169;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+      }
+
+      .info-title {
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 5px;
+      }
+
+      .info-text {
+        font-size: 13px;
+        color: #666;
+      }
+
+      /* Grid Layout */
+      .two-column {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      /* Action Buttons */
+      .action-buttons {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+
+      .btn-notify {
+        background: #38a169;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn-notify:hover {
+        background: #2d8659;
+      }
+
+      .btn-cancel {
+        background: #c53030;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn-cancel:hover {
+        background: #9b2c2c;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          padding: 15px;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .two-column {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 15px;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">AXIOMA</div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="index.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="catalogo.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path
+                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                ></path>
+              </svg>
+              Catálogo
+            </a>
+          </li>
+          <li>
+            <a href="prestamos.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="1"></circle>
+                <path d="M12 1v6m0 6v6"></path>
+                <path d="M4.22 4.22l4.24 4.24m3.08 3.08l4.24 4.24"></path>
+                <path d="M19.78 4.22l-4.24 4.24m-3.08 3.08l-4.24 4.24"></path>
+              </svg>
+              Préstamos
+            </a>
+          </li>
+          <li>
+            <a href="devoluciones.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                ></path>
+                <path d="M21 3v5h-5"></path>
+                <path
+                  d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                ></path>
+                <path d="M3 21v-5h5"></path>
+              </svg>
+              Devoluciones
+            </a>
+          </li>
+          <li>
+            <a href="historial.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Historial
+            </a>
+          </li>
+          <li>
+            <a href="vencidos.html">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+                <line x1="12" y1="2" x2="12" y2="22"></line>
+              </svg>
+              Vencidos
+            </a>
+          </li>
+          <li>
+            <a href="reservaciones.html" class="active">
+              <svg
+                class="sidebar-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                ></path>
+                <polyline points="16 2 16 6 8 6 8 2"></polyline>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              Reservaciones
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Topbar -->
+        <div class="topbar">
+          <h1 class="topbar-title">Gestión de Reservaciones</h1>
+          <div class="topbar-user">
+            <svg
+              style="width: 20px; height: 20px"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>Administrador</span>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- New Reservation Form -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M12 5v14M5 12h14"></path>
+              </svg>
+              Nueva Reservación
+            </h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Libro *</label>
+                <select required>
+                  <option value="">Seleccionar libro...</option>
+                  <option value="book1">Sapiens (3 copias disponibles)</option>
+                  <option value="book2">El Quijote (1 copia disponible)</option>
+                  <option value="book3">Educated (2 copias disponibles)</option>
+                  <option value="book4">Homo Deus (Sin disponibilidad)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Usuario/Reservante *</label>
+                <select required>
+                  <option value="">Seleccionar usuario...</option>
+                  <option value="user1">Juan García</option>
+                  <option value="user2">María López</option>
+                  <option value="user3">Sofia Martínez</option>
+                  <option value="user4">Carlos Rodríguez</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Fecha de Reservación *</label>
+                <input type="date" required value="2026-06-29" />
+              </div>
+              <div class="form-group">
+                <label>Prioridad</label>
+                <select>
+                  <option value="normal">Normal</option>
+                  <option value="high">Alta</option>
+                  <option value="low">Baja</option>
+                </select>
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1">
+                <label>Notas</label>
+                <textarea placeholder="Agregar notas adicionales..."></textarea>
+              </div>
+            </div>
+            <button class="btn btn-primary">
+              <svg
+                class="btn-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Crear Reservación
+            </button>
+          </div>
+
+          <!-- Reservation Queue -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"
+                ></path>
+                <line x1="16" y1="11" x2="8" y2="11"></line>
+              </svg>
+              Cola de Reservaciones
+            </h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Posición</th>
+                  <th>Libro</th>
+                  <th>Usuario</th>
+                  <th>Fecha Solicitud</th>
+                  <th>Prioridad</th>
+                  <th>Estado</th>
+                  <th>Copias Disponibles</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>1</strong></td>
+                  <td>Homo Deus</td>
+                  <td>Pablo Sánchez</td>
+                  <td>15 Jun 2026</td>
+                  <td>
+                    <span class="priority-badge priority-high">Alta</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-pending">Espera</span>
+                  </td>
+                  <td>
+                    <div class="availability-counter">
+                      <div class="counter-circle counter-reserved">0</div>
+                      <span style="font-size: 12px">De 3 copias</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-small btn-notify">Notificar</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>2</strong></td>
+                  <td>Homo Deus</td>
+                  <td>Elena Ruiz</td>
+                  <td>18 Jun 2026</td>
+                  <td>
+                    <span class="priority-badge priority-medium">Normal</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-pending">Espera</span>
+                  </td>
+                  <td>
+                    <div class="availability-counter">
+                      <div class="counter-circle counter-reserved">0</div>
+                      <span style="font-size: 12px">De 3 copias</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-small btn-notify">Notificar</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>3</strong></td>
+                  <td>El Quijote</td>
+                  <td>Roberto López</td>
+                  <td>20 Jun 2026</td>
+                  <td><span class="priority-badge priority-low">Baja</span></td>
+                  <td>
+                    <span class="status-badge status-pending">Espera</span>
+                  </td>
+                  <td>
+                    <div class="availability-counter">
+                      <div class="counter-circle counter-reserved">1</div>
+                      <span style="font-size: 12px">De 2 copias</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-small btn-notify">Notificar</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>4</strong></td>
+                  <td>Sapiens</td>
+                  <td>Victoria Torres</td>
+                  <td>22 Jun 2026</td>
+                  <td>
+                    <span class="priority-badge priority-medium">Normal</span>
+                  </td>
+                  <td>
+                    <span class="status-badge status-active">Disponible</span>
+                  </td>
+                  <td>
+                    <div class="availability-counter">
+                      <div class="counter-circle counter-available">3</div>
+                      <span style="font-size: 12px">De 4 copias</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-small btn-notify">Notificar</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>5</strong></td>
+                  <td>Educated</td>
+                  <td>Miguel Díaz</td>
+                  <td>25 Jun 2026</td>
+                  <td><span class="priority-badge priority-low">Baja</span></td>
+                  <td>
+                    <span class="status-badge status-active">Disponible</span>
+                  </td>
+                  <td>
+                    <div class="availability-counter">
+                      <div class="counter-circle counter-available">2</div>
+                      <span style="font-size: 12px">De 3 copias</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-small btn-notify">Notificar</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Fulfilled Reservations -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Reservaciones Completadas (Últimas 30 días)
+            </h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Libro</th>
+                  <th>Usuario</th>
+                  <th>Fecha Solicitud</th>
+                  <th>Fecha de Completación</th>
+                  <th>Días en Espera</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Cien Años de Soledad</td>
+                  <td>Francisco Ruiz</td>
+                  <td>05 Jun 2026</td>
+                  <td>15 Jun 2026</td>
+                  <td>10</td>
+                  <td>
+                    <span class="status-badge status-fulfilled"
+                      >Completada</span
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Don Quijote</td>
+                  <td>Ana García</td>
+                  <td>08 Jun 2026</td>
+                  <td>18 Jun 2026</td>
+                  <td>10</td>
+                  <td>
+                    <span class="status-badge status-fulfilled"
+                      >Completada</span
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>El Coraje de Ser</td>
+                  <td>Carlos Rodríguez</td>
+                  <td>12 Jun 2026</td>
+                  <td>22 Jun 2026</td>
+                  <td>10</td>
+                  <td>
+                    <span class="status-badge status-fulfilled"
+                      >Completada</span
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Sapiens</td>
+                  <td>Laura Gómez</td>
+                  <td>16 Jun 2026</td>
+                  <td>25 Jun 2026</td>
+                  <td>9</td>
+                  <td>
+                    <span class="status-badge status-fulfilled"
+                      >Completada</span
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>The Midnight Library</td>
+                  <td>David Martín</td>
+                  <td>19 Jun 2026</td>
+                  <td>27 Jun 2026</td>
+                  <td>8</td>
+                  <td>
+                    <span class="status-badge status-fulfilled"
+                      >Completada</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Reservation Statistics -->
+          <div class="two-column">
+            <div class="section">
+              <h2 class="section-title">
+                <svg
+                  class="section-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <line x1="12" y1="2" x2="12" y2="22"></line>
+                  <path
+                    d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                  ></path>
+                </svg>
+                Estadísticas de Reservaciones
+              </h2>
+              <div class="info-box">
+                <div class="info-title">Total de Reservaciones Activas</div>
+                <div
+                  class="info-text"
+                  style="font-size: 24px; font-weight: bold; color: #1a2332"
+                >
+                  23
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Completadas Este Mes</div>
+                <div
+                  class="info-text"
+                  style="font-size: 24px; font-weight: bold; color: #38a169"
+                >
+                  45
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Tiempo Promedio en Espera</div>
+                <div
+                  class="info-text"
+                  style="font-size: 24px; font-weight: bold; color: #d69e2e"
+                >
+                  9 días
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Reservaciones Canceladas</div>
+                <div
+                  class="info-text"
+                  style="font-size: 24px; font-weight: bold; color: #c53030"
+                >
+                  7
+                </div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h2 class="section-title">
+                <svg
+                  class="section-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="19" cy="12" r="1"></circle>
+                  <circle cx="5" cy="12" r="1"></circle>
+                </svg>
+                Libros Más Reservados
+              </h2>
+              <table style="margin-top: 10px">
+                <thead>
+                  <tr>
+                    <th>Libro</th>
+                    <th>Reservaciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Homo Deus</td>
+                    <td><strong>12</strong></td>
+                  </tr>
+                  <tr>
+                    <td>El Quijote</td>
+                    <td><strong>8</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Educated</td>
+                    <td><strong>6</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Sapiens</td>
+                    <td><strong>5</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Cien Años de Soledad</td>
+                    <td><strong>4</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Reservation Rules -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                ></path>
+              </svg>
+              Políticas de Reservación
+            </h2>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+              "
+            >
+              <div class="info-box">
+                <div class="info-title">Duración Máxima de Reserva</div>
+                <div class="info-text">
+                  Las reservaciones son válidas por 7 días. Si no se recoge
+                  dentro de este plazo, la reservación se cancela
+                  automáticamente.
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Límite de Reservaciones</div>
+                <div class="info-text">
+                  Un usuario puede tener hasta 5 reservaciones activas
+                  simultáneamente para evitar monopolizar recursos.
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Cola de Espera</div>
+                <div class="info-text">
+                  Las reservaciones se procesan en orden FIFO (primero en
+                  entrar, primero en salir) por orden de prioridad.
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Notificaciones Automáticas</div>
+                <div class="info-text">
+                  Se envían notificaciones por email cuando el libro solicitado
+                  está disponible. El usuario tiene 48 horas para recogerlo.
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Cancelación de Reservas</div>
+                <div class="info-text">
+                  Los usuarios pueden cancelar sus reservaciones en cualquier
+                  momento. Las cancelaciones abren el espacio para otros
+                  usuarios.
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-title">Renovación de Préstamo</div>
+                <div class="info-text">
+                  Si hay reservaciones pendientes para un libro, el préstamo
+                  actual no puede renovarse. Debe devolverse puntualmente.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

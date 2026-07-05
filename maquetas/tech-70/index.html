@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escuela Raíces del Saber</title>
+  <meta name="description" content="Escuela Raíces del Saber: oferta académica, eventos, avisos y contacto." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ===== AVISO EMERGENTE (toast) ===== -->
+  <aside class="popup-aviso" id="popupAviso" aria-label="Aviso destacado">
+    <input type="checkbox" id="cerrarPopup" class="popup-toggle" hidden />
+    <div class="popup-card">
+      <span class="popup-badge">Próximo evento</span>
+      <h3 class="popup-title">Festival de Primavera</h3>
+      <p class="popup-text">Te esperamos el 15 de abril en el patio central. ¡No faltes!</p>
+      <label for="cerrarPopup" class="popup-close" aria-label="Cerrar aviso">&times;</label>
+    </div>
+  </aside>
+
+  <!-- ===== ENCABEZADO / NAV ===== -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="#inicio" class="logo">
+        <span class="logo__mark">R</span>
+        <span class="logo__text">Raíces del Saber</span>
+      </a>
+      <input type="checkbox" id="navToggle" class="nav-toggle" hidden />
+      <label for="navToggle" class="nav-burger" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </label>
+      <nav class="nav" aria-label="Navegación principal">
+        <a href="#inicio">Inicio</a>
+        <a href="#eventos">Eventos</a>
+        <a href="#avisos">Avisos</a>
+        <a href="#oferta">Oferta académica</a>
+        <a href="#contacto" class="nav__cta">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== SECCIÓN 1: INICIO / CARRUSEL ===== -->
+    <section id="inicio" class="hero">
+      <div class="carrusel">
+        <input type="radio" name="slide" id="slide1" class="carrusel__radio" checked />
+        <input type="radio" name="slide" id="slide2" class="carrusel__radio" />
+        <input type="radio" name="slide" id="slide3" class="carrusel__radio" />
+
+        <div class="carrusel__track">
+          <figure class="slide">
+            <img src="images/banner-1.png" alt="Fachada de la escuela en un día soleado" />
+            <figcaption class="slide__caption">
+              <h1>Bienvenidos a Raíces del Saber</h1>
+              <p>Un lugar donde cada niño florece</p>
+            </figcaption>
+          </figure>
+          <figure class="slide">
+            <img src="images/banner-2.png" alt="Salón de clases luminoso con estudiantes" />
+            <figcaption class="slide__caption">
+              <h1>Aprender es una aventura</h1>
+              <p>Educación cálida y cercana</p>
+            </figcaption>
+          </figure>
+          <figure class="slide">
+            <img src="images/banner-3.png" alt="Estudiantes colaborando en el patio" />
+            <figcaption class="slide__caption">
+              <h1>Crecemos juntos</h1>
+              <p>Comunidad, valores y talento</p>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="carrusel__dots" role="tablist" aria-label="Seleccionar imagen">
+          <label for="slide1" class="dot" aria-label="Imagen 1"></label>
+          <label for="slide2" class="dot" aria-label="Imagen 2"></label>
+          <label for="slide3" class="dot" aria-label="Imagen 3"></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECCIÓN 2: PRÓXIMOS EVENTOS (LÍNEA DE TIEMPO) ===== -->
+    <section id="eventos" class="section">
+      <div class="container">
+        <header class="section__head">
+          <span class="section__eyebrow">Agenda</span>
+          <h2 class="section__title">Próximos eventos</h2>
+          <p class="section__subtitle">Sigue nuestra línea del tiempo y no te pierdas nada.</p>
+        </header>
+
+        <ol class="timeline">
+          <li class="timeline__item">
+            <span class="timeline__node" aria-hidden="true"></span>
+            <article class="event-card">
+              <span class="event-card__date">15 Abr</span>
+              <h3 class="event-card__title">Festival de Primavera</h3>
+              <p class="event-card__text">Música, arte y comida en el patio central. Toda la comunidad está invitada.</p>
+              <span class="event-card__time">10:00 a.m. · Patio central</span>
+            </article>
+          </li>
+          <li class="timeline__item">
+            <span class="timeline__node" aria-hidden="true"></span>
+            <article class="event-card">
+              <span class="event-card__date">28 Abr</span>
+              <h3 class="event-card__title">Feria de Ciencias</h3>
+              <p class="event-card__text">Los alumnos presentan sus proyectos de robótica y experimentos.</p>
+              <span class="event-card__time">9:00 a.m. · Gimnasio</span>
+            </article>
+          </li>
+          <li class="timeline__item">
+            <span class="timeline__node" aria-hidden="true"></span>
+            <article class="event-card">
+              <span class="event-card__date">10 May</span>
+              <h3 class="event-card__title">Festival del Día de las Madres</h3>
+              <p class="event-card__text">Una mañana especial con presentaciones de cada grupo.</p>
+              <span class="event-card__time">11:00 a.m. · Auditorio</span>
+            </article>
+          </li>
+          <li class="timeline__item">
+            <span class="timeline__node" aria-hidden="true"></span>
+            <article class="event-card">
+              <span class="event-card__date">22 May</span>
+              <h3 class="event-card__title">Torneo Deportivo</h3>
+              <p class="event-card__text">Competencias amistosas entre grados. ¡Ven a apoyar a tu equipo!</p>
+              <span class="event-card__time">8:30 a.m. · Cancha</span>
+            </article>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== SECCIÓN 3: AVISOS ===== -->
+    <section id="avisos" class="section section--alt">
+      <div class="container">
+        <header class="section__head">
+          <span class="section__eyebrow">Comunicados</span>
+          <h2 class="section__title">Avisos</h2>
+          <p class="section__subtitle">Información importante para padres y alumnos.</p>
+        </header>
+
+        <div class="avisos-grid">
+          <article class="aviso aviso--urgente">
+            <span class="aviso__tag">Urgente</span>
+            <h3 class="aviso__title">Suspensión de clases</h3>
+            <p class="aviso__text">Por mantenimiento eléctrico, no habrá clases el viernes 12 de abril.</p>
+            <span class="aviso__date">8 Abr 2026</span>
+          </article>
+
+          <article class="aviso aviso--importante">
+            <span class="aviso__tag">Importante</span>
+            <h3 class="aviso__title">Entrega de boletas</h3>
+            <p class="aviso__text">La entrega de calificaciones será el 18 de abril en horario habitual.</p>
+            <span class="aviso__date">5 Abr 2026</span>
+          </article>
+
+          <article class="aviso aviso--general">
+            <span class="aviso__tag">General</span>
+            <h3 class="aviso__title">Nuevo menú de cafetería</h3>
+            <p class="aviso__text">A partir de mayo contaremos con opciones saludables renovadas.</p>
+            <span class="aviso__date">2 Abr 2026</span>
+          </article>
+
+          <article class="aviso aviso--general">
+            <span class="aviso__tag">General</span>
+            <h3 class="aviso__title">Inscripciones abiertas</h3>
+            <p class="aviso__text">Ya puedes inscribir a tus hijos en los talleres del próximo ciclo.</p>
+            <span class="aviso__date">1 Abr 2026</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECCIÓN 4: OFERTA ACADÉMICA ===== -->
+    <section id="oferta" class="section">
+      <div class="container">
+        <header class="section__head">
+          <span class="section__eyebrow">Talleres</span>
+          <h2 class="section__title">Oferta académica</h2>
+          <p class="section__subtitle">Actividades para desarrollar el talento de cada estudiante.</p>
+        </header>
+
+        <div class="oferta-grid">
+          <article class="taller">
+            <img class="taller__img" src="images/taller-arte.png" alt="Materiales de pintura en un taller de arte" />
+            <div class="taller__body">
+              <h3 class="taller__title">Arte y Pintura</h3>
+              <p class="taller__text">Exploramos color, formas y creatividad con técnicas variadas.</p>
+            </div>
+          </article>
+
+          <article class="taller">
+            <img class="taller__img" src="images/taller-musica.png" alt="Instrumentos musicales en un taller de música" />
+            <div class="taller__body">
+              <h3 class="taller__title">Música</h3>
+              <p class="taller__text">Guitarra, piano y canto para descubrir el ritmo interior.</p>
+            </div>
+          </article>
+
+          <article class="taller">
+            <img class="taller__img" src="images/taller-robotica.png" alt="Kits de robótica sobre una mesa" />
+            <div class="taller__body">
+              <h3 class="taller__title">Robótica</h3>
+              <p class="taller__text">Construimos y programamos robots con pensamiento lógico.</p>
+            </div>
+          </article>
+
+          <article class="taller">
+            <img class="taller__img" src="images/taller-deportes.png" alt="Balones en una cancha deportiva" />
+            <div class="taller__body">
+              <h3 class="taller__title">Deportes</h3>
+              <p class="taller__text">Fútbol, básquet y trabajo en equipo para cuerpo y mente.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECCIÓN 5: CONTACTO ===== -->
+    <section id="contacto" class="section section--alt">
+      <div class="container">
+        <header class="section__head">
+          <span class="section__eyebrow">Estamos para ti</span>
+          <h2 class="section__title">Contacto</h2>
+          <p class="section__subtitle">Escríbenos o visítanos, con gusto te atendemos.</p>
+        </header>
+
+        <div class="contacto-grid">
+          <div class="mapa">
+            <iframe
+              title="Ubicación de la escuela"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=-99.1700%2C19.4200%2C-99.1300%2C19.4400&amp;layer=mapnik"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <ul class="mapa__info">
+              <li><strong>Dirección:</strong> Av. del Saber 123, Col. Centro</li>
+              <li><strong>Teléfono:</strong> (55) 1234 5678</li>
+              <li><strong>Correo:</strong> hola@raicesdelsaber.edu</li>
+            </ul>
+          </div>
+
+          <form class="form" action="#" method="post">
+            <div class="form__row">
+              <label for="nombre">Nombre</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
+            </div>
+            <div class="form__row">
+              <label for="email">Correo electrónico</label>
+              <input type="email" id="email" name="email" placeholder="tucorreo@ejemplo.com" required />
+            </div>
+            <div class="form__row">
+              <label for="asunto">Asunto</label>
+              <input type="text" id="asunto" name="asunto" placeholder="¿En qué te ayudamos?" />
+            </div>
+            <div class="form__row">
+              <label for="mensaje">Mensaje</label>
+              <textarea id="mensaje" name="mensaje" rows="5" placeholder="Escribe tu mensaje..." required></textarea>
+            </div>
+            <button type="submit" class="btn">Enviar mensaje</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== PIE DE PÁGINA ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <span class="logo__mark">R</span>
+        <span>Raíces del Saber</span>
+      </div>
+      <p class="footer__text">© 2026 Escuela Raíces del Saber. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

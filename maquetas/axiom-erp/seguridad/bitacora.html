@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bitácora de Actividad - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 250px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px 0;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: 20px 15px;
+        border-bottom: 1px solid #2d3e52;
+        margin-bottom: 20px;
+      }
+
+      .sidebar-header h1 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #faf8f5;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        padding: 0;
+      }
+
+      .sidebar-menu a {
+        display: block;
+        padding: 12px 20px;
+        color: #b0b8c4;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+      }
+
+      .sidebar-menu a:hover {
+        background-color: #2d3e52;
+        color: #faf8f5;
+        border-left-color: #c53030;
+      }
+
+      .sidebar-menu a.active {
+        color: #faf8f5;
+        background-color: #2d3e52;
+        border-left-color: #c53030;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 250px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e0e6ed;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .topbar-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .topbar-right {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 15px;
+        background-color: #f5f7fa;
+        border-radius: 6px;
+      }
+
+      /* Content Area */
+      .content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+      }
+
+      /* Header with Actions */
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background-color: #a01f1f;
+      }
+
+      .btn-secondary {
+        background-color: #38a169;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background-color: #2f7d56;
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: #1a2332;
+        border: 1px solid #e0e6ed;
+      }
+
+      .btn-outline:hover {
+        background-color: #f5f7fa;
+      }
+
+      /* Search and Filter */
+      .filters {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 200px;
+        position: relative;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      .filter-select {
+        padding: 10px 15px;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        font-size: 14px;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      /* Table */
+      .table-container {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        padding: 15px;
+        border-top: 1px solid #e0e6ed;
+      }
+
+      tbody tr:hover {
+        background-color: #f9fafb;
+      }
+
+      /* Activity Type Badge */
+      .badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .badge-login {
+        background-color: #c6f6d5;
+        color: #22543d;
+      }
+
+      .badge-create {
+        background-color: #bee3f8;
+        color: #2c5282;
+      }
+
+      .badge-update {
+        background-color: #feebc8;
+        color: #7c2d12;
+      }
+
+      .badge-delete {
+        background-color: #fed7d7;
+        color: #742a2a;
+      }
+
+      .badge-export {
+        background-color: #e6fffa;
+        color: #234e52;
+      }
+
+      .badge-config {
+        background-color: #f0e7fe;
+        color: #553399;
+      }
+
+      /* Module Badge */
+      .module-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        background-color: #edf2f7;
+        color: #2d3748;
+      }
+
+      /* Action Buttons */
+      .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .action-btn {
+        padding: 6px 12px;
+        background-color: transparent;
+        border: 1px solid #e0e6ed;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #1a2332;
+        transition: all 0.3s ease;
+      }
+
+      .action-btn:hover {
+        background-color: #f5f7fa;
+        border-color: #c53030;
+        color: #c53030;
+      }
+
+      /* Expandable Row */
+      .expandable-icon {
+        cursor: pointer;
+        color: #c53030;
+        font-weight: bold;
+      }
+
+      .details-row {
+        display: none;
+        background-color: #f9fafb;
+      }
+
+      .details-row.visible {
+        display: table-row;
+      }
+
+      .details-content {
+        padding: 20px;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .detail-item {
+        font-size: 13px;
+      }
+
+      .detail-label {
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 4px;
+      }
+
+      .detail-value {
+        color: #666;
+        word-break: break-all;
+      }
+
+      /* Forms */
+      .form-section {
+        background-color: white;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .form-section h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0e6ed;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .form-group input,
+      .form-group select {
+        padding: 10px 12px;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      /* Statistics */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 28px;
+        font-weight: 600;
+        color: #c53030;
+        margin-bottom: 8px;
+      }
+
+      .stat-label {
+        font-size: 13px;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      /* Pagination */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
+        padding: 20px;
+      }
+
+      .pagination a,
+      .pagination span {
+        padding: 8px 12px;
+        border: 1px solid #e0e6ed;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #1a2332;
+        cursor: pointer;
+      }
+
+      .pagination a:hover {
+        background-color: #f5f7fa;
+        border-color: #c53030;
+      }
+
+      .pagination .active {
+        background-color: #c53030;
+        color: #faf8f5;
+        border-color: #c53030;
+      }
+
+      /* SVG Icon Styles */
+      svg {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .timestamp {
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h1>AXIOMA</h1>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="#usuarios">Usuarios</a></li>
+          <li><a href="#roles">Roles</a></li>
+          <li><a href="#permisos">Permisos</a></li>
+          <li><a href="#bitacora" class="active">Bitácora</a></li>
+          <li><a href="#auditoria">Auditoría</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main">
+        <!-- Topbar -->
+        <header class="topbar">
+          <h2 class="topbar-title">Bitácora de Actividad</h2>
+          <div class="topbar-right">
+            <div class="user-profile">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Admin</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Statistics -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value">247</div>
+              <div class="stat-label">Eventos Hoy</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">18</div>
+              <div class="stat-label">Usuarios Activos</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">12</div>
+              <div class="stat-label">Acciones/Hora</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">0</div>
+              <div class="stat-label">Errores</div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filters">
+            <div class="search-box">
+              <input
+                type="text"
+                placeholder="Buscar por usuario, IP o detalles..."
+              />
+            </div>
+            <select class="filter-select">
+              <option>Todas las Acciones</option>
+              <option>Inicio de Sesión</option>
+              <option>Crear</option>
+              <option>Editar</option>
+              <option>Eliminar</option>
+              <option>Exportar</option>
+              <option>Configuración</option>
+            </select>
+            <select class="filter-select">
+              <option>Todos los Módulos</option>
+              <option>Usuarios</option>
+              <option>Roles</option>
+              <option>Control Escolar</option>
+              <option>Recursos Humanos</option>
+              <option>Finanzas</option>
+            </select>
+            <select class="filter-select">
+              <option>Últimas 24 horas</option>
+              <option>Últimos 7 días</option>
+              <option>Últimos 30 días</option>
+              <option>Este mes</option>
+              <option>Personalizado</option>
+            </select>
+          </div>
+
+          <!-- Export Options -->
+          <div style="display: flex; gap: 10px; margin-bottom: 25px">
+            <button class="btn btn-secondary">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Exportar CSV
+            </button>
+            <button class="btn btn-secondary">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Exportar PDF
+            </button>
+            <button class="btn btn-outline">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                ></path>
+              </svg>
+              Actualizar
+            </button>
+          </div>
+
+          <!-- Activity Log Table -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 20px"></th>
+                  <th>Fecha/Hora</th>
+                  <th>Usuario</th>
+                  <th>Acción</th>
+                  <th>Módulo</th>
+                  <th>Dirección IP</th>
+                  <th>Detalles</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 14:32:45</td>
+                  <td><strong>admin01</strong></td>
+                  <td>
+                    <span class="badge badge-login">Inicio de Sesión</span>
+                  </td>
+                  <td><span class="module-badge">Sistema</span></td>
+                  <td>192.168.1.102</td>
+                  <td>Acceso exitoso</td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7">
+                    <div
+                      class="details-content"
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                        padding: 20px;
+                      "
+                    >
+                      <div class="detail-item">
+                        <div class="detail-label">Navegador:</div>
+                        <div class="detail-value">
+                          Chrome 121.0 en Windows 10
+                        </div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Ubicación:</div>
+                        <div class="detail-value">México, CDMX</div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Sesión ID:</div>
+                        <div class="detail-value">sess_8f9c2d1e4a5b6c7d</div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 14:28:12</td>
+                  <td><strong>director01</strong></td>
+                  <td><span class="badge badge-create">Crear</span></td>
+                  <td><span class="module-badge">Control Escolar</span></td>
+                  <td>192.168.1.105</td>
+                  <td>Nuevo estudiante registrado</td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7">
+                    <div
+                      class="details-content"
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                        padding: 20px;
+                      "
+                    >
+                      <div class="detail-item">
+                        <div class="detail-label">Recurso:</div>
+                        <div class="detail-value">Estudiante #ID: 5847</div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Nombre:</div>
+                        <div class="detail-value">
+                          Juan Carlos Mendoza García
+                        </div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Cambios:</div>
+                        <div class="detail-value">Registro completo creado</div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 14:15:33</td>
+                  <td><strong>admin01</strong></td>
+                  <td><span class="badge badge-update">Editar</span></td>
+                  <td><span class="module-badge">Usuarios</span></td>
+                  <td>192.168.1.102</td>
+                  <td>Cambio de rol de usuario</td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7">
+                    <div
+                      class="details-content"
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                        padding: 20px;
+                      "
+                    >
+                      <div class="detail-item">
+                        <div class="detail-label">Usuario:</div>
+                        <div class="detail-value">jsmith (John Smith)</div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Cambio:</div>
+                        <div class="detail-value">Docente → Coordinador</div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Razón:</div>
+                        <div class="detail-value">Promoción interna</div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 14:02:18</td>
+                  <td><strong>lmoreno</strong></td>
+                  <td><span class="badge badge-export">Exportar</span></td>
+                  <td><span class="module-badge">Control Escolar</span></td>
+                  <td>192.168.1.110</td>
+                  <td>Reporte de calificaciones exportado</td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7">
+                    <div
+                      class="details-content"
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                        padding: 20px;
+                      "
+                    >
+                      <div class="detail-item">
+                        <div class="detail-label">Formato:</div>
+                        <div class="detail-value">Excel (.xlsx)</div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Registros:</div>
+                        <div class="detail-value">145 estudiantes</div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Período:</div>
+                        <div class="detail-value">2do. Bimestre 2026</div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 13:45:52</td>
+                  <td><strong>admin01</strong></td>
+                  <td><span class="badge badge-config">Configuración</span></td>
+                  <td><span class="module-badge">Sistema</span></td>
+                  <td>192.168.1.102</td>
+                  <td>Actualización de parámetros del sistema</td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7">
+                    <div
+                      class="details-content"
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                        padding: 20px;
+                      "
+                    >
+                      <div class="detail-item">
+                        <div class="detail-label">Parámetro:</div>
+                        <div class="detail-value">
+                          Límite de intentos fallidos de login
+                        </div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Valor Anterior:</div>
+                        <div class="detail-value">5</div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Valor Nuevo:</div>
+                        <div class="detail-value">3</div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="expandable-icon">▼</span></td>
+                  <td class="timestamp">2026-06-29 13:20:09</td>
+                  <td><strong>director01</strong></td>
+                  <td><span class="badge badge-delete">Eliminar</span></td>
+                  <td><span class="module-badge">Recursos Humanos</span></td>
+                  <td>192.168.1.105</td>
+                  <td>Registro de empleado eliminado</td>
+                </tr>
+                <tr class="details-row">
+                  <td colspan="7">
+                    <div
+                      class="details-content"
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                        padding: 20px;
+                      "
+                    >
+                      <div class="detail-item">
+                        <div class="detail-label">Empleado:</div>
+                        <div class="detail-value">
+                          Pedro González Flores (ID: 2145)
+                        </div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Motivo:</div>
+                        <div class="detail-value">
+                          Baja del sistema - Jubilación
+                        </div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Confirmación:</div>
+                        <div class="detail-value">Sí (usuario lo aprobó)</div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">4</a>
+            <span>...</span>
+            <a href="#">25</a>
+          </div>
+
+          <!-- Advanced Filters -->
+          <div class="form-section" style="margin-top: 40px">
+            <h3>Filtros Avanzados</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Desde Fecha</label>
+                <input type="date" />
+              </div>
+              <div class="form-group">
+                <label>Hasta Fecha</label>
+                <input type="date" />
+              </div>
+              <div class="form-group">
+                <label>Usuario Específico</label>
+                <select>
+                  <option>Todos</option>
+                  <option>admin01</option>
+                  <option>director01</option>
+                  <option>jsmith</option>
+                  <option>lmoreno</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Tipo de Acción</label>
+                <select>
+                  <option>Todas</option>
+                  <option>Inicio de Sesión</option>
+                  <option>Crear Registros</option>
+                  <option>Editar Registros</option>
+                  <option>Eliminar Registros</option>
+                  <option>Exportar Datos</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Dirección IP</label>
+                <input type="text" placeholder="Ej: 192.168.1.102" />
+              </div>
+              <div class="form-group">
+                <label>Resultado</label>
+                <select>
+                  <option>Todos</option>
+                  <option>Exitoso</option>
+                  <option>Error/Fallido</option>
+                </select>
+              </div>
+            </div>
+            <div style="display: flex; gap: 15px; margin-top: 25px">
+              <button class="btn btn-primary">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                Aplicar Filtros
+              </button>
+              <button class="btn btn-outline">Limpiar Filtros</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

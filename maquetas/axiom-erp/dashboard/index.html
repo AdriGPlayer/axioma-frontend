@@ -1,0 +1,2102 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AXIOMA - Dashboard Principal | MINERVA</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-dark: #1a2332;
+        --primary-medium: #243447;
+        --primary-light: #3d5a73;
+        --cream-light: #faf8f5;
+        --cream-medium: #f5f0e8;
+        --cream-dark: #e8e0d0;
+        --accent-red: #c53030;
+        --accent-red-light: #fc8181;
+        --accent-green: #38a169;
+        --accent-green-light: #9ae6b4;
+        --accent-yellow: #d69e2e;
+        --accent-yellow-light: #faf089;
+        --gray-100: #f7fafc;
+        --gray-200: #edf2f7;
+        --gray-300: #e2e8f0;
+        --gray-400: #cbd5e0;
+        --gray-500: #a0aec0;
+        --gray-600: #718096;
+        --gray-700: #4a5568;
+        --gray-800: #2d3748;
+        --white: #ffffff;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        --radius: 12px;
+        --radius-sm: 8px;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          sans-serif;
+        background-color: var(--cream-light);
+        color: var(--gray-800);
+        line-height: 1.6;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 260px;
+        height: 100vh;
+        background: linear-gradient(
+          180deg,
+          var(--primary-dark) 0%,
+          var(--primary-medium) 100%
+        );
+        color: var(--white);
+        z-index: 1000;
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-icon {
+        width: 42px;
+        height: 42px;
+        background: linear-gradient(135deg, var(--accent-red) 0%, #9b2c2c 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .logo-icon svg {
+        width: 24px;
+        height: 24px;
+        fill: var(--white);
+      }
+
+      .logo-text h1 {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      .logo-text span {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.7;
+      }
+
+      .sidebar-nav {
+        padding: 16px 0;
+      }
+
+      .nav-section {
+        margin-bottom: 8px;
+      }
+
+      .nav-section-title {
+        padding: 8px 24px;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: all 0.2s;
+        border-left: 3px solid transparent;
+      }
+
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--white);
+      }
+
+      .nav-item.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--white);
+        border-left-color: var(--accent-red);
+      }
+
+      .nav-item svg {
+        width: 20px;
+        height: 20px;
+        opacity: 0.8;
+      }
+
+      .nav-item span {
+        font-size: 14px;
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-left: 260px;
+        min-height: 100vh;
+      }
+
+      /* Top Bar */
+      .topbar {
+        position: sticky;
+        top: 0;
+        background: var(--white);
+        border-bottom: 1px solid var(--gray-200);
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .topbar-left h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--primary-dark);
+      }
+
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+        font-size: 13px;
+        color: var(--gray-500);
+      }
+
+      .breadcrumb a {
+        color: var(--gray-500);
+        text-decoration: none;
+      }
+
+      .breadcrumb a:hover {
+        color: var(--accent-red);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .search-box {
+        position: relative;
+      }
+
+      .search-box input {
+        width: 280px;
+        padding: 10px 16px 10px 42px;
+        border: 1px solid var(--gray-300);
+        border-radius: 8px;
+        font-size: 14px;
+        background: var(--gray-100);
+        transition: all 0.2s;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: var(--accent-red);
+        background: var(--white);
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      .search-box svg {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        color: var(--gray-400);
+      }
+
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        border: 1px solid var(--gray-300);
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s;
+      }
+
+      .icon-btn:hover {
+        border-color: var(--gray-400);
+        background: var(--gray-100);
+      }
+
+      .icon-btn svg {
+        width: 20px;
+        height: 20px;
+        color: var(--gray-600);
+      }
+
+      .badge-dot {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 8px;
+        height: 8px;
+        background: var(--accent-red);
+        border-radius: 50%;
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .user-profile:hover {
+        background: var(--gray-100);
+      }
+
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-light),
+          var(--primary-medium)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .user-info {
+        text-align: left;
+      }
+
+      .user-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--gray-800);
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: var(--gray-500);
+      }
+
+      /* Dashboard Content */
+      .dashboard {
+        padding: 32px;
+      }
+
+      .welcome-card {
+        background: linear-gradient(
+          135deg,
+          var(--primary-dark) 0%,
+          var(--primary-medium) 100%
+        );
+        border-radius: var(--radius);
+        padding: 32px;
+        margin-bottom: 24px;
+        color: var(--white);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .welcome-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+      }
+
+      .welcome-card h3 {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .welcome-card p {
+        opacity: 0.8;
+        font-size: 15px;
+      }
+
+      .welcome-date {
+        position: absolute;
+        top: 32px;
+        right: 32px;
+        text-align: right;
+      }
+
+      .welcome-date .day {
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .welcome-date .month {
+        font-size: 14px;
+        opacity: 0.8;
+      }
+
+      /* KPI Cards */
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+
+      .kpi-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 24px;
+        box-shadow: var(--shadow);
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .kpi-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .kpi-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+      }
+
+      .kpi-card.blue::before {
+        background: var(--primary-light);
+      }
+      .kpi-card.green::before {
+        background: var(--accent-green);
+      }
+      .kpi-card.yellow::before {
+        background: var(--accent-yellow);
+      }
+      .kpi-card.red::before {
+        background: var(--accent-red);
+      }
+
+      .kpi-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+
+      .kpi-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .kpi-icon svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .kpi-card.blue .kpi-icon {
+        background: rgba(61, 90, 115, 0.1);
+        color: var(--primary-light);
+      }
+      .kpi-card.green .kpi-icon {
+        background: rgba(56, 161, 105, 0.1);
+        color: var(--accent-green);
+      }
+      .kpi-card.yellow .kpi-icon {
+        background: rgba(214, 158, 46, 0.1);
+        color: var(--accent-yellow);
+      }
+      .kpi-card.red .kpi-icon {
+        background: rgba(197, 48, 48, 0.1);
+        color: var(--accent-red);
+      }
+
+      .kpi-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 4px;
+      }
+
+      .kpi-label {
+        font-size: 14px;
+        color: var(--gray-500);
+        margin-bottom: 12px;
+      }
+
+      .kpi-trend {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+      }
+
+      .kpi-trend.up {
+        color: var(--accent-green);
+      }
+
+      .kpi-trend.down {
+        color: var(--accent-red);
+      }
+
+      .kpi-trend svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Content Grid */
+      .content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+      }
+
+      @media (max-width: 1200px) {
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--gray-200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card-header h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--gray-800);
+      }
+
+      .card-body {
+        padding: 24px;
+      }
+
+      /* Quick Actions */
+      .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+      }
+
+      .quick-action {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 20px 16px;
+        border-radius: var(--radius-sm);
+        background: var(--cream-medium);
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .quick-action:hover {
+        background: var(--cream-dark);
+        transform: translateY(-2px);
+      }
+
+      .quick-action-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .quick-action-icon svg {
+        width: 24px;
+        height: 24px;
+        color: var(--primary-dark);
+      }
+
+      .quick-action span {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--gray-700);
+        text-align: center;
+      }
+
+      /* Chart Simulation */
+      .chart-container {
+        padding: 24px;
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+
+      .chart-tabs {
+        display: flex;
+        gap: 4px;
+      }
+
+      .chart-tab {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        cursor: pointer;
+        color: var(--gray-500);
+        transition: all 0.2s;
+      }
+
+      .chart-tab.active {
+        background: var(--primary-dark);
+        color: var(--white);
+      }
+
+      .chart-tab:hover:not(.active) {
+        background: var(--gray-100);
+      }
+
+      .bar-chart {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        height: 200px;
+        padding: 0 16px;
+        gap: 16px;
+      }
+
+      .bar-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        gap: 8px;
+      }
+
+      .bar {
+        width: 100%;
+        max-width: 40px;
+        border-radius: 6px 6px 0 0;
+        transition: all 0.3s;
+      }
+
+      .bar.primary {
+        background: linear-gradient(
+          180deg,
+          var(--primary-light) 0%,
+          var(--primary-dark) 100%
+        );
+      }
+
+      .bar.secondary {
+        background: linear-gradient(180deg, var(--cream-dark) 0%, #c9b896 100%);
+      }
+
+      .bar-label {
+        font-size: 12px;
+        color: var(--gray-500);
+      }
+
+      .chart-legend {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid var(--gray-200);
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--gray-600);
+      }
+
+      .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+      }
+
+      .legend-dot.primary {
+        background: var(--primary-dark);
+      }
+
+      .legend-dot.secondary {
+        background: var(--cream-dark);
+      }
+
+      /* Donut Chart */
+      .donut-chart {
+        position: relative;
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 24px;
+      }
+
+      .donut-ring {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: conic-gradient(
+          var(--primary-dark) 0deg 126deg,
+          var(--accent-green) 126deg 216deg,
+          var(--accent-yellow) 216deg 288deg,
+          var(--accent-red) 288deg 360deg
+        );
+        position: relative;
+      }
+
+      .donut-inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 120px;
+        background: var(--white);
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .donut-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--gray-800);
+      }
+
+      .donut-label {
+        font-size: 12px;
+        color: var(--gray-500);
+      }
+
+      .donut-legend {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .donut-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--gray-600);
+      }
+
+      .donut-legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+      }
+
+      /* Calendar */
+      .calendar {
+        width: 100%;
+      }
+
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .calendar-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--gray-800);
+      }
+
+      .calendar-nav {
+        display: flex;
+        gap: 8px;
+      }
+
+      .calendar-nav button {
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--gray-300);
+        border-radius: 6px;
+        background: var(--white);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+
+      .calendar-nav button:hover {
+        background: var(--gray-100);
+      }
+
+      .calendar-nav svg {
+        width: 14px;
+        height: 14px;
+        color: var(--gray-600);
+      }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+
+      .calendar-day-name {
+        text-align: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gray-500);
+        padding: 8px 0;
+        text-transform: uppercase;
+      }
+
+      .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: var(--gray-700);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .calendar-day:hover {
+        background: var(--gray-100);
+      }
+
+      .calendar-day.today {
+        background: var(--primary-dark);
+        color: var(--white);
+        font-weight: 600;
+      }
+
+      .calendar-day.has-event {
+        position: relative;
+      }
+
+      .calendar-day.has-event::after {
+        content: "";
+        position: absolute;
+        bottom: 4px;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--accent-red);
+      }
+
+      .calendar-day.other-month {
+        color: var(--gray-400);
+      }
+
+      /* Recent Activity */
+      .activity-list {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .activity-item {
+        display: flex;
+        gap: 12px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      .activity-item:last-child {
+        border-bottom: none;
+      }
+
+      .activity-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .activity-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .activity-icon.blue {
+        background: rgba(61, 90, 115, 0.1);
+        color: var(--primary-light);
+      }
+
+      .activity-icon.green {
+        background: rgba(56, 161, 105, 0.1);
+        color: var(--accent-green);
+      }
+
+      .activity-icon.yellow {
+        background: rgba(214, 158, 46, 0.1);
+        color: var(--accent-yellow);
+      }
+
+      .activity-icon.red {
+        background: rgba(197, 48, 48, 0.1);
+        color: var(--accent-red);
+      }
+
+      .activity-content {
+        flex: 1;
+      }
+
+      .activity-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--gray-800);
+        margin-bottom: 2px;
+      }
+
+      .activity-desc {
+        font-size: 13px;
+        color: var(--gray-500);
+      }
+
+      .activity-time {
+        font-size: 12px;
+        color: var(--gray-400);
+      }
+
+      /* Events */
+      .event-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .event-item {
+        display: flex;
+        gap: 12px;
+        padding: 12px;
+        border-radius: var(--radius-sm);
+        background: var(--gray-50);
+        border-left: 3px solid;
+        transition: all 0.2s;
+      }
+
+      .event-item:hover {
+        background: var(--gray-100);
+      }
+
+      .event-item.blue {
+        border-color: var(--primary-light);
+      }
+      .event-item.green {
+        border-color: var(--accent-green);
+      }
+      .event-item.red {
+        border-color: var(--accent-red);
+      }
+      .event-item.yellow {
+        border-color: var(--accent-yellow);
+      }
+
+      .event-date {
+        text-align: center;
+        min-width: 48px;
+      }
+
+      .event-day {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--gray-800);
+        line-height: 1;
+      }
+
+      .event-month {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--gray-500);
+      }
+
+      .event-info h5 {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--gray-800);
+        margin-bottom: 4px;
+      }
+
+      .event-info p {
+        font-size: 12px;
+        color: var(--gray-500);
+      }
+
+      /* Button */
+      .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-primary {
+        background: var(--primary-dark);
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-medium);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 1px solid var(--gray-300);
+        color: var(--gray-700);
+      }
+
+      .btn-outline:hover {
+        background: var(--gray-100);
+        border-color: var(--gray-400);
+      }
+
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 80px;
+        }
+
+        .sidebar-header,
+        .nav-section-title,
+        .nav-item span {
+          display: none;
+        }
+
+        .nav-item {
+          justify-content: center;
+          padding: 16px;
+        }
+
+        .main-content {
+          margin-left: 80px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .topbar {
+          padding: 16px;
+        }
+
+        .search-box input {
+          width: 100%;
+        }
+
+        .user-info {
+          display: none;
+        }
+
+        .dashboard {
+          padding: 16px;
+        }
+
+        .kpi-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .kpi-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .welcome-date {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <div class="logo-text">
+            <h1>AXIOMA</h1>
+            <span>MINERVA ERP</span>
+          </div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Principal</div>
+          <a href="#" class="nav-item active">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="9" />
+              <rect x="14" y="3" width="7" height="5" />
+              <rect x="14" y="12" width="7" height="9" />
+              <rect x="3" y="16" width="7" height="5" />
+            </svg>
+            <span>Dashboard</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Modulos</div>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <span>Recursos Humanos</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+              <path d="M6 12v5c3 3 9 3 12 0v-5" />
+            </svg>
+            <span>Control Escolar</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 20V10" />
+              <path d="M18 20V4" />
+              <path d="M6 20v-4" />
+            </svg>
+            <span>Direccion</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+              <line x1="1" y1="10" x2="23" y2="10" />
+            </svg>
+            <span>Admin y Finanzas</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+              />
+            </svg>
+            <span>Biblioteca</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Sistema</div>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <span>Seguridad</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+              />
+            </svg>
+            <span>Configuracion</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Portales</div>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span>CERES - Estudiantes</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+              <line x1="6" y1="1" x2="6" y2="4" />
+              <line x1="10" y1="1" x2="10" y2="4" />
+              <line x1="14" y1="1" x2="14" y2="4" />
+            </svg>
+            <span>JUNO - Profesores</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <span>VULCANO - Padres</span>
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <polyline points="10 9 9 9 8 9" />
+            </svg>
+            <span>JANO - Prefectura</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2>Dashboard</h2>
+          <div class="breadcrumb">
+            <a href="#">AXIOMA</a>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>Dashboard Principal</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="search-box">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Buscar alumnos, empleados, pagos..."
+            />
+          </div>
+          <button class="icon-btn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <div class="badge-dot"></div>
+          </button>
+          <button class="icon-btn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+              />
+            </svg>
+          </button>
+          <div class="user-profile">
+            <div class="user-avatar">AM</div>
+            <div class="user-info">
+              <div class="user-name">Admin Principal</div>
+              <div class="user-role">Super Administrador</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Content -->
+      <div class="dashboard">
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+          <h3>Bienvenido, Administrador</h3>
+          <p>Tienes 5 notificaciones pendientes y 3 solicitudes por revisar.</p>
+          <div class="welcome-date">
+            <div class="day">29</div>
+            <div class="month">Junio 2026</div>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card blue">
+            <div class="kpi-header">
+              <div class="kpi-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-value">1,247</div>
+            <div class="kpi-label">Total Alumnos</div>
+            <div class="kpi-trend up">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+              <span>+12% este ciclo</span>
+            </div>
+          </div>
+
+          <div class="kpi-card green">
+            <div class="kpi-header">
+              <div class="kpi-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-value">89</div>
+            <div class="kpi-label">Total Docentes</div>
+            <div class="kpi-trend up">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+              <span>+3 nuevos</span>
+            </div>
+          </div>
+
+          <div class="kpi-card yellow">
+            <div class="kpi-header">
+              <div class="kpi-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-value">$2.4M</div>
+            <div class="kpi-label">Ingresos del Ciclo</div>
+            <div class="kpi-trend up">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+              <span>+8% vs anterior</span>
+            </div>
+          </div>
+
+          <div class="kpi-card blue">
+            <div class="kpi-header">
+              <div class="kpi-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-value">1,189</div>
+            <div class="kpi-label">Alumnos Activos</div>
+            <div class="kpi-trend up">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+              <span>95.3% asistencia</span>
+            </div>
+          </div>
+
+          <div class="kpi-card red">
+            <div class="kpi-header">
+              <div class="kpi-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-value">12</div>
+            <div class="kpi-label">Incidencias Activas</div>
+            <div class="kpi-trend down">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
+                <polyline points="17 18 23 18 23 12" />
+              </svg>
+              <span>-5 vs semana anterior</span>
+            </div>
+          </div>
+
+          <div class="kpi-card green">
+            <div class="kpi-header">
+              <div class="kpi-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-value">8</div>
+            <div class="kpi-label">Eventos este Mes</div>
+            <div class="kpi-trend up">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+              <span>2 proximos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card" style="margin-bottom: 24px">
+          <div class="card-header">
+            <h4>Accesos Rapidos</h4>
+          </div>
+          <div class="card-body">
+            <div class="quick-actions">
+              <a href="#" class="quick-action">
+                <div class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="8.5" cy="7" r="4" />
+                    <line x1="20" y1="8" x2="20" y2="14" />
+                    <line x1="23" y1="11" x2="17" y2="11" />
+                  </svg>
+                </div>
+                <span>Nuevo Alumno</span>
+              </a>
+              <a href="#" class="quick-action">
+                <div class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                    />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="12" y1="18" x2="12" y2="12" />
+                    <line x1="9" y1="15" x2="15" y2="15" />
+                  </svg>
+                </div>
+                <span>Nuevo Pago</span>
+              </a>
+              <a href="#" class="quick-action">
+                <div class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </div>
+                <span>Calendario</span>
+              </a>
+              <a href="#" class="quick-action">
+                <div class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                    />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                  </svg>
+                </div>
+                <span>Reportes</span>
+              </a>
+              <a href="#" class="quick-action">
+                <div class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                </div>
+                <span>Incidencias</span>
+              </a>
+              <a href="#" class="quick-action">
+                <div class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                    />
+                    <polyline points="22,6 12,13 2,6" />
+                  </svg>
+                </div>
+                <span>Mensajes</span>
+              </a>
+              <a href="#" class="quick-action">
+                <div class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </div>
+                <span>Nuevo Empleado</span>
+              </a>
+              <a href="#" class="quick-action">
+                <div class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                  </svg>
+                </div>
+                <span>Estadisticas</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+          <div>
+            <!-- Chart Card -->
+            <div class="card" style="margin-bottom: 24px">
+              <div class="card-header">
+                <h4>Inscripciones por Mes</h4>
+                <div class="chart-tabs">
+                  <span class="chart-tab active">2026</span>
+                  <span class="chart-tab">2025</span>
+                </div>
+              </div>
+              <div class="chart-container">
+                <div class="bar-chart">
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 60%"></div>
+                    <div class="bar secondary" style="height: 45%"></div>
+                    <span class="bar-label">Ene</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 85%"></div>
+                    <div class="bar secondary" style="height: 55%"></div>
+                    <span class="bar-label">Feb</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 75%"></div>
+                    <div class="bar secondary" style="height: 65%"></div>
+                    <span class="bar-label">Mar</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 50%"></div>
+                    <div class="bar secondary" style="height: 40%"></div>
+                    <span class="bar-label">Abr</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 40%"></div>
+                    <div class="bar secondary" style="height: 35%"></div>
+                    <span class="bar-label">May</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 55%"></div>
+                    <div class="bar secondary" style="height: 45%"></div>
+                    <span class="bar-label">Jun</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 30%"></div>
+                    <div class="bar secondary" style="height: 20%"></div>
+                    <span class="bar-label">Jul</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 90%"></div>
+                    <div class="bar secondary" style="height: 60%"></div>
+                    <span class="bar-label">Ago</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 95%"></div>
+                    <div class="bar secondary" style="height: 70%"></div>
+                    <span class="bar-label">Sep</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 70%"></div>
+                    <div class="bar secondary" style="height: 50%"></div>
+                    <span class="bar-label">Oct</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 65%"></div>
+                    <div class="bar secondary" style="height: 45%"></div>
+                    <span class="bar-label">Nov</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bar primary" style="height: 80%"></div>
+                    <div class="bar secondary" style="height: 55%"></div>
+                    <span class="bar-label">Dic</span>
+                  </div>
+                </div>
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <div class="legend-dot primary"></div>
+                    <span>Nuevos Ingresos</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot secondary"></div>
+                    <span>Reinscripciones</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card">
+              <div class="card-header">
+                <h4>Ultimos Movimientos</h4>
+                <button class="btn btn-outline btn-sm">Ver todos</button>
+              </div>
+              <div class="card-body">
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <div class="activity-icon green">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="8.5" cy="7" r="4" />
+                        <line x1="20" y1="8" x2="20" y2="14" />
+                        <line x1="23" y1="11" x2="17" y2="11" />
+                      </svg>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">Nuevo alumno registrado</div>
+                      <div class="activity-desc">
+                        Maria Garcia Lopez - 2do Grado, Grupo A
+                      </div>
+                    </div>
+                    <div class="activity-time">Hace 5 min</div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon blue">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path
+                          d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                        />
+                      </svg>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">Pago recibido</div>
+                      <div class="activity-desc">
+                        Colegiatura de Juan Martinez - $2,500.00
+                      </div>
+                    </div>
+                    <div class="activity-time">Hace 12 min</div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon yellow">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">Reporte de incidencia</div>
+                      <div class="activity-desc">
+                        Conducta - Pedro Sanchez, 3er Grado
+                      </div>
+                    </div>
+                    <div class="activity-time">Hace 25 min</div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon blue">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">Nuevo docente asignado</div>
+                      <div class="activity-desc">
+                        Prof. Roberto Chen - Matematicas
+                      </div>
+                    </div>
+                    <div class="activity-time">Hace 1 hora</div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon red">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                        />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                      </svg>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">Adeudo vencido</div>
+                      <div class="activity-desc">
+                        Familia Rodrigez - 2 meses pendientes
+                      </div>
+                    </div>
+                    <div class="activity-time">Hace 2 horas</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <!-- Distribution Chart -->
+            <div class="card" style="margin-bottom: 24px">
+              <div class="card-header">
+                <h4>Distribucion de Alumnos</h4>
+              </div>
+              <div class="card-body">
+                <div class="donut-chart">
+                  <div class="donut-ring">
+                    <div class="donut-inner">
+                      <div class="donut-value">1,247</div>
+                      <div class="donut-label">Total</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="donut-legend">
+                  <div class="donut-legend-item">
+                    <div
+                      class="donut-legend-dot"
+                      style="background: var(--primary-dark)"
+                    ></div>
+                    <span>Primaria (437)</span>
+                  </div>
+                  <div class="donut-legend-item">
+                    <div
+                      class="donut-legend-dot"
+                      style="background: var(--accent-green)"
+                    ></div>
+                    <span>Secundaria (312)</span>
+                  </div>
+                  <div class="donut-legend-item">
+                    <div
+                      class="donut-legend-dot"
+                      style="background: var(--accent-yellow)"
+                    ></div>
+                    <span>Preparatoria (268)</span>
+                  </div>
+                  <div class="donut-legend-item">
+                    <div
+                      class="donut-legend-dot"
+                      style="background: var(--accent-red)"
+                    ></div>
+                    <span>Universidad (230)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Calendar -->
+            <div class="card" style="margin-bottom: 24px">
+              <div class="card-header">
+                <h4>Calendario</h4>
+              </div>
+              <div class="card-body">
+                <div class="calendar">
+                  <div class="calendar-header">
+                    <span class="calendar-title">Junio 2026</span>
+                    <div class="calendar-nav">
+                      <button>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                      </button>
+                      <button>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="calendar-grid">
+                    <div class="calendar-day-name">Dom</div>
+                    <div class="calendar-day-name">Lun</div>
+                    <div class="calendar-day-name">Mar</div>
+                    <div class="calendar-day-name">Mie</div>
+                    <div class="calendar-day-name">Jue</div>
+                    <div class="calendar-day-name">Vie</div>
+                    <div class="calendar-day-name">Sab</div>
+                    <div class="calendar-day other-month">31</div>
+                    <div class="calendar-day">1</div>
+                    <div class="calendar-day">2</div>
+                    <div class="calendar-day">3</div>
+                    <div class="calendar-day">4</div>
+                    <div class="calendar-day has-event">5</div>
+                    <div class="calendar-day">6</div>
+                    <div class="calendar-day">7</div>
+                    <div class="calendar-day">8</div>
+                    <div class="calendar-day">9</div>
+                    <div class="calendar-day has-event">10</div>
+                    <div class="calendar-day">11</div>
+                    <div class="calendar-day">12</div>
+                    <div class="calendar-day">13</div>
+                    <div class="calendar-day">14</div>
+                    <div class="calendar-day has-event">15</div>
+                    <div class="calendar-day">16</div>
+                    <div class="calendar-day">17</div>
+                    <div class="calendar-day">18</div>
+                    <div class="calendar-day">19</div>
+                    <div class="calendar-day">20</div>
+                    <div class="calendar-day has-event">21</div>
+                    <div class="calendar-day">22</div>
+                    <div class="calendar-day">23</div>
+                    <div class="calendar-day">24</div>
+                    <div class="calendar-day">25</div>
+                    <div class="calendar-day">26</div>
+                    <div class="calendar-day">27</div>
+                    <div class="calendar-day">28</div>
+                    <div class="calendar-day today">29</div>
+                    <div class="calendar-day">30</div>
+                    <div class="calendar-day other-month">1</div>
+                    <div class="calendar-day other-month">2</div>
+                    <div class="calendar-day other-month">3</div>
+                    <div class="calendar-day other-month">4</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="card">
+              <div class="card-header">
+                <h4>Proximos Eventos</h4>
+              </div>
+              <div class="card-body">
+                <div class="event-list">
+                  <div class="event-item blue">
+                    <div class="event-date">
+                      <div class="event-day">01</div>
+                      <div class="event-month">Jul</div>
+                    </div>
+                    <div class="event-info">
+                      <h5>Junta de Consejo</h5>
+                      <p>10:00 AM - Salon Principal</p>
+                    </div>
+                  </div>
+                  <div class="event-item green">
+                    <div class="event-date">
+                      <div class="event-day">05</div>
+                      <div class="event-month">Jul</div>
+                    </div>
+                    <div class="event-info">
+                      <h5>Entrega de Boletas</h5>
+                      <p>9:00 AM - Todos los grados</p>
+                    </div>
+                  </div>
+                  <div class="event-item yellow">
+                    <div class="event-date">
+                      <div class="event-day">12</div>
+                      <div class="event-month">Jul</div>
+                    </div>
+                    <div class="event-info">
+                      <h5>Clases de Verano</h5>
+                      <p>Inscripciones abiertas</p>
+                    </div>
+                  </div>
+                  <div class="event-item red">
+                    <div class="event-date">
+                      <div class="event-day">15</div>
+                      <div class="event-month">Jul</div>
+                    </div>
+                    <div class="event-info">
+                      <h5>Ultimo dia de clases</h5>
+                      <p>Ciclo 2025-2026</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

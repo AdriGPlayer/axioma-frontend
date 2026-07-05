@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parámetros - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: #faf8f5;
+        color: #333;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        background: #1a2332;
+        color: #faf8f5;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .content-wrapper {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 20px;
+      }
+
+      .sidebar {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0d9d3;
+        height: fit-content;
+        overflow: hidden;
+      }
+
+      .sidebar-nav {
+        list-style: none;
+      }
+
+      .sidebar-nav li {
+        border-bottom: 1px solid #e0d9d3;
+      }
+
+      .sidebar-nav li:last-child {
+        border-bottom: none;
+      }
+
+      .sidebar-nav a {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        color: #333;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
+
+      .sidebar-nav a:hover {
+        background: #f5f3f1;
+        color: #c53030;
+      }
+
+      .sidebar-nav a.active {
+        background: #1a2332;
+        color: #faf8f5;
+        border-left: 4px solid #c53030;
+        padding-left: 16px;
+      }
+
+      .sidebar-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .main-content {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0d9d3;
+        padding: 30px;
+      }
+
+      .section-header {
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0d9d3;
+      }
+
+      .section-header h2 {
+        color: #1a2332;
+        font-size: 24px;
+        margin-bottom: 5px;
+      }
+
+      .section-header p {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .form-section {
+        margin-bottom: 30px;
+      }
+
+      .form-section h3 {
+        color: #1a2332;
+        font-size: 16px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e0d9d3;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #1a2332;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="number"],
+      input[type="time"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e0d9d3;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="number"]:focus,
+      input[type="time"]:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      .switch-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        background: #f5f3f1;
+        border-radius: 6px;
+      }
+
+      .switch-group label {
+        margin: 0;
+        flex: 1;
+        cursor: pointer;
+      }
+
+      .toggle-switch {
+        position: relative;
+        width: 50px;
+        height: 26px;
+        background: #ccc;
+        border-radius: 13px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .toggle-switch input {
+        display: none;
+      }
+
+      .toggle-switch input:checked + .slider {
+        background: #c53030;
+      }
+
+      .slider {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        transition: left 0.3s;
+      }
+
+      .toggle-switch input:checked + .slider {
+        left: 27px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background: #a82020;
+      }
+
+      .btn-secondary {
+        background: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background: #0f1419;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+        justify-content: flex-end;
+      }
+
+      .alert {
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+
+      .alert-info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .help-text {
+        display: block;
+        margin-top: 4px;
+        color: #666;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Parámetros del Sistema</h1>
+      </header>
+
+      <div class="content-wrapper">
+        <aside class="sidebar">
+          <ul class="sidebar-nav">
+            <li>
+              <a href="#general" class="active">
+                <div class="sidebar-icon">⚙</div>
+                General
+              </a>
+            </li>
+            <li>
+              <a href="#academic">
+                <div class="sidebar-icon">📚</div>
+                Académico
+              </a>
+            </li>
+            <li>
+              <a href="#financial">
+                <div class="sidebar-icon">💰</div>
+                Financiero
+              </a>
+            </li>
+            <li>
+              <a href="#notifications">
+                <div class="sidebar-icon">🔔</div>
+                Notificaciones
+              </a>
+            </li>
+          </ul>
+        </aside>
+
+        <main class="main-content">
+          <div class="section-header">
+            <h2>Configuración del Sistema</h2>
+            <p>Ajusta los parámetros principales del ERP</p>
+          </div>
+
+          <div class="alert alert-info">
+            Los cambios se guardarán automáticamente. Asegúrate de revisar cada
+            parámetro antes de aplicar.
+          </div>
+
+          <!-- General Settings -->
+          <div class="form-section" id="general">
+            <h3>Configuración General</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nombre de la Institución</label>
+                <input
+                  type="text"
+                  value="Instituto Educativo AXIOMA"
+                  required
+                />
+                <span class="help-text"
+                  >El nombre que aparecerá en reportes y documentos</span
+                >
+              </div>
+              <div class="form-group">
+                <label>RUC/NIT</label>
+                <input type="text" value="1234567890" required />
+                <span class="help-text">Registro único de contribuyente</span>
+              </div>
+              <div class="form-group">
+                <label>Correo de Contacto</label>
+                <input type="email" value="admin@axioma.edu" required />
+              </div>
+              <div class="form-group">
+                <label>Teléfono Principal</label>
+                <input type="text" value="+34 912345678" required />
+              </div>
+              <div class="form-group">
+                <label>Dirección</label>
+                <input
+                  type="text"
+                  value="Calle Principal 123, Madrid"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Zona Horaria</label>
+                <select required>
+                  <option selected>Europe/Madrid (UTC+2)</option>
+                  <option>America/New_York (UTC-4)</option>
+                  <option>America/Bogota (UTC-5)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-section" style="margin-top: 25px">
+              <h3>Opciones Generales</h3>
+              <div class="switch-group">
+                <label>Modo Mantenimiento</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="maintenance-mode" />
+                  <span class="slider"></span>
+                </div>
+              </div>
+              <div class="switch-group" style="margin-top: 10px">
+                <label>Permitir Registros de Estudiantes Públicos</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="public-registration" checked />
+                  <span class="slider"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Academic Settings -->
+          <div class="form-section" id="academic" style="margin-top: 40px">
+            <h3>Configuración Académica</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Año Académico Actual</label>
+                <input type="number" value="2024" required />
+              </div>
+              <div class="form-group">
+                <label>Escala de Calificación (Máximo)</label>
+                <select required>
+                  <option selected>100</option>
+                  <option>20</option>
+                  <option>10</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Nota Mínima Aprobatoria</label>
+                <input type="number" value="60" required />
+              </div>
+              <div class="form-group">
+                <label>Cantidad de Períodos por Año</label>
+                <input type="number" value="4" required />
+              </div>
+            </div>
+
+            <div class="form-section" style="margin-top: 25px">
+              <h3>Opciones Académicas</h3>
+              <div class="switch-group">
+                <label>Permitir Calificaciones Negativas</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="negative-grades" />
+                  <span class="slider"></span>
+                </div>
+              </div>
+              <div class="switch-group" style="margin-top: 10px">
+                <label>Requerir Aprobación de Reportes</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="report-approval" checked />
+                  <span class="slider"></span>
+                </div>
+              </div>
+              <div class="switch-group" style="margin-top: 10px">
+                <label>Permitir Recuperación de Asignaturas</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="recovery" checked />
+                  <span class="slider"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Financial Settings -->
+          <div class="form-section" id="financial" style="margin-top: 40px">
+            <h3>Configuración Financiera</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Moneda Principal</label>
+                <select required>
+                  <option selected>EUR - Euro</option>
+                  <option>USD - Dólar Estadounidense</option>
+                  <option>COP - Peso Colombiano</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Precisión Decimal</label>
+                <input type="number" value="2" required />
+              </div>
+              <div class="form-group">
+                <label>Día de Cierre Mensual</label>
+                <input type="number" value="30" required />
+              </div>
+              <div class="form-group">
+                <label>Retardo Máximo (días)</label>
+                <input type="number" value="15" required />
+              </div>
+            </div>
+
+            <div class="form-section" style="margin-top: 25px">
+              <h3>Opciones de Cobranza</h3>
+              <div class="switch-group">
+                <label>Permitir Pagos Parciales</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="partial-payments" checked />
+                  <span class="slider"></span>
+                </div>
+              </div>
+              <div class="switch-group" style="margin-top: 10px">
+                <label>Permitir Pagos Adelantados</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="advance-payments" checked />
+                  <span class="slider"></span>
+                </div>
+              </div>
+              <div class="switch-group" style="margin-top: 10px">
+                <label>Aplicar Interés por Mora</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="late-interest" checked />
+                  <span class="slider"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications Settings -->
+          <div class="form-section" id="notifications" style="margin-top: 40px">
+            <h3>Configuración de Notificaciones</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Servidor SMTP</label>
+                <input type="text" value="smtp.gmail.com" required />
+              </div>
+              <div class="form-group">
+                <label>Puerto SMTP</label>
+                <input type="number" value="587" required />
+              </div>
+              <div class="form-group">
+                <label>Usuario SMTP</label>
+                <input type="email" value="noreply@axioma.edu" required />
+              </div>
+              <div class="form-group">
+                <label>Remitente Por Defecto</label>
+                <input type="text" value="Sistema AXIOMA" required />
+              </div>
+            </div>
+
+            <div class="form-section" style="margin-top: 25px">
+              <h3>Tipos de Notificaciones</h3>
+              <div class="switch-group">
+                <label>Notificaciones de Calificaciones</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="grade-notifications" checked />
+                  <span class="slider"></span>
+                </div>
+              </div>
+              <div class="switch-group" style="margin-top: 10px">
+                <label>Notificaciones de Pagos</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="payment-notifications" checked />
+                  <span class="slider"></span>
+                </div>
+              </div>
+              <div class="switch-group" style="margin-top: 10px">
+                <label>Notificaciones de Inasistencia</label>
+                <div class="toggle-switch">
+                  <input
+                    type="checkbox"
+                    id="attendance-notifications"
+                    checked
+                  />
+                  <span class="slider"></span>
+                </div>
+              </div>
+              <div class="switch-group" style="margin-top: 10px">
+                <label>Notificaciones de Sistema</label>
+                <div class="toggle-switch">
+                  <input type="checkbox" id="system-notifications" checked />
+                  <span class="slider"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary">
+              Restaurar Valores Iniciales
+            </button>
+            <button class="btn btn-primary">Guardar Cambios</button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

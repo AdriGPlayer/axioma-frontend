@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listado de Alumnos - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: #c53030;
+      }
+
+      .menu {
+        list-style: none;
+      }
+
+      .menu-item {
+        margin-bottom: 15px;
+      }
+
+      .menu-link {
+        color: #faf8f5;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+      }
+
+      .menu-link:hover,
+      .menu-link.active {
+        background-color: #c53030;
+        color: #fff;
+      }
+
+      .menu-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 260px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: #faf8f5;
+        padding: 20px 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .topbar-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .topbar-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-icon {
+        background-color: #c53030;
+        color: #faf8f5;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .btn-icon:hover {
+        background-color: #a82828;
+        transform: translateY(-2px);
+      }
+
+      /* Content Area */
+      .content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+      }
+
+      /* Controls */
+      .controls-container {
+        background-color: #faf8f5;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .controls-grid {
+        display: grid;
+        grid-template-columns: 2fr repeat(3, 1fr);
+        gap: 15px;
+        align-items: end;
+      }
+
+      .search-box {
+        position: relative;
+      }
+
+      .search-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 6px;
+        display: block;
+        text-transform: uppercase;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .filter-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+      }
+
+      .filter-select {
+        padding: 10px 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+
+      .filter-select:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      /* Table */
+      .table-container {
+        background-color: #faf8f5;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .table thead {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      .table th {
+        padding: 16px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+      }
+
+      .table tbody tr {
+        transition: all 0.3s ease;
+      }
+
+      .table tbody tr:hover {
+        background-color: #f0f0f0;
+      }
+
+      .table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      /* Status Badge */
+      .badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .badge-active {
+        background-color: #e8f5e9;
+        color: #38a169;
+      }
+
+      .badge-inactive {
+        background-color: #fce4ec;
+        color: #c2185b;
+      }
+
+      .badge-graduated {
+        background-color: #e3f2fd;
+        color: #1976d2;
+      }
+
+      /* Actions */
+      .actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .action-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .action-btn.view {
+        background-color: #e8f0f7;
+        color: #1a2332;
+      }
+
+      .action-btn.view:hover {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      .action-btn.edit {
+        background-color: #fef3e2;
+        color: #d97706;
+      }
+
+      .action-btn.edit:hover {
+        background-color: #d97706;
+        color: #faf8f5;
+      }
+
+      .action-btn.delete {
+        background-color: #fee2e2;
+        color: #c53030;
+      }
+
+      .action-btn.delete:hover {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .action-icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Pagination */
+      .pagination-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #faf8f5;
+        border-top: 1px solid #f0f0f0;
+      }
+
+      .pagination-info {
+        font-size: 13px;
+        color: #666;
+      }
+
+      .pagination {
+        display: flex;
+        gap: 4px;
+        list-style: none;
+      }
+
+      .pagination-item {
+        display: flex;
+      }
+
+      .pagination-link {
+        padding: 8px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #1a2332;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .pagination-link:hover {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      .pagination-link.active {
+        background-color: #c53030;
+        color: #faf8f5;
+        border-color: #c53030;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+      }
+
+      .empty-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 20px;
+        opacity: 0.5;
+      }
+
+      .empty-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #666;
+      }
+
+      /* Responsive */
+      @media (max-width: 1200px) {
+        .controls-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .table {
+          font-size: 12px;
+        }
+
+        .table th,
+        .table td {
+          padding: 10px 12px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 0;
+          display: none;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .content {
+          padding: 20px;
+        }
+
+        .topbar {
+          padding: 15px 20px;
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .table {
+          font-size: 11px;
+        }
+
+        .table th,
+        .table td {
+          padding: 8px;
+        }
+
+        .actions {
+          gap: 4px;
+        }
+
+        .action-btn {
+          width: 28px;
+          height: 28px;
+        }
+
+        .pagination-container {
+          flex-direction: column;
+          gap: 15px;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">AXIOMA</div>
+        <ul class="menu">
+          <li class="menu-item">
+            <a href="index.html" class="menu-link">
+              <svg
+                class="menu-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              Panel Principal
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="listado-alumnos.html" class="menu-link active">
+              <svg
+                class="menu-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              Listado de Alumnos
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="alta-alumno.html" class="menu-link">
+              <svg
+                class="menu-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+              </svg>
+              Nuevo Alumno
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Topbar -->
+        <div class="topbar">
+          <h1 class="topbar-title">Listado de Alumnos</h1>
+          <div class="topbar-actions">
+            <a href="alta-alumno.html" class="btn-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                width="16"
+                height="16"
+              >
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+              </svg>
+              Nuevo Alumno
+            </a>
+            <button class="btn-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                width="16"
+                height="16"
+              >
+                <path d="M19 12a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                <path d="M12 7v5l4 2"></path>
+              </svg>
+              Exportar
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Controls -->
+          <div class="controls-container">
+            <div class="controls-grid">
+              <div class="search-box">
+                <label class="search-label">Buscar</label>
+                <input
+                  type="text"
+                  class="search-input"
+                  placeholder="Nombre, apellido o matrícula..."
+                />
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Nivel</label>
+                <select class="filter-select">
+                  <option value="">Todos</option>
+                  <option value="primaria">Primaria</option>
+                  <option value="secundaria">Secundaria</option>
+                  <option value="preparatoria">Preparatoria</option>
+                  <option value="universidad">Universidad</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Grado</label>
+                <select class="filter-select">
+                  <option value="">Todos</option>
+                  <option value="1">1°</option>
+                  <option value="2">2°</option>
+                  <option value="3">3°</option>
+                  <option value="4">4°</option>
+                  <option value="5">5°</option>
+                  <option value="6">6°</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Estado</label>
+                <select class="filter-select">
+                  <option value="">Todos</option>
+                  <option value="active">Activo</option>
+                  <option value="inactive">Inactivo</option>
+                  <option value="graduated">Egresado</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Matrícula</th>
+                  <th>Grado</th>
+                  <th>Grupo</th>
+                  <th>Nivel</th>
+                  <th>Tutor</th>
+                  <th>Teléfono</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Carlos Mendez García</td>
+                  <td>#2024001</td>
+                  <td>4°</td>
+                  <td>A</td>
+                  <td>Primaria</td>
+                  <td>Roberto Mendez López</td>
+                  <td>+52 (123) 456-7890</td>
+                  <td><span class="badge badge-active">Activo</span></td>
+                  <td>
+                    <div class="actions">
+                      <a
+                        href="expediente-alumno.html"
+                        class="action-btn view"
+                        title="Ver"
+                      >
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                          ></path>
+                        </svg>
+                      </a>
+                      <button class="action-btn edit" title="Editar">
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          ></path>
+                          <path
+                            d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                          ></path>
+                        </svg>
+                      </button>
+                      <button class="action-btn delete" title="Eliminar">
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"
+                          ></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>María Rodríguez López</td>
+                  <td>#2024002</td>
+                  <td>1°</td>
+                  <td>B</td>
+                  <td>Secundaria</td>
+                  <td>Ana López García</td>
+                  <td>+52 (234) 567-8901</td>
+                  <td><span class="badge badge-active">Activo</span></td>
+                  <td>
+                    <div class="actions">
+                      <a
+                        href="expediente-alumno.html"
+                        class="action-btn view"
+                        title="Ver"
+                      >
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                          ></path>
+                        </svg>
+                      </a>
+                      <button class="action-btn edit" title="Editar">
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          ></path>
+                          <path
+                            d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                          ></path>
+                        </svg>
+                      </button>
+                      <button class="action-btn delete" title="Eliminar">
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"
+                          ></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Juan Pérez Sánchez</td>
+                  <td>#2024003</td>
+                  <td>2°</td>
+                  <td>C</td>
+                  <td>Preparatoria</td>
+                  <td>José Pérez Martínez</td>
+                  <td>+52 (345) 678-9012</td>
+                  <td><span class="badge badge-active">Activo</span></td>
+                  <td>
+                    <div class="actions">
+                      <a
+                        href="expediente-alumno.html"
+                        class="action-btn view"
+                        title="Ver"
+                      >
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                          ></path>
+                        </svg>
+                      </a>
+                      <button class="action-btn edit" title="Editar">
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          ></path>
+                          <path
+                            d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                          ></path>
+                        </svg>
+                      </button>
+                      <button class="action-btn delete" title="Eliminar">
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"
+                          ></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Laura González Martínez</td>
+                  <td>#2023156</td>
+                  <td>5°</td>
+                  <td>A</td>
+                  <td>Primaria</td>
+                  <td>Miguel González Rodríguez</td>
+                  <td>+52 (456) 789-0123</td>
+                  <td><span class="badge badge-inactive">Inactivo</span></td>
+                  <td>
+                    <div class="actions">
+                      <a
+                        href="expediente-alumno.html"
+                        class="action-btn view"
+                        title="Ver"
+                      >
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                          ></path>
+                        </svg>
+                      </a>
+                      <button class="action-btn edit" title="Editar">
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          ></path>
+                          <path
+                            d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                          ></path>
+                        </svg>
+                      </button>
+                      <button class="action-btn delete" title="Eliminar">
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"
+                          ></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>David Hernández Santos</td>
+                  <td>#2022089</td>
+                  <td>6°</td>
+                  <td>B</td>
+                  <td>Primaria</td>
+                  <td>Diana Santos López</td>
+                  <td>+52 (567) 890-1234</td>
+                  <td><span class="badge badge-graduated">Egresado</span></td>
+                  <td>
+                    <div class="actions">
+                      <a
+                        href="expediente-alumno.html"
+                        class="action-btn view"
+                        title="Ver"
+                      >
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                          ></path>
+                        </svg>
+                      </a>
+                      <button class="action-btn edit" title="Editar">
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          ></path>
+                          <path
+                            d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                          ></path>
+                        </svg>
+                      </button>
+                      <button class="action-btn delete" title="Eliminar">
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"
+                          ></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="pagination-container">
+              <div class="pagination-info">
+                Mostrando 1 a 5 de 1,284 alumnos
+              </div>
+              <ul class="pagination">
+                <li class="pagination-item">
+                  <a href="#" class="pagination-link">← Anterior</a>
+                </li>
+                <li class="pagination-item">
+                  <a href="#" class="pagination-link active">1</a>
+                </li>
+                <li class="pagination-item">
+                  <a href="#" class="pagination-link">2</a>
+                </li>
+                <li class="pagination-item">
+                  <a href="#" class="pagination-link">3</a>
+                </li>
+                <li class="pagination-item">
+                  <a href="#" class="pagination-link">...</a>
+                </li>
+                <li class="pagination-item">
+                  <a href="#" class="pagination-link">257</a>
+                </li>
+                <li class="pagination-item">
+                  <a href="#" class="pagination-link">Siguiente →</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

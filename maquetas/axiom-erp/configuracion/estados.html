@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estados - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: #faf8f5;
+        color: #333;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        background: #1a2332;
+        color: #faf8f5;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background: #a82020;
+      }
+
+      .btn-secondary {
+        background: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background: #0f1419;
+      }
+
+      .search-section {
+        background: white;
+        border-radius: 8px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e0d9d3;
+        display: flex;
+        gap: 10px;
+      }
+
+      .search-box input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #e0d9d3;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .table-section {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0d9d3;
+        overflow: hidden;
+      }
+
+      .table-header {
+        padding: 15px 20px;
+        border-bottom: 2px solid #e0d9d3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .table-header h2 {
+        color: #1a2332;
+        font-size: 18px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: #f5f3f1;
+      }
+
+      th {
+        padding: 12px 15px;
+        text-align: left;
+        color: #1a2332;
+        font-weight: 600;
+        font-size: 13px;
+        border-bottom: 2px solid #e0d9d3;
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0d9d3;
+        font-size: 14px;
+      }
+
+      tbody tr:hover {
+        background: #faf8f5;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 6px;
+      }
+
+      .btn-small {
+        padding: 6px 10px;
+        font-size: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-edit {
+        background: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-edit:hover {
+        background: #0f1419;
+      }
+
+      .btn-delete {
+        background: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-delete:hover {
+        background: #a82020;
+      }
+
+      .pagination {
+        padding: 15px 20px;
+        border-top: 1px solid #e0d9d3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f5f3f1;
+      }
+
+      .pagination-info {
+        color: #666;
+        font-size: 13px;
+      }
+
+      .pagination-controls {
+        display: flex;
+        gap: 5px;
+      }
+
+      .pagination-btn {
+        padding: 6px 10px;
+        border: 1px solid #e0d9d3;
+        background: white;
+        color: #1a2332;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.3s;
+      }
+
+      .pagination-btn:hover {
+        border-color: #c53030;
+        color: #c53030;
+      }
+
+      .pagination-btn.active {
+        background: #c53030;
+        color: #faf8f5;
+        border-color: #c53030;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-active {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .badge-inactive {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0d9d3;
+      }
+
+      .modal-header h3 {
+        color: #1a2332;
+        font-size: 20px;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #1a2332;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #1a2332;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e0d9d3;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      input[type="text"]:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: flex-end;
+      }
+
+      .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: white;
+        border: 1px solid #e0d9d3;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .stat-number {
+        color: #c53030;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Estados / Regiones</h1>
+        <button
+          class="btn btn-primary"
+          onclick="
+            document.getElementById('addStateModal').classList.add('active')
+          "
+        >
+          + Nuevo Estado
+        </button>
+      </header>
+
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="stat-number">32</div>
+          <div class="stat-label">Estados Registrados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">543</div>
+          <div class="stat-label">Municipios Totales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">1,245</div>
+          <div class="stat-label">Localidades</div>
+        </div>
+      </div>
+
+      <div class="search-section">
+        <input type="text" placeholder="Buscar estados..." />
+        <button class="btn btn-secondary">Filtrar</button>
+      </div>
+
+      <div class="table-section">
+        <div class="table-header">
+          <h2>Catálogo de Estados</h2>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Región</th>
+              <th>Municipios</th>
+              <th>Capital</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>01</td>
+              <td><strong>Madrid</strong></td>
+              <td>Centro</td>
+              <td>179</td>
+              <td>Madrid</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>02</td>
+              <td><strong>Barcelona</strong></td>
+              <td>Nordeste</td>
+              <td>311</td>
+              <td>Barcelona</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>03</td>
+              <td><strong>Valencia</strong></td>
+              <td>Este</td>
+              <td>266</td>
+              <td>Valencia</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>04</td>
+              <td><strong>Sevilla</strong></td>
+              <td>Sur</td>
+              <td>109</td>
+              <td>Sevilla</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>05</td>
+              <td><strong>Bilbao</strong></td>
+              <td>Noroeste</td>
+              <td>112</td>
+              <td>Bilbao</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>06</td>
+              <td><strong>Málaga</strong></td>
+              <td>Sur</td>
+              <td>31</td>
+              <td>Málaga</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>07</td>
+              <td><strong>Zaragoza</strong></td>
+              <td>Centro-Este</td>
+              <td>292</td>
+              <td>Zaragoza</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>08</td>
+              <td><strong>Toledo</strong></td>
+              <td>Centro</td>
+              <td>203</td>
+              <td>Toledo</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <div class="pagination-info">Mostrando 1-8 de 32 estados</div>
+          <div class="pagination-controls">
+            <button class="pagination-btn">Anterior</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">4</button>
+            <button class="pagination-btn">Siguiente</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="addStateModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Nuevo Estado</h3>
+          <button
+            class="close-btn"
+            onclick="
+              document
+                .getElementById('addStateModal')
+                .classList.remove('active')
+            "
+          >
+            ×
+          </button>
+        </div>
+        <form>
+          <div class="form-group">
+            <label>Código</label>
+            <input type="text" placeholder="Ej: 01" required />
+          </div>
+
+          <div class="form-group">
+            <label>Nombre del Estado</label>
+            <input type="text" placeholder="Ej: Madrid" required />
+          </div>
+
+          <div class="form-group">
+            <label>Región</label>
+            <select required>
+              <option value="">Selecciona región</option>
+              <option value="centro">Centro</option>
+              <option value="norte">Norte</option>
+              <option value="sur">Sur</option>
+              <option value="este">Este</option>
+              <option value="oeste">Oeste</option>
+              <option value="nordeste">Nordeste</option>
+              <option value="noroeste">Noroeste</option>
+              <option value="centro-este">Centro-Este</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Capital</label>
+            <input type="text" placeholder="Ej: Madrid" required />
+          </div>
+
+          <div class="form-group">
+            <label>Descripción / Características</label>
+            <textarea
+              placeholder="Información adicional del estado..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="
+                document
+                  .getElementById('addStateModal')
+                  .classList.remove('active')
+              "
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">Crear Estado</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

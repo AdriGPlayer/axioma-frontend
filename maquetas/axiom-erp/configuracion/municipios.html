@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Municipios - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: #faf8f5;
+        color: #333;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        background: #1a2332;
+        color: #faf8f5;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background: #a82020;
+      }
+
+      .btn-secondary {
+        background: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background: #0f1419;
+      }
+
+      .filters-section {
+        background: white;
+        border-radius: 8px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e0d9d3;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .filter-group label {
+        font-weight: 500;
+        color: #1a2332;
+        font-size: 13px;
+      }
+
+      .filter-group select,
+      .filter-group input {
+        padding: 8px 12px;
+        border: 1px solid #e0d9d3;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+
+      .filter-group select {
+        min-width: 200px;
+      }
+
+      .table-section {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0d9d3;
+        overflow: hidden;
+      }
+
+      .table-header {
+        padding: 15px 20px;
+        border-bottom: 2px solid #e0d9d3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .table-header h2 {
+        color: #1a2332;
+        font-size: 18px;
+      }
+
+      .state-badge {
+        background: #1a2332;
+        color: #faf8f5;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: #f5f3f1;
+      }
+
+      th {
+        padding: 12px 15px;
+        text-align: left;
+        color: #1a2332;
+        font-weight: 600;
+        font-size: 13px;
+        border-bottom: 2px solid #e0d9d3;
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0d9d3;
+        font-size: 13px;
+      }
+
+      tbody tr:hover {
+        background: #faf8f5;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-active {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .badge-inactive {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 6px;
+      }
+
+      .btn-small {
+        padding: 6px 10px;
+        font-size: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-edit {
+        background: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-edit:hover {
+        background: #0f1419;
+      }
+
+      .btn-delete {
+        background: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-delete:hover {
+        background: #a82020;
+      }
+
+      .pagination {
+        padding: 15px 20px;
+        border-top: 1px solid #e0d9d3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f5f3f1;
+      }
+
+      .pagination-info {
+        color: #666;
+        font-size: 13px;
+      }
+
+      .pagination-controls {
+        display: flex;
+        gap: 5px;
+      }
+
+      .pagination-btn {
+        padding: 6px 10px;
+        border: 1px solid #e0d9d3;
+        background: white;
+        color: #1a2332;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.3s;
+      }
+
+      .pagination-btn:hover {
+        border-color: #c53030;
+        color: #c53030;
+      }
+
+      .pagination-btn.active {
+        background: #c53030;
+        color: #faf8f5;
+        border-color: #c53030;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        max-width: 550px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0d9d3;
+      }
+
+      .modal-header h3 {
+        color: #1a2332;
+        font-size: 20px;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #1a2332;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #1a2332;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e0d9d3;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      input[type="text"]:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: flex-end;
+      }
+
+      .selected-state {
+        background: #f5f3f1;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        border-left: 4px solid #c53030;
+      }
+
+      .selected-state .label {
+        color: #666;
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+
+      .selected-state .value {
+        color: #1a2332;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Municipios</h1>
+        <button
+          class="btn btn-primary"
+          onclick="
+            document
+              .getElementById('addMunicipalityModal')
+              .classList.add('active')
+          "
+        >
+          + Nuevo Municipio
+        </button>
+      </header>
+
+      <div class="filters-section">
+        <div class="filter-group">
+          <label>Estado:</label>
+          <select>
+            <option value="">Selecciona estado</option>
+            <option value="madrid" selected>Madrid</option>
+            <option value="barcelona">Barcelona</option>
+            <option value="valencia">Valencia</option>
+            <option value="sevilla">Sevilla</option>
+            <option value="bilbao">Bilbao</option>
+            <option value="malaga">Málaga</option>
+            <option value="zaragoza">Zaragoza</option>
+            <option value="toledo">Toledo</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Búsqueda:</label>
+          <input type="text" placeholder="Buscar municipios..." />
+        </div>
+      </div>
+
+      <div class="table-section">
+        <div class="table-header">
+          <h2>Municipios de Madrid</h2>
+          <span class="state-badge">179 Municipios</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre del Municipio</th>
+              <th>Región</th>
+              <th>Población</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>01-001</td>
+              <td><strong>Madrid</strong></td>
+              <td>Centro</td>
+              <td>3,223,000</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>01-002</td>
+              <td><strong>Alcalá de Henares</strong></td>
+              <td>Este</td>
+              <td>198,500</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>01-003</td>
+              <td><strong>Móstoles</strong></td>
+              <td>Sur</td>
+              <td>207,400</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>01-004</td>
+              <td><strong>Alcorcón</strong></td>
+              <td>Sur</td>
+              <td>168,600</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>01-005</td>
+              <td><strong>Torrejón de Ardoz</strong></td>
+              <td>Este</td>
+              <td>128,900</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>01-006</td>
+              <td><strong>Getafe</strong></td>
+              <td>Sur</td>
+              <td>182,200</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>01-007</td>
+              <td><strong>Fuenlabrada</strong></td>
+              <td>Sur</td>
+              <td>190,200</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>01-008</td>
+              <td><strong>Leganés</strong></td>
+              <td>Sur</td>
+              <td>185,600</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <div class="pagination-info">Mostrando 1-8 de 179 municipios</div>
+          <div class="pagination-controls">
+            <button class="pagination-btn">Anterior</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">...</button>
+            <button class="pagination-btn">23</button>
+            <button class="pagination-btn">Siguiente</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="addMunicipalityModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Nuevo Municipio</h3>
+          <button
+            class="close-btn"
+            onclick="
+              document
+                .getElementById('addMunicipalityModal')
+                .classList.remove('active')
+            "
+          >
+            ×
+          </button>
+        </div>
+        <form>
+          <div class="form-group">
+            <label>Estado</label>
+            <select required>
+              <option value="">Selecciona estado</option>
+              <option value="madrid" selected>Madrid</option>
+              <option value="barcelona">Barcelona</option>
+              <option value="valencia">Valencia</option>
+              <option value="sevilla">Sevilla</option>
+              <option value="bilbao">Bilbao</option>
+              <option value="malaga">Málaga</option>
+              <option value="zaragoza">Zaragoza</option>
+              <option value="toledo">Toledo</option>
+            </select>
+          </div>
+
+          <div
+            class="selected-state"
+            id="selectedStateInfo"
+            style="display: none"
+          >
+            <div class="label">Estado Seleccionado</div>
+            <div class="value" id="stateDisplayName">Madrid</div>
+          </div>
+
+          <div class="form-group">
+            <label>Código</label>
+            <input type="text" placeholder="Ej: 01-009" required />
+          </div>
+
+          <div class="form-group">
+            <label>Nombre del Municipio</label>
+            <input
+              type="text"
+              placeholder="Ej: San Sebastián de los Reyes"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Región / Zona</label>
+            <input type="text" placeholder="Ej: Norte" required />
+          </div>
+
+          <div class="form-group">
+            <label>Población Aproximada</label>
+            <input type="text" placeholder="Ej: 120,500" required />
+          </div>
+
+          <div class="form-group">
+            <label>Información Adicional</label>
+            <textarea
+              placeholder="Características del municipio..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="
+                document
+                  .getElementById('addMunicipalityModal')
+                  .classList.remove('active')
+              "
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Crear Municipio
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

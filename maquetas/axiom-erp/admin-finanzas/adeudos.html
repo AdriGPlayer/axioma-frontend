@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adeudos - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .sidebar h1 {
+        font-size: 22px;
+        margin-bottom: 30px;
+        color: #faf8f5;
+      }
+
+      .sidebar ul {
+        list-style: none;
+      }
+
+      .sidebar li {
+        margin-bottom: 15px;
+      }
+
+      .sidebar a {
+        color: #faf8f5;
+        text-decoration: none;
+        padding: 10px 15px;
+        display: block;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+
+      .sidebar a:hover,
+      .sidebar a.active {
+        background-color: #c53030;
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .topbar {
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .topbar h2 {
+        font-size: 20px;
+      }
+
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #1a2332;
+      }
+
+      .action-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: opacity 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+
+      .btn-secondary {
+        background-color: #38a169;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        opacity: 0.9;
+      }
+
+      .btn-danger {
+        background-color: #c53030;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        opacity: 0.9;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .status-active {
+        background-color: #ffe6e6;
+        color: #c53030;
+      }
+
+      .status-pending {
+        background-color: #fff5e6;
+        color: #f6ad55;
+      }
+
+      .status-arranged {
+        background-color: #e6fffa;
+        color: #38a169;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      th {
+        background-color: #f5f5f5;
+        padding: 12px;
+        text-align: left;
+        font-weight: bold;
+        color: #1a2332;
+        border-bottom: 2px solid #ddd;
+        font-size: 13px;
+      }
+
+      td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+      }
+
+      tr:hover {
+        background-color: #f9f9f9;
+      }
+
+      .currency {
+        color: #c53030;
+        font-weight: bold;
+      }
+
+      .overflow-x {
+        overflow-x: auto;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .chart-placeholder {
+        width: 100%;
+        height: 300px;
+        background: linear-gradient(135deg, #f5f5f5 0%, #efefef 100%);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 14px;
+      }
+
+      .stat-box {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .stat-value {
+        font-weight: bold;
+        color: #1a2332;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #1a2332;
+        font-size: 14px;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #1a2332;
+        box-shadow: 0 0 0 2px rgba(26, 35, 50, 0.1);
+      }
+
+      .aging-bar {
+        height: 6px;
+        background-color: #eee;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 5px;
+      }
+
+      .aging-fill {
+        height: 100%;
+        background-color: #c53030;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <h1>AXIOMA</h1>
+        <ul>
+          <li><a href="index.html">Dashboard</a></li>
+          <li><a href="colegiaturas.html">Colegiaturas</a></li>
+          <li><a href="facturacion.html">Facturación</a></li>
+          <li><a href="notas-credito.html">Notas de Crédito</a></li>
+          <li><a href="cobranza.html">Cobranza</a></li>
+          <li><a href="adeudos.html" class="active">Adeudos</a></li>
+          <li><a href="caja.html">Caja</a></li>
+          <li><a href="reportes-financieros.html">Reportes</a></li>
+        </ul>
+      </div>
+
+      <div class="main-content">
+        <div class="topbar">
+          <h2>Gestión de Adeudos</h2>
+          <div>
+            <svg
+              style="width: 24px; height: 24px; vertical-align: middle"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="card">
+            <h3 class="section-title">Resumen de Adeudos</h3>
+            <div class="stat-box">
+              <span>Total de Deuda:</span>
+              <span class="stat-value currency">$12,100.00</span>
+            </div>
+            <div class="stat-box">
+              <span>Estudiantes/Familias Deudores:</span>
+              <span class="stat-value">23</span>
+            </div>
+            <div class="stat-box">
+              <span>Deuda Promedio por Estudiante:</span>
+              <span class="stat-value currency">$526.09</span>
+            </div>
+            <div class="stat-box">
+              <span>Antigüedad Promedio:</span>
+              <span class="stat-value" style="color: #c53030">45 días</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-title">Acciones</h3>
+            <div class="action-bar">
+              <button class="btn btn-primary">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  ></path>
+                </svg>
+                Notificación de Deuda
+              </button>
+              <button class="btn btn-secondary">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                  ></path>
+                </svg>
+                Plan de Pago
+              </button>
+              <button class="btn btn-secondary">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 5v14M5 12h14"></path>
+                </svg>
+                Registro de Deuda
+              </button>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="section-title">Gráfico de Antigüedad</h3>
+              <div class="chart-placeholder">
+                Gráfico de antigüedad de deudas
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Distribución de Deudores</h3>
+              <div style="font-size: 14px; line-height: 1.8">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px 0;
+                    border-bottom: 1px solid #eee;
+                  "
+                >
+                  <span>0-30 días:</span>
+                  <strong>8 estudiantes</strong>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px 0;
+                    border-bottom: 1px solid #eee;
+                  "
+                >
+                  <span>31-60 días:</span>
+                  <strong>7 estudiantes</strong>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px 0;
+                    border-bottom: 1px solid #eee;
+                  "
+                >
+                  <span>61-90 días:</span>
+                  <strong>5 estudiantes</strong>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px 0;
+                  "
+                >
+                  <span>90+ días:</span>
+                  <strong style="color: #c53030">3 estudiantes</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-title">Deudores Activos</h3>
+            <div class="overflow-x">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Estudiante/Familia</th>
+                    <th>Deuda Total</th>
+                    <th>Deuda Más Antigua</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Carlos Mendoza Cruz</td>
+                    <td class="currency">$500.00</td>
+                    <td>2 días</td>
+                    <td>(555) 234-5678</td>
+                    <td>
+                      <span class="status-badge status-pending"
+                        >Contacto Requerido</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" style="color: #1a2332; text-decoration: none"
+                        >Ver</a
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Ana Martínez González</td>
+                    <td class="currency">$1,100.00</td>
+                    <td>55 días</td>
+                    <td>(555) 345-6789</td>
+                    <td>
+                      <span class="status-badge status-active"
+                        >Deuda Activa</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" style="color: #1a2332; text-decoration: none"
+                        >Ver</a
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Pedro González Ruiz</td>
+                    <td class="currency">$1,300.00</td>
+                    <td>45 días</td>
+                    <td>(555) 456-7890</td>
+                    <td>
+                      <span class="status-badge status-arranged"
+                        >Plan Activo</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" style="color: #1a2332; text-decoration: none"
+                        >Ver</a
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Rosa López Sánchez</td>
+                    <td class="currency">$2,200.00</td>
+                    <td>120 días</td>
+                    <td>(555) 567-8901</td>
+                    <td>
+                      <span class="status-badge status-active"
+                        >Deuda Activa</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" style="color: #1a2332; text-decoration: none"
+                        >Ver</a
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Miguel Torres Flores</td>
+                    <td class="currency">$950.00</td>
+                    <td>35 días</td>
+                    <td>(555) 678-9012</td>
+                    <td>
+                      <span class="status-badge status-pending"
+                        >Contacto Requerido</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" style="color: #1a2332; text-decoration: none"
+                        >Ver</a
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Familia Sánchez Delgado</td>
+                    <td class="currency">$3,100.00</td>
+                    <td>90+ días</td>
+                    <td>(555) 789-0123</td>
+                    <td>
+                      <span class="status-badge status-active"
+                        >Deuda Activa</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" style="color: #1a2332; text-decoration: none"
+                        >Ver</a
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-title">Opciones de Pago y Planes</h3>
+            <div class="action-bar">
+              <div
+                style="
+                  padding: 15px;
+                  background-color: #f5f5f5;
+                  border-radius: 4px;
+                  margin-bottom: 15px;
+                  width: 100%;
+                "
+              >
+                <strong>Plan de Pago Flexible</strong><br />
+                <span style="color: #666; font-size: 13px"
+                  >Hasta 6 cuotas sin interés para deudas mayores a $1,000</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 15px;
+                  background-color: #f5f5f5;
+                  border-radius: 4px;
+                  margin-bottom: 15px;
+                  width: 100%;
+                "
+              >
+                <strong>Descuento por Pronto Pago</strong><br />
+                <span style="color: #666; font-size: 13px"
+                  >5% de descuento al pagar el 50% del total antes del 15 del
+                  mes</span
+                >
+              </div>
+              <div
+                style="
+                  padding: 15px;
+                  background-color: #f5f5f5;
+                  border-radius: 4px;
+                  width: 100%;
+                "
+              >
+                <strong>Congelación Temporal</strong><br />
+                <span style="color: #666; font-size: 13px"
+                  >Suspensión de servicios durante negociación, máximo 30
+                  días</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-title">Historial de Notificaciones de Deuda</h3>
+            <div style="font-size: 13px; line-height: 2">
+              <div style="padding: 10px; border-bottom: 1px solid #eee">
+                <strong>29/06/2026</strong> - Notificación de deuda enviada a
+                Rosa López Sánchez (Deuda: $2,200.00)
+              </div>
+              <div style="padding: 10px; border-bottom: 1px solid #eee">
+                <strong>28/06/2026</strong> - Plan de pago acordado con Familia
+                Sánchez Delgado (6 cuotas)
+              </div>
+              <div style="padding: 10px; border-bottom: 1px solid #eee">
+                <strong>27/06/2026</strong> - Notificación de deuda enviada a
+                Miguel Torres Flores
+              </div>
+              <div style="padding: 10px; border-bottom: 1px solid #eee">
+                <strong>26/06/2026</strong> - Seguimiento realizado a Ana
+                Martínez González (Sin respuesta)
+              </div>
+              <div style="padding: 10px">
+                <strong>25/06/2026</strong> - Plan de pago actualizado para
+                Pedro González Ruiz (Cuota 2 pagada)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

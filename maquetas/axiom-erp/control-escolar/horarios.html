@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Horarios - AXIOMA Control Escolar</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px 0;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-logo {
+        padding: 20px;
+        text-align: center;
+        border-bottom: 2px solid #c53030;
+        margin-bottom: 30px;
+      }
+
+      .sidebar-logo h1 {
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        margin: 10px 0;
+      }
+
+      .sidebar-menu a {
+        display: block;
+        padding: 12px 20px;
+        color: #faf8f5;
+        text-decoration: none;
+        transition: background-color 0.3s;
+      }
+
+      .sidebar-menu a:hover,
+      .sidebar-menu a.active {
+        background-color: #c53030;
+        border-left: 4px solid #d69e2e;
+        padding-left: 16px;
+      }
+
+      /* Main Content */
+      .main {
+        flex: 1;
+        margin-left: 260px;
+      }
+
+      /* Top Bar */
+      .topbar {
+        background-color: #fff;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .topbar h2 {
+        color: #1a2332;
+        font-size: 24px;
+      }
+
+      .topbar-right {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #c53030;
+        color: #faf8f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      /* Content Area */
+      .content {
+        padding: 30px;
+      }
+
+      /* Controls */
+      .controls {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .control-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .control-group label {
+        font-weight: 600;
+        color: #1a2332;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .control-group select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: inherit;
+        transition: border-color 0.3s;
+      }
+
+      .control-group select:focus {
+        outline: none;
+        border-color: #c53030;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background-color: #a82828;
+      }
+
+      .btn-secondary {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background-color: #0f1419;
+      }
+
+      /* Card */
+      .card {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .card-title {
+        color: #1a2332;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Schedule Grid */
+      .schedule-grid {
+        overflow-x: auto;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+      }
+
+      .schedule-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+      }
+
+      .schedule-table th,
+      .schedule-table td {
+        border: 1px solid #e0e0e0;
+        padding: 0;
+      }
+
+      /* Time Column */
+      .time-header {
+        width: 80px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        text-align: center;
+        font-weight: 700;
+        padding: 12px 10px;
+        font-size: 12px;
+      }
+
+      .time-cell {
+        width: 80px;
+        background-color: #f8f8f8;
+        color: #1a2332;
+        text-align: center;
+        font-weight: 600;
+        padding: 12px 10px;
+        font-size: 12px;
+        border-right: 2px solid #ddd;
+      }
+
+      /* Day Headers */
+      .day-header {
+        background-color: #2a3a4d;
+        color: #faf8f5;
+        text-align: center;
+        font-weight: 700;
+        padding: 12px 10px;
+        font-size: 13px;
+      }
+
+      /* Subject Blocks */
+      .subject-block {
+        min-height: 60px;
+        padding: 8px;
+        font-size: 11px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .subject-block:hover {
+        filter: brightness(0.9);
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .subject-block-name {
+        font-weight: 700;
+        margin-bottom: 3px;
+      }
+
+      .subject-block-room {
+        font-size: 10px;
+        opacity: 0.9;
+      }
+
+      .subject-block-teacher {
+        font-size: 10px;
+        opacity: 0.8;
+        margin-top: 2px;
+      }
+
+      /* Subject Colors */
+      .subject-spanish {
+        background: linear-gradient(135deg, #c53030 0%, #a82828 100%);
+      }
+
+      .subject-math {
+        background: linear-gradient(135deg, #38a169 0%, #2f8659 100%);
+      }
+
+      .subject-english {
+        background: linear-gradient(135deg, #3182ce 0%, #2c5aa0 100%);
+      }
+
+      .subject-science {
+        background: linear-gradient(135deg, #d69e2e 0%, #b7791f 100%);
+      }
+
+      .subject-pe {
+        background: linear-gradient(135deg, #d946ef 0%, #9d174d 100%);
+      }
+
+      .subject-art {
+        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+      }
+
+      .subject-music {
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      }
+
+      .subject-break {
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+      }
+
+      /* Empty Cell */
+      .empty-cell {
+        background-color: #fafafa;
+      }
+
+      /* Legend */
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+      }
+
+      .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+      }
+
+      /* Info Box */
+      .info-box {
+        background-color: #bee3f8;
+        border-left: 4px solid #3182ce;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: #1e3a8a;
+      }
+
+      /* Export Options */
+      .export-options {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-export {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        color: #1a2332;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-export:hover {
+        background-color: #f9f9f9;
+        border-color: #c53030;
+        color: #c53030;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          left: -260px;
+          z-index: 1000;
+          transition: left 0.3s;
+        }
+
+        .sidebar.active {
+          left: 0;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .topbar {
+          padding: 15px;
+        }
+
+        .topbar h2 {
+          font-size: 18px;
+        }
+
+        .content {
+          padding: 15px;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .control-group {
+          width: 100%;
+        }
+
+        .control-group select {
+          width: 100%;
+        }
+
+        .schedule-grid {
+          margin: -20px -20px 20px -20px;
+          border-radius: 0;
+        }
+
+        .time-header {
+          width: 60px;
+          padding: 8px 5px;
+          font-size: 11px;
+        }
+
+        .time-cell {
+          width: 60px;
+          padding: 8px 5px;
+          font-size: 11px;
+        }
+
+        .subject-block {
+          min-height: 50px;
+          padding: 6px;
+          font-size: 10px;
+        }
+
+        .legend {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <h1>AXIOMA</h1>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="#">Inscripciones</a></li>
+          <li><a href="#">Reinscripciones</a></li>
+          <li><a href="#">Grupos</a></li>
+          <li><a href="#" class="active">Horarios</a></li>
+          <li><a href="#">Estudiantes</a></li>
+          <li><a href="#">Calificaciones</a></li>
+          <li><a href="#">Asistencia</a></li>
+          <li><a href="#">Reportes</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Top Bar -->
+        <div class="topbar">
+          <h2>Horarios Escolares</h2>
+          <div class="topbar-right">
+            <div class="user-info">
+              <span>Admin User</span>
+              <div class="avatar">AU</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Controls -->
+          <div class="controls">
+            <div class="control-group">
+              <label for="groupSelect">Grupo:</label>
+              <select id="groupSelect">
+                <option value="1a">1º A</option>
+                <option value="1b">1º B</option>
+                <option value="1c">1º C</option>
+                <option value="3a">3º A</option>
+                <option value="5a">5º A</option>
+                <option value="6b">6º B</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="cycleSelect">Ciclo Escolar:</label>
+              <select id="cycleSelect">
+                <option value="2025-2026">2025-2026</option>
+                <option value="2026-2027">2026-2027</option>
+              </select>
+            </div>
+            <div style="flex: 1"></div>
+            <div class="export-options">
+              <button class="btn-export">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                PDF
+              </button>
+              <button class="btn-export">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Excel
+              </button>
+              <button class="btn-export">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+                  />
+                </svg>
+                Imprimir
+              </button>
+            </div>
+          </div>
+
+          <!-- Info Box -->
+          <div class="info-box">
+            <strong>Grupo 1º A:</strong> Aula 101 | Docente: Lic. María González
+            | Ciclo 2025-2026
+          </div>
+
+          <!-- Schedule Grid -->
+          <div class="card">
+            <div class="card-title">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              Horario Semanal (Lunes a Viernes)
+            </div>
+
+            <div class="schedule-grid">
+              <table class="schedule-table">
+                <thead>
+                  <tr>
+                    <th class="time-header">Hora</th>
+                    <th class="day-header">Lunes</th>
+                    <th class="day-header">Martes</th>
+                    <th class="day-header">Miércoles</th>
+                    <th class="day-header">Jueves</th>
+                    <th class="day-header">Viernes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 8:00 - 9:00 -->
+                  <tr>
+                    <td class="time-cell">8:00<br />9:00</td>
+                    <td class="subject-block subject-spanish">
+                      <div class="subject-block-name">Español</div>
+                      <div class="subject-block-room">101</div>
+                      <div class="subject-block-teacher">Lic. M. González</div>
+                    </td>
+                    <td class="subject-block subject-math">
+                      <div class="subject-block-name">Matemáticas</div>
+                      <div class="subject-block-room">101</div>
+                      <div class="subject-block-teacher">Lic. M. González</div>
+                    </td>
+                    <td class="subject-block subject-english">
+                      <div class="subject-block-name">Inglés</div>
+                      <div class="subject-block-room">105</div>
+                      <div class="subject-block-teacher">Lic. P. Johnson</div>
+                    </td>
+                    <td class="subject-block subject-spanish">
+                      <div class="subject-block-name">Español</div>
+                      <div class="subject-block-room">101</div>
+                      <div class="subject-block-teacher">Lic. M. González</div>
+                    </td>
+                    <td class="subject-block subject-science">
+                      <div class="subject-block-name">Ciencias</div>
+                      <div class="subject-block-room">102</div>
+                      <div class="subject-block-teacher">Lic. J. Silva</div>
+                    </td>
+                  </tr>
+
+                  <!-- 9:00 - 10:00 -->
+                  <tr>
+                    <td class="time-cell">9:00<br />10:00</td>
+                    <td class="subject-block subject-spanish">
+                      <div class="subject-block-name">Español</div>
+                      <div class="subject-block-room">101</div>
+                      <div class="subject-block-teacher">Lic. M. González</div>
+                    </td>
+                    <td class="subject-block subject-math">
+                      <div class="subject-block-name">Matemáticas</div>
+                      <div class="subject-block-room">101</div>
+                      <div class="subject-block-teacher">Lic. M. González</div>
+                    </td>
+                    <td class="subject-block subject-english">
+                      <div class="subject-block-name">Inglés</div>
+                      <div class="subject-block-room">105</div>
+                      <div class="subject-block-teacher">Lic. P. Johnson</div>
+                    </td>
+                    <td class="subject-block subject-math">
+                      <div class="subject-block-name">Matemáticas</div>
+                      <div class="subject-block-room">101</div>
+                      <div class="subject-block-teacher">Lic. M. González</div>
+                    </td>
+                    <td class="subject-block subject-spanish">
+                      <div class="subject-block-name">Español</div>
+                      <div class="subject-block-room">101</div>
+                      <div class="subject-block-teacher">Lic. M. González</div>
+                    </td>
+                  </tr>
+
+                  <!-- 10:00 - 10:30 Break -->
+                  <tr>
+                    <td class="time-cell">10:00<br />10:30</td>
+                    <td
+                      colspan="5"
+                      class="subject-block subject-break"
+                      style="text-align: center; padding: 15px"
+                    >
+                      RECESO / DESCANSO
+                    </td>
+                  </tr>
+
+                  <!-- 10:30 - 11:30 -->
+                  <tr>
+                    <td class="time-cell">10:30<br />11:30</td>
+                    <td class="subject-block subject-science">
+                      <div class="subject-block-name">Ciencias</div>
+                      <div class="subject-block-room">102</div>
+                      <div class="subject-block-teacher">Lic. J. Silva</div>
+                    </td>
+                    <td class="subject-block subject-english">
+                      <div class="subject-block-name">Inglés</div>
+                      <div class="subject-block-room">105</div>
+                      <div class="subject-block-teacher">Lic. P. Johnson</div>
+                    </td>
+                    <td class="subject-block subject-math">
+                      <div class="subject-block-name">Matemáticas</div>
+                      <div class="subject-block-room">101</div>
+                      <div class="subject-block-teacher">Lic. M. González</div>
+                    </td>
+                    <td class="subject-block subject-science">
+                      <div class="subject-block-name">Ciencias</div>
+                      <div class="subject-block-room">102</div>
+                      <div class="subject-block-teacher">Lic. J. Silva</div>
+                    </td>
+                    <td class="subject-block subject-science">
+                      <div class="subject-block-name">Ciencias</div>
+                      <div class="subject-block-room">102</div>
+                      <div class="subject-block-teacher">Lic. J. Silva</div>
+                    </td>
+                  </tr>
+
+                  <!-- 11:30 - 12:30 -->
+                  <tr>
+                    <td class="time-cell">11:30<br />12:30</td>
+                    <td class="subject-block subject-pe">
+                      <div class="subject-block-name">Educación Física</div>
+                      <div class="subject-block-room">Cancha</div>
+                      <div class="subject-block-teacher">Lic. R. Martínez</div>
+                    </td>
+                    <td class="subject-block subject-art">
+                      <div class="subject-block-name">Artes Plásticas</div>
+                      <div class="subject-block-room">106</div>
+                      <div class="subject-block-teacher">Lic. L. Torres</div>
+                    </td>
+                    <td class="subject-block subject-music">
+                      <div class="subject-block-name">Música</div>
+                      <div class="subject-block-room">107</div>
+                      <div class="subject-block-teacher">Lic. C. Nuñez</div>
+                    </td>
+                    <td class="subject-block subject-pe">
+                      <div class="subject-block-name">Educación Física</div>
+                      <div class="subject-block-room">Cancha</div>
+                      <div class="subject-block-teacher">Lic. R. Martínez</div>
+                    </td>
+                    <td class="subject-block subject-music">
+                      <div class="subject-block-name">Música</div>
+                      <div class="subject-block-room">107</div>
+                      <div class="subject-block-teacher">Lic. C. Nuñez</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Legend -->
+          <div class="legend">
+            <div class="legend-item">
+              <div
+                class="legend-color"
+                style="
+                  background: linear-gradient(135deg, #c53030 0%, #a82828 100%);
+                "
+              ></div>
+              <span>Español</span>
+            </div>
+            <div class="legend-item">
+              <div
+                class="legend-color"
+                style="
+                  background: linear-gradient(135deg, #38a169 0%, #2f8659 100%);
+                "
+              ></div>
+              <span>Matemáticas</span>
+            </div>
+            <div class="legend-item">
+              <div
+                class="legend-color"
+                style="
+                  background: linear-gradient(135deg, #3182ce 0%, #2c5aa0 100%);
+                "
+              ></div>
+              <span>Inglés</span>
+            </div>
+            <div class="legend-item">
+              <div
+                class="legend-color"
+                style="
+                  background: linear-gradient(135deg, #d69e2e 0%, #b7791f 100%);
+                "
+              ></div>
+              <span>Ciencias</span>
+            </div>
+            <div class="legend-item">
+              <div
+                class="legend-color"
+                style="
+                  background: linear-gradient(135deg, #d946ef 0%, #9d174d 100%);
+                "
+              ></div>
+              <span>Educación Física</span>
+            </div>
+            <div class="legend-item">
+              <div
+                class="legend-color"
+                style="
+                  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+                "
+              ></div>
+              <span>Artes Plásticas</span>
+            </div>
+            <div class="legend-item">
+              <div
+                class="legend-color"
+                style="
+                  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+                "
+              ></div>
+              <span>Música</span>
+            </div>
+            <div class="legend-item">
+              <div
+                class="legend-color"
+                style="
+                  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+                "
+              ></div>
+              <span>Descanso</span>
+            </div>
+          </div>
+
+          <!-- Schedule Information -->
+          <div class="card" style="margin-top: 30px">
+            <div class="card-title">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"
+                />
+                <path d="M12 6v6l4.25 2.52" />
+              </svg>
+              Información de la Semana
+            </div>
+
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+              "
+            >
+              <div>
+                <h4
+                  style="
+                    color: #1a2332;
+                    font-size: 13px;
+                    font-weight: 700;
+                    margin-bottom: 10px;
+                  "
+                >
+                  Horario de Clases
+                </h4>
+                <ul style="list-style: none; font-size: 13px; color: #666">
+                  <li style="margin-bottom: 8px">
+                    <strong>Entrada:</strong> 8:00 AM
+                  </li>
+                  <li style="margin-bottom: 8px">
+                    <strong>Descanso:</strong> 10:00 - 10:30 AM
+                  </li>
+                  <li style="margin-bottom: 8px">
+                    <strong>Salida:</strong> 12:30 PM
+                  </li>
+                  <li><strong>Duración:</strong> 4.5 horas</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4
+                  style="
+                    color: #1a2332;
+                    font-size: 13px;
+                    font-weight: 700;
+                    margin-bottom: 10px;
+                  "
+                >
+                  Docentes Asignados
+                </h4>
+                <ul style="list-style: none; font-size: 13px; color: #666">
+                  <li style="margin-bottom: 8px">
+                    • Lic. María González (Español/Matemáticas)
+                  </li>
+                  <li style="margin-bottom: 8px">
+                    • Lic. Paul Johnson (Inglés)
+                  </li>
+                  <li style="margin-bottom: 8px">
+                    • Lic. José Silva (Ciencias)
+                  </li>
+                  <li style="margin-bottom: 8px">
+                    • Lic. Roberto Martínez (Ed. Física)
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h4
+                  style="
+                    color: #1a2332;
+                    font-size: 13px;
+                    font-weight: 700;
+                    margin-bottom: 10px;
+                  "
+                >
+                  Espacios Utilizados
+                </h4>
+                <ul style="list-style: none; font-size: 13px; color: #666">
+                  <li style="margin-bottom: 8px"><strong>Aula:</strong> 101</li>
+                  <li style="margin-bottom: 8px">
+                    <strong>Lab. Ciencias:</strong> 102
+                  </li>
+                  <li style="margin-bottom: 8px">
+                    <strong>Aula Inglés:</strong> 105
+                  </li>
+                  <li style="margin-bottom: 8px">
+                    <strong>Cancha Deportiva</strong>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

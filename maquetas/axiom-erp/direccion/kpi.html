@@ -1,0 +1,1092 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AXIOMA - KPI Detallado</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background-color: #faf8f5;
+        color: #1a2332;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background: linear-gradient(180deg, #1a2332 0%, #0f1419 100%);
+        padding: 2rem 1rem;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #faf8f5;
+        margin-bottom: 2rem;
+        padding: 0 0.5rem;
+        letter-spacing: 1px;
+      }
+
+      .nav-section {
+        margin-bottom: 2rem;
+      }
+
+      .nav-section-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #8b8b8b;
+        text-transform: uppercase;
+        padding: 1rem 0.5rem;
+        letter-spacing: 0.5px;
+      }
+
+      .nav-item {
+        padding: 0.75rem 0.5rem;
+        margin-bottom: 0.5rem;
+        color: #ccc;
+        text-decoration: none;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      .nav-item:hover {
+        background: rgba(198, 48, 48, 0.15);
+        color: #faf8f5;
+      }
+
+      .nav-item.active {
+        background: #c53030;
+        color: #faf8f5;
+        font-weight: 600;
+      }
+
+      .nav-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+
+      /* Main content */
+      .main {
+        flex: 1;
+        margin-left: 260px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .topbar {
+        background: #faf8f5;
+        border-bottom: 1px solid #e8e6e1;
+        padding: 1.5rem 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .topbar-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .topbar-actions {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      .action-btn {
+        background: #1a2332;
+        color: #faf8f5;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .action-btn:hover {
+        background: #0f1419;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 35, 50, 0.2);
+      }
+
+      /* Content area */
+      .content {
+        flex: 1;
+        padding: 2.5rem;
+        overflow-y: auto;
+      }
+
+      .content-header {
+        margin-bottom: 2.5rem;
+      }
+
+      .content-header h1 {
+        font-size: 2rem;
+        color: #1a2332;
+        margin-bottom: 0.5rem;
+      }
+
+      .content-header p {
+        color: #666;
+        font-size: 0.95rem;
+      }
+
+      /* KPI Selection */
+      .kpi-selector {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2.5rem;
+      }
+
+      .selector-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 1.5rem;
+      }
+
+      .kpi-buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+      }
+
+      .kpi-btn {
+        padding: 1rem;
+        border: 2px solid #e8e6e1;
+        background: white;
+        color: #1a2332;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .kpi-btn:hover {
+        border-color: #c53030;
+        box-shadow: 0 4px 12px rgba(197, 48, 48, 0.1);
+      }
+
+      .kpi-btn.active {
+        background: #c53030;
+        color: #faf8f5;
+        border-color: #c53030;
+      }
+
+      /* KPI Detail Section */
+      .kpi-detail {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .detail-card {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .detail-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 1.5rem;
+      }
+
+      /* KPI Metrics */
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .metric-box {
+        background: #faf8f5;
+        padding: 1rem;
+        border-radius: 6px;
+        border-left: 3px solid #c53030;
+      }
+
+      .metric-label {
+        font-size: 0.8rem;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.5px;
+      }
+
+      .metric-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1a2332;
+        margin-bottom: 0.25rem;
+      }
+
+      .metric-change {
+        font-size: 0.8rem;
+        color: #38a169;
+        font-weight: 600;
+      }
+
+      .metric-change.negative {
+        color: #c53030;
+      }
+
+      /* Trend Chart */
+      .trend-chart {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(
+          to bottom,
+          rgba(197, 48, 48, 0.1) 0%,
+          transparent 100%
+        );
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        padding: 1rem;
+      }
+
+      .trend-point {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #c53030;
+        border-radius: 50%;
+        border: 2px solid white;
+      }
+
+      .tp1 {
+        bottom: 25%;
+        left: 5%;
+      }
+      .tp2 {
+        bottom: 35%;
+        left: 15%;
+      }
+      .tp3 {
+        bottom: 45%;
+        left: 25%;
+      }
+      .tp4 {
+        bottom: 55%;
+        left: 35%;
+      }
+      .tp5 {
+        bottom: 65%;
+        left: 45%;
+      }
+      .tp6 {
+        bottom: 60%;
+        left: 55%;
+      }
+      .tp7 {
+        bottom: 70%;
+        left: 65%;
+      }
+      .tp8 {
+        bottom: 75%;
+        left: 75%;
+      }
+      .tp9 {
+        bottom: 80%;
+        left: 85%;
+      }
+      .tp10 {
+        bottom: 85%;
+        left: 95%;
+      }
+
+      /* Gauge */
+      .gauge-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .gauge {
+        position: relative;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+      }
+
+      .gauge-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: conic-gradient(#e8e6e1 0deg 360deg);
+      }
+
+      .gauge-progress {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: conic-gradient(
+          #c53030 0deg calc(var(--value, 75) * 3.6deg),
+          #e8e6e1 calc(var(--value, 75) * 3.6deg) 360deg
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 2rem;
+        color: #1a2332;
+      }
+
+      .gauge-label {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      /* Goal Tracking */
+      .goal-section {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2.5rem;
+      }
+
+      .goal-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 1.5rem;
+      }
+
+      .goal-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border: 1px solid #e8e6e1;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+      }
+
+      .goal-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .goal-info {
+        flex: 1;
+      }
+
+      .goal-name {
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 0.25rem;
+      }
+
+      .goal-detail {
+        font-size: 0.85rem;
+        color: #666;
+      }
+
+      .goal-progress {
+        flex: 2;
+        padding: 0 1.5rem;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e8e6e1;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 0.25rem;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #38a169 0%, #38a169 100%);
+        border-radius: 4px;
+      }
+
+      .progress-text {
+        font-size: 0.75rem;
+        color: #666;
+        text-align: right;
+      }
+
+      .goal-status {
+        text-align: right;
+        min-width: 80px;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .status-good {
+        background: rgba(56, 161, 105, 0.1);
+        color: #38a169;
+      }
+
+      .status-warning {
+        background: rgba(214, 158, 46, 0.1);
+        color: #d69e2e;
+      }
+
+      .status-critical {
+        background: rgba(197, 48, 48, 0.1);
+        color: #c53030;
+      }
+
+      /* Alerts Section */
+      .alerts-section {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2.5rem;
+      }
+
+      .alerts-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 1.5rem;
+      }
+
+      .alert-box {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        border-left: 4px solid #d69e2e;
+        background: rgba(214, 158, 46, 0.1);
+      }
+
+      .alert-box.critical {
+        border-left-color: #c53030;
+        background: rgba(197, 48, 48, 0.1);
+      }
+
+      .alert-box.success {
+        border-left-color: #38a169;
+        background: rgba(56, 161, 105, 0.1);
+      }
+
+      .alert-header {
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .alert-box.critical .alert-header {
+        color: #c53030;
+      }
+
+      .alert-box.success .alert-header {
+        color: #38a169;
+      }
+
+      .alert-text {
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      /* Footer */
+      .content-footer {
+        text-align: center;
+        padding: 1.5rem 0;
+        color: #999;
+        font-size: 0.85rem;
+        border-top: 1px solid #e8e6e1;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 1400px) {
+        .kpi-buttons {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .kpi-detail {
+          grid-template-columns: 1fr;
+        }
+
+        .metrics-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+        }
+
+        .kpi-buttons {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 160px;
+        }
+
+        .main {
+          margin-left: 160px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 1rem;
+          text-align: center;
+        }
+
+        .content {
+          padding: 1.5rem;
+        }
+
+        .content-header {
+          text-align: center;
+        }
+
+        .goal-row {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .goal-progress {
+          padding: 0;
+          width: 100%;
+        }
+
+        .goal-status {
+          width: 100%;
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo">AXIOMA</div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Dirección</div>
+          <a href="index.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            </svg>
+            Dashboard
+          </a>
+          <a href="indicadores.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="2" x2="12" y2="22"></line>
+              <path
+                d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+              ></path>
+            </svg>
+            Indicadores
+          </a>
+          <a href="estadisticas.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Estadísticas
+          </a>
+          <a href="graficas.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline
+                points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"
+              ></polyline>
+            </svg>
+            Gráficas
+          </a>
+          <a href="kpi.html" class="nav-item active">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="1"></circle>
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12"></path>
+              <polyline points="2 21 2 11 12 11"></polyline>
+            </svg>
+            KPI Detallado
+          </a>
+          <a href="reportes.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              ></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            Reportes
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Académico</div>
+          <a href="#" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+              ></path>
+            </svg>
+            Estudiantes
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Docentes
+          </a>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="main">
+        <!-- Top bar -->
+        <div class="topbar">
+          <div class="topbar-title">Análisis Detallado de KPIs</div>
+          <div class="topbar-actions">
+            <button class="action-btn">
+              <svg
+                style="width: 16px; height: 16px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Descargar
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Header -->
+          <div class="content-header">
+            <h1>Análisis Detallado de Indicadores Clave</h1>
+            <p>
+              Desglose profundo de métricas con tendencias históricas y metas |
+              Junio 2026
+            </p>
+          </div>
+
+          <!-- KPI Selector -->
+          <div class="kpi-selector">
+            <div class="selector-title">
+              Seleccionar KPI para análisis detallado
+            </div>
+            <div class="kpi-buttons">
+              <button class="kpi-btn active">Tasa de Matrícula</button>
+              <button class="kpi-btn">Retención</button>
+              <button class="kpi-btn">Graduación</button>
+              <button class="kpi-btn">Satisfacción</button>
+              <button class="kpi-btn">Desempeño Académico</button>
+              <button class="kpi-btn">Eficiencia Docente</button>
+              <button class="kpi-btn">Presupuesto</button>
+              <button class="kpi-btn">NPS</button>
+            </div>
+          </div>
+
+          <!-- KPI Detail Analysis -->
+          <div class="kpi-detail">
+            <!-- Current Status -->
+            <div class="detail-card">
+              <div class="detail-title">Estado Actual - Tasa de Matrícula</div>
+              <div class="metrics-grid">
+                <div class="metric-box">
+                  <div class="metric-label">Valor Actual</div>
+                  <div class="metric-value">94.2%</div>
+                  <div class="metric-change">Target: 95%</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-label">Variación Mes</div>
+                  <div class="metric-value">+2.1%</div>
+                  <div class="metric-change">vs. mayo 2026</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-label">Variación Año</div>
+                  <div class="metric-value">+14.7%</div>
+                  <div class="metric-change">vs. junio 2025</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gauge -->
+            <div class="detail-card">
+              <div class="detail-title">Cumplimiento de Meta</div>
+              <div class="gauge-container">
+                <div class="gauge">
+                  <div class="gauge-progress" style="--value: 94.2">94.2%</div>
+                </div>
+                <div class="gauge-label">Meta alcanzada: 99.2%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trend Analysis -->
+          <div class="kpi-detail">
+            <div class="detail-card">
+              <div class="detail-title">Tendencia Histórica (12 meses)</div>
+              <div class="trend-chart">
+                <div class="trend-point tp1"></div>
+                <div class="trend-point tp2"></div>
+                <div class="trend-point tp3"></div>
+                <div class="trend-point tp4"></div>
+                <div class="trend-point tp5"></div>
+                <div class="trend-point tp6"></div>
+                <div class="trend-point tp7"></div>
+                <div class="trend-point tp8"></div>
+                <div class="trend-point tp9"></div>
+                <div class="trend-point tp10"></div>
+              </div>
+              <div style="font-size: 0.85rem; color: #666">
+                <div>Mín: 80.5% (Julio 2025)</div>
+                <div>Máx: 94.2% (Junio 2026)</div>
+                <div>Promedio: 87.8%</div>
+              </div>
+            </div>
+
+            <div class="detail-card">
+              <div class="detail-title">Desglose por Segmento</div>
+              <div class="metrics-grid">
+                <div class="metric-box">
+                  <div class="metric-label">Primaria</div>
+                  <div class="metric-value">96.5%</div>
+                  <div class="metric-change">+1.2%</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-label">Básica</div>
+                  <div class="metric-value">91.2%</div>
+                  <div class="metric-change">+2.8%</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-label">Media</div>
+                  <div class="metric-value">93.8%</div>
+                  <div class="metric-change">+1.9%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Goal Tracking -->
+          <div class="goal-section">
+            <div class="goal-title">Seguimiento de Metas Relacionadas</div>
+
+            <div class="goal-row">
+              <div class="goal-info">
+                <div class="goal-name">
+                  Meta Trimestral: Crecimiento Matrícula
+                </div>
+                <div class="goal-detail">
+                  Objetivo: 6,800 estudiantes | Plazo: 30 de septiembre, 2026
+                </div>
+              </div>
+              <div class="goal-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 98%"></div>
+                </div>
+                <div class="progress-text">6,714 / 6,800 (98%)</div>
+              </div>
+              <div class="goal-status">
+                <span class="status-badge status-good">En Curso</span>
+              </div>
+            </div>
+
+            <div class="goal-row">
+              <div class="goal-info">
+                <div class="goal-name">
+                  Meta Semestral: Retención Estudiantil
+                </div>
+                <div class="goal-detail">
+                  Objetivo: 92% retención | Plazo: 30 de noviembre, 2026
+                </div>
+              </div>
+              <div class="goal-progress">
+                <div class="progress-bar">
+                  <div
+                    class="progress-fill"
+                    style="
+                      width: 86%;
+                      background: linear-gradient(
+                        90deg,
+                        #38a169 0%,
+                        #38a169 100%
+                      );
+                    "
+                  ></div>
+                </div>
+                <div class="progress-text">91.8% / 92% (99.8%)</div>
+              </div>
+              <div class="goal-status">
+                <span class="status-badge status-good">En Curso</span>
+              </div>
+            </div>
+
+            <div class="goal-row">
+              <div class="goal-info">
+                <div class="goal-name">
+                  Meta Anual: Satisfacción Estudiantil
+                </div>
+                <div class="goal-detail">
+                  Objetivo: 8.5/10 promedio | Plazo: 31 de diciembre, 2026
+                </div>
+              </div>
+              <div class="goal-progress">
+                <div class="progress-bar">
+                  <div
+                    class="progress-fill"
+                    style="
+                      width: 88%;
+                      background: linear-gradient(
+                        90deg,
+                        #d69e2e 0%,
+                        #d69e2e 100%
+                      );
+                    "
+                  ></div>
+                </div>
+                <div class="progress-text">8.4 / 8.5 (98.8%)</div>
+              </div>
+              <div class="goal-status">
+                <span class="status-badge status-warning">Alerta</span>
+              </div>
+            </div>
+
+            <div class="goal-row">
+              <div class="goal-info">
+                <div class="goal-name">Meta Anual: Eficiencia Operativa</div>
+                <div class="goal-detail">
+                  Objetivo: 93% de eficiencia | Plazo: 31 de diciembre, 2026
+                </div>
+              </div>
+              <div class="goal-progress">
+                <div class="progress-bar">
+                  <div
+                    class="progress-fill"
+                    style="
+                      width: 75%;
+                      background: linear-gradient(
+                        90deg,
+                        #c53030 0%,
+                        #c53030 100%
+                      );
+                    "
+                  ></div>
+                </div>
+                <div class="progress-text">91.2 / 93% (98%)</div>
+              </div>
+              <div class="goal-status">
+                <span class="status-badge status-critical">Crítico</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts for Underperforming Metrics -->
+          <div class="alerts-section">
+            <div class="alerts-title">Alertas de Desempeño</div>
+
+            <div class="alert-box success">
+              <div class="alert-header">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Métricas Sobresalientes
+              </div>
+              <div class="alert-text">
+                La tasa de matrícula ha superado las expectativas del período
+                con un crecimiento del 14.7% anual. La tendencia se mantiene
+                positiva con incrementos consistentes mes a mes.
+              </div>
+            </div>
+
+            <div class="alert-box">
+              <div class="alert-header">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Atención: Mínima Variación Esperada
+              </div>
+              <div class="alert-text">
+                El crecimiento del próximo trimestre podría desacelerarse según
+                proyecciones estacionales. Se recomienda ajustar estrategias de
+                inscripción para finales de julio.
+              </div>
+            </div>
+
+            <div class="alert-box critical">
+              <div class="alert-header">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Crítico: Eficiencia Operativa en Declive
+              </div>
+              <div class="alert-text">
+                La eficiencia operativa ha disminuido 1.8 puntos porcentuales en
+                los últimos dos meses. Se requiere análisis urgente de procesos
+                administrativos y operacionales para revertir esta tendencia.
+              </div>
+            </div>
+
+            <div class="alert-box critical">
+              <div class="alert-header">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Crítico: Satisfacción por Debajo de Meta
+              </div>
+              <div class="alert-text">
+                La satisfacción estudiantil se encuentra 0.1 puntos por debajo
+                de la meta anual (8.4 vs 8.5). Investigar causas raíz mediante
+                análisis de comentarios y encuestas de retroalimentación.
+              </div>
+            </div>
+          </div>
+
+          <div class="content-footer">
+            Datos actualizados automáticamente. AXIOMA ERP v2.0.1 | © 2024-2026
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

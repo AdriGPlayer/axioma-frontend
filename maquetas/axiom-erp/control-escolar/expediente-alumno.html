@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expediente de Alumno - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: #c53030;
+      }
+
+      .menu {
+        list-style: none;
+      }
+
+      .menu-item {
+        margin-bottom: 15px;
+      }
+
+      .menu-link {
+        color: #faf8f5;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+      }
+
+      .menu-link:hover,
+      .menu-link.active {
+        background-color: #c53030;
+        color: #fff;
+      }
+
+      .menu-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 260px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: #faf8f5;
+        padding: 20px 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .topbar-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .topbar-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-icon {
+        background-color: #c53030;
+        color: #faf8f5;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-icon:hover {
+        background-color: #a82828;
+      }
+
+      /* Content Area */
+      .content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+      }
+
+      /* Student Card */
+      .student-card {
+        background-color: #faf8f5;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 25px;
+        align-items: start;
+      }
+
+      .student-photo {
+        width: 140px;
+        height: 140px;
+        border-radius: 10px;
+        background-color: #f0f0f0;
+        border: 3px solid #c53030;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .student-photo svg {
+        width: 80px;
+        height: 80px;
+        color: #999;
+      }
+
+      .student-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .info-label {
+        font-size: 11px;
+        color: #999;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .info-value {
+        font-size: 15px;
+        color: #1a2332;
+        font-weight: 500;
+      }
+
+      /* Tabs */
+      .tabs-container {
+        background-color: #faf8f5;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-bottom: 25px;
+      }
+
+      .tabs-header {
+        display: flex;
+        border-bottom: 2px solid #f0f0f0;
+        padding: 0 25px;
+      }
+
+      .tab-button {
+        flex: 0 1 auto;
+        background: none;
+        border: none;
+        padding: 16px 20px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        color: #666;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+        margin-bottom: -2px;
+      }
+
+      .tab-button:hover {
+        color: #1a2332;
+        background-color: #f9f9f9;
+      }
+
+      .tab-button.active {
+        color: #c53030;
+        border-bottom-color: #c53030;
+      }
+
+      .tabs-content {
+        padding: 25px;
+      }
+
+      .tab-panel {
+        display: none;
+      }
+
+      .tab-panel.active {
+        display: block;
+      }
+
+      /* Timeline */
+      .timeline {
+        list-style: none;
+        position: relative;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 20px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: #f0f0f0;
+      }
+
+      .timeline-item {
+        margin-bottom: 20px;
+        padding-left: 60px;
+        position: relative;
+      }
+
+      .timeline-marker {
+        position: absolute;
+        left: 8px;
+        top: 6px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: #c53030;
+        border: 3px solid #faf8f5;
+        box-shadow: 0 0 0 2px #c53030;
+      }
+
+      .timeline-date {
+        font-size: 12px;
+        color: #999;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .timeline-title {
+        font-weight: 600;
+        color: #1a2332;
+        font-size: 14px;
+      }
+
+      .timeline-description {
+        font-size: 13px;
+        color: #666;
+        margin-top: 4px;
+      }
+
+      /* Academic Summary */
+      .grades-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+      }
+
+      .grade-card {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #c53030;
+        text-align: center;
+      }
+
+      .grade-subject {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 8px;
+      }
+
+      .grade-value {
+        font-size: 28px;
+        font-weight: bold;
+        color: #1a2332;
+      }
+
+      .grade-status {
+        font-size: 11px;
+        color: #999;
+        margin-top: 4px;
+      }
+
+      /* Documents Grid */
+      .documents-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+      }
+
+      .document-item {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s ease;
+      }
+
+      .document-item:hover {
+        border-color: #c53030;
+        background-color: #fef5f5;
+      }
+
+      .document-icon {
+        width: 40px;
+        height: 40px;
+        color: #c53030;
+      }
+
+      .document-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: #1a2332;
+        text-align: center;
+      }
+
+      .document-date {
+        font-size: 10px;
+        color: #999;
+      }
+
+      /* Incidents */
+      .incidents-list {
+        list-style: none;
+      }
+
+      .incident-item {
+        background-color: #fee2e2;
+        border-left: 4px solid #c53030;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+      }
+
+      .incident-date {
+        font-size: 12px;
+        color: #c53030;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .incident-title {
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 4px;
+      }
+
+      .incident-description {
+        font-size: 13px;
+        color: #666;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 0;
+          display: none;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .content {
+          padding: 20px;
+        }
+
+        .student-card {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .student-info {
+          grid-template-columns: 1fr;
+        }
+
+        .tabs-header {
+          padding: 0;
+          overflow-x: auto;
+        }
+
+        .tab-button {
+          padding: 12px 15px;
+          font-size: 12px;
+        }
+
+        .tabs-content {
+          padding: 15px;
+        }
+
+        .timeline::before {
+          left: 12px;
+        }
+
+        .timeline-item {
+          padding-left: 45px;
+        }
+
+        .timeline-marker {
+          left: 0;
+          width: 20px;
+          height: 20px;
+        }
+
+        .grades-summary {
+          grid-template-columns: 1fr;
+        }
+
+        .documents-grid {
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">AXIOMA</div>
+        <ul class="menu">
+          <li class="menu-item">
+            <a href="index.html" class="menu-link">
+              <svg
+                class="menu-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              Panel Principal
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="listado-alumnos.html" class="menu-link">
+              <svg
+                class="menu-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              Listado de Alumnos
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="alta-alumno.html" class="menu-link">
+              <svg
+                class="menu-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+              </svg>
+              Nuevo Alumno
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Topbar -->
+        <div class="topbar">
+          <h1 class="topbar-title">Expediente de Alumno</h1>
+          <div class="topbar-actions">
+            <button class="btn-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                width="16"
+                height="16"
+              >
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                ></path>
+                <path
+                  d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                ></path>
+              </svg>
+              Editar
+            </button>
+            <button class="btn-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                width="16"
+                height="16"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z"
+                ></path>
+              </svg>
+              Descargar
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Student Card -->
+          <div class="student-card">
+            <div class="student-photo">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                ></path>
+              </svg>
+            </div>
+            <div class="student-info">
+              <div class="info-item">
+                <div class="info-label">Nombre Completo</div>
+                <div class="info-value">Carlos Mendez García</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Matrícula</div>
+                <div class="info-value">#2024001</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Grado</div>
+                <div class="info-value">4° Primaria - Grupo A</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Fecha de Nacimiento</div>
+                <div class="info-value">15/03/2015 (9 años)</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Tutor Registrado</div>
+                <div class="info-value">Roberto Mendez López</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Teléfono</div>
+                <div class="info-value">+52 (123) 456-7890</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="tabs-container">
+            <div class="tabs-header">
+              <button class="tab-button active" data-tab="general">
+                General
+              </button>
+              <button class="tab-button" data-tab="academic">
+                Historial Académico
+              </button>
+              <button class="tab-button" data-tab="documents">
+                Documentos
+              </button>
+              <button class="tab-button" data-tab="incidents">
+                Incidencias
+              </button>
+            </div>
+
+            <div class="tabs-content">
+              <!-- General Tab -->
+              <div class="tab-panel active" id="general">
+                <h3
+                  style="margin-bottom: 20px; color: #1a2332; font-size: 16px"
+                >
+                  Historial de Actividades
+                </h3>
+                <ul class="timeline">
+                  <li class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">29 de Junio, 2026 - 10:30</div>
+                    <div class="timeline-title">Calificación Registrada</div>
+                    <div class="timeline-description">
+                      Matemáticas: 8.5/10 - Período 3
+                    </div>
+                  </li>
+                  <li class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">25 de Junio, 2026 - 14:15</div>
+                    <div class="timeline-title">Asistencia Registrada</div>
+                    <div class="timeline-description">
+                      Presente - Sin retardos
+                    </div>
+                  </li>
+                  <li class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">20 de Junio, 2026 - 09:00</div>
+                    <div class="timeline-title">Cambio de Estado</div>
+                    <div class="timeline-description">
+                      Estado: Activo - Confirmado por administrador
+                    </div>
+                  </li>
+                  <li class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">15 de Junio, 2026 - 11:20</div>
+                    <div class="timeline-title">Documento Cargado</div>
+                    <div class="timeline-description">
+                      Acta de Nacimiento - Verificado
+                    </div>
+                  </li>
+                  <li class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-date">1 de Junio, 2026 - 13:45</div>
+                    <div class="timeline-title">Alumno Registrado</div>
+                    <div class="timeline-description">
+                      Nuevo registro en el sistema
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Academic History Tab -->
+              <div class="tab-panel" id="academic">
+                <h3
+                  style="margin-bottom: 20px; color: #1a2332; font-size: 16px"
+                >
+                  Resumen de Calificaciones - Período Actual
+                </h3>
+                <div class="grades-summary">
+                  <div class="grade-card">
+                    <div class="grade-subject">Matemáticas</div>
+                    <div class="grade-value">8.5</div>
+                    <div class="grade-status">Excelente</div>
+                  </div>
+                  <div class="grade-card">
+                    <div class="grade-subject">Español</div>
+                    <div class="grade-value">8.0</div>
+                    <div class="grade-status">Excelente</div>
+                  </div>
+                  <div class="grade-card">
+                    <div class="grade-subject">Ciencias</div>
+                    <div class="grade-value">7.8</div>
+                    <div class="grade-status">Muy Bueno</div>
+                  </div>
+                  <div class="grade-card">
+                    <div class="grade-subject">Historia</div>
+                    <div class="grade-value">8.2</div>
+                    <div class="grade-status">Excelente</div>
+                  </div>
+                  <div class="grade-card">
+                    <div class="grade-subject">Educación Física</div>
+                    <div class="grade-value">9.0</div>
+                    <div class="grade-status">Excelente</div>
+                  </div>
+                  <div class="grade-card">
+                    <div class="grade-subject">Artes</div>
+                    <div class="grade-value">8.7</div>
+                    <div class="grade-status">Excelente</div>
+                  </div>
+                </div>
+                <div
+                  style="
+                    margin-top: 20px;
+                    padding: 15px;
+                    background-color: #e8f5e9;
+                    border-radius: 6px;
+                    border-left: 4px solid #38a169;
+                  "
+                >
+                  <div
+                    style="font-weight: 600; color: #38a169; margin-bottom: 4px"
+                  >
+                    Desempeño General
+                  </div>
+                  <div style="font-size: 14px; color: #2e7d32">
+                    Promedio: 8.3/10 - Desempeño Excelente
+                  </div>
+                </div>
+              </div>
+
+              <!-- Documents Tab -->
+              <div class="tab-panel" id="documents">
+                <h3
+                  style="margin-bottom: 20px; color: #1a2332; font-size: 16px"
+                >
+                  Documentos Adjuntos
+                </h3>
+                <div class="documents-grid">
+                  <div class="document-item">
+                    <svg
+                      class="document-icon"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z"
+                      ></path>
+                    </svg>
+                    <div class="document-name">Acta de Nacimiento</div>
+                    <div class="document-date">15/06/2026</div>
+                  </div>
+                  <div class="document-item">
+                    <svg
+                      class="document-icon"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z"
+                      ></path>
+                    </svg>
+                    <div class="document-name">RFC</div>
+                    <div class="document-date">15/06/2026</div>
+                  </div>
+                  <div class="document-item">
+                    <svg
+                      class="document-icon"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z"
+                      ></path>
+                    </svg>
+                    <div class="document-name">Comprobante Domicilio</div>
+                    <div class="document-date">15/06/2026</div>
+                  </div>
+                  <div class="document-item">
+                    <svg
+                      class="document-icon"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z"
+                      ></path>
+                    </svg>
+                    <div class="document-name">Cartilla Vacunación</div>
+                    <div class="document-date">15/06/2026</div>
+                  </div>
+                  <div class="document-item">
+                    <svg
+                      class="document-icon"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z"
+                      ></path>
+                    </svg>
+                    <div class="document-name">Calificaciones Anteriores</div>
+                    <div class="document-date">01/06/2026</div>
+                  </div>
+                  <div class="document-item">
+                    <svg
+                      class="document-icon"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z"
+                      ></path>
+                    </svg>
+                    <div class="document-name">Certificado Médico</div>
+                    <div class="document-date">10/06/2026</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Incidents Tab -->
+              <div class="tab-panel" id="incidents">
+                <h3
+                  style="margin-bottom: 20px; color: #1a2332; font-size: 16px"
+                >
+                  Registro de Incidencias
+                </h3>
+                <div
+                  style="
+                    background-color: #e8f5e9;
+                    padding: 15px;
+                    border-radius: 6px;
+                    margin-bottom: 20px;
+                  "
+                >
+                  <div style="color: #38a169; font-weight: 600">
+                    ✓ Sin incidencias registradas
+                  </div>
+                  <div style="color: #2e7d32; font-size: 13px; margin-top: 4px">
+                    El alumno tiene un desempeño limpio sin reportes
+                    disciplinarios.
+                  </div>
+                </div>
+                <ul class="incidents-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Simple tab functionality without framework
+      document.querySelectorAll(".tab-button").forEach((button) => {
+        button.addEventListener("click", function () {
+          const tabId = this.getAttribute("data-tab");
+
+          // Remove active class from all buttons and panels
+          document
+            .querySelectorAll(".tab-button")
+            .forEach((btn) => btn.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-panel")
+            .forEach((panel) => panel.classList.remove("active"));
+
+          // Add active class to clicked button and corresponding panel
+          this.classList.add("active");
+          document.getElementById(tabId).classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>

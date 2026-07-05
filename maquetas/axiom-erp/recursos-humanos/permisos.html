@@ -1,0 +1,1094 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Permisos - AXIOMA HR</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background-color: #f5f3f0;
+        color: #1a2332;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background-color: #1a2332;
+        padding: 24px 16px;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        font-size: 20px;
+        font-weight: 700;
+        color: #faf8f5;
+        margin-bottom: 32px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .nav-item {
+        padding: 12px 16px;
+        border-radius: 8px;
+        color: #cbd5e0;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .nav-item:hover {
+        background-color: rgba(250, 248, 245, 0.1);
+        color: #faf8f5;
+      }
+
+      .nav-item.active {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .nav-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 260px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: #faf8f5;
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e8dfd7;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .topbar-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a2332;
+      }
+
+      .topbar-actions {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background-color: #a01e1e;
+        box-shadow: 0 4px 12px rgba(197, 48, 48, 0.3);
+      }
+
+      .btn-secondary {
+        background-color: #e8dfd7;
+        color: #1a2332;
+      }
+
+      .btn-secondary:hover {
+        background-color: #ddd0c5;
+      }
+
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .btn-success {
+        background-color: #38a169;
+        color: #faf8f5;
+      }
+
+      .btn-success:hover {
+        background-color: #276749;
+      }
+
+      .btn-danger {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-danger:hover {
+        background-color: #a01e1e;
+      }
+
+      /* Content Area */
+      .content {
+        flex: 1;
+        padding: 32px;
+        overflow-y: auto;
+      }
+
+      /* Section */
+      .section {
+        margin-bottom: 32px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #1a2332;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Form */
+      .form-section {
+        background-color: #faf8f5;
+        border-radius: 12px;
+        padding: 24px;
+        border: 1px solid #e8dfd7;
+        margin-bottom: 32px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group:last-child {
+        margin-bottom: 0;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #1a2332;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d4cec4;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        background-color: #fff;
+        transition: all 0.2s;
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid #e8dfd7;
+      }
+
+      /* Filters */
+      .filters {
+        background-color: #faf8f5;
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        border: 1px solid #e8dfd7;
+      }
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .filter-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .filter-input {
+        padding: 8px 10px;
+        border: 1px solid #d4cec4;
+        border-radius: 6px;
+        font-size: 13px;
+        font-family: inherit;
+        background-color: #fff;
+        min-width: 150px;
+      }
+
+      .filter-input:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      /* Table */
+      .table-section {
+        background-color: #faf8f5;
+        border-radius: 12px;
+        border: 1px solid #e8dfd7;
+        overflow: hidden;
+        margin-bottom: 32px;
+      }
+
+      .table-header {
+        padding: 16px 24px;
+        background-color: #f0ebe5;
+        border-bottom: 1px solid #e8dfd7;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .table-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a2332;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background-color: #f0ebe5;
+        border-bottom: 2px solid #e8dfd7;
+      }
+
+      th {
+        padding: 12px 24px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 700;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        padding: 14px 24px;
+        border-bottom: 1px solid #e8dfd7;
+        font-size: 14px;
+      }
+
+      tr:hover {
+        background-color: #f9f7f3;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .emp-name {
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .emp-dept {
+        font-size: 13px;
+        color: #999;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-pending {
+        background-color: #fed7aa;
+        color: #7c2d12;
+      }
+
+      .badge-approved {
+        background-color: #c6f6d5;
+        color: #22543d;
+      }
+
+      .badge-rejected {
+        background-color: #fed7d7;
+        color: #742a2a;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 8px;
+      }
+
+      /* Type Badge */
+      .type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        background-color: #f0ebe5;
+        color: #1a2332;
+      }
+
+      /* Tabs */
+      .tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: 24px;
+        border-bottom: 2px solid #e8dfd7;
+      }
+
+      .tab {
+        padding: 12px 24px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        color: #999;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        margin-bottom: -2px;
+      }
+
+      .tab.active {
+        color: #c53030;
+        border-bottom-color: #c53030;
+      }
+
+      .tab:hover {
+        color: #1a2332;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          padding: 12px;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .sidebar-nav {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        .nav-item {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+
+        .content {
+          padding: 16px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .filters {
+          flex-direction: column;
+        }
+
+        .filter-input {
+          min-width: 100%;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+          flex-direction: column;
+        }
+
+        .btn {
+          justify-content: center;
+        }
+
+        .table-header {
+          flex-direction: column;
+          gap: 12px;
+          align-items: flex-start;
+        }
+
+        table {
+          font-size: 12px;
+        }
+
+        th,
+        td {
+          padding: 10px 12px;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .btn-sm {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <svg
+            class="nav-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          AXIOMA HR
+        </div>
+        <nav class="sidebar-nav">
+          <a href="asistencias.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+              ></path>
+              <path d="M21 3v5h-5"></path>
+              <path
+                d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+              ></path>
+              <path d="M3 21v-5h5"></path>
+            </svg>
+            Asistencias
+          </a>
+          <a href="vacaciones.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Vacaciones
+          </a>
+          <a href="permisos.html" class="nav-item active">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 12l2 2 4-4"></path>
+              <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            Permisos
+          </a>
+          <a href="nomina.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+              ></path>
+            </svg>
+            Nómina
+          </a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <h1 class="topbar-title">Solicitudes de Permisos</h1>
+          <div class="topbar-actions">
+            <button class="btn btn-primary">
+              <svg
+                style="width: 16px; height: 16px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 5v14M5 12h14"></path>
+              </svg>
+              Nuevo Permiso
+            </button>
+          </div>
+        </header>
+
+        <div class="content">
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                ></path>
+              </svg>
+              Solicitar Nuevo Permiso
+            </div>
+            <div class="form-section">
+              <div class="form-group">
+                <label class="form-label">Empleado</label>
+                <select class="form-input">
+                  <option>Seleccionar empleado</option>
+                  <option>Carlos García</option>
+                  <option>María López</option>
+                  <option>Juan Rodríguez</option>
+                  <option>Ana Martínez</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Tipo de Permiso</label>
+                  <select class="form-input">
+                    <option>Seleccionar tipo</option>
+                    <option>Personal</option>
+                    <option>Médico</option>
+                    <option>Duelo</option>
+                    <option>Calamidad</option>
+                    <option>Compersación</option>
+                    <option>Otro</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Duración</label>
+                  <select class="form-input">
+                    <option>Seleccionar</option>
+                    <option>Medio día (4 horas)</option>
+                    <option>Día completo (8 horas)</option>
+                    <option>Múltiples días</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Fecha de Inicio</label>
+                  <input type="date" class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Fecha de Finalización</label>
+                  <input type="date" class="form-input" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Descripción / Motivo</label>
+                <textarea
+                  class="form-textarea"
+                  placeholder="Detalle el motivo de la solicitud..."
+                ></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn btn-primary">
+                  <svg
+                    style="width: 16px; height: 16px"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Enviar Solicitud
+                </button>
+                <button class="btn btn-secondary">
+                  <svg
+                    style="width: 16px; height: 16px"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="1 4 1 10 7 10"></polyline>
+                    <polyline points="23 20 23 14 17 14"></polyline>
+                    <path
+                      d="M20.49 9A9 9 0 0 0 5.64 5.64M3.51 15A9 9 0 0 0 18.36 18.36"
+                    ></path>
+                  </svg>
+                  Limpiar Formulario
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="tabs">
+            <button class="tab active">Pendientes</button>
+            <button class="tab">Aprobados</button>
+            <button class="tab">Rechazados</button>
+            <button class="tab">Historial</button>
+          </div>
+
+          <div class="section">
+            <div class="filters">
+              <div class="filter-group">
+                <label class="filter-label">Tipo</label>
+                <select class="filter-input">
+                  <option>Todos</option>
+                  <option>Personal</option>
+                  <option>Médico</option>
+                  <option>Duelo</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Estado</label>
+                <select class="filter-input">
+                  <option>Todos</option>
+                  <option>Pendiente</option>
+                  <option>Aprobado</option>
+                  <option>Rechazado</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Desde</label>
+                <input type="date" class="filter-input" />
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Hasta</label>
+                <input type="date" class="filter-input" />
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-3 7h3m-3 4h3"
+                ></path>
+              </svg>
+              Solicitudes Pendientes
+            </div>
+            <div class="table-section">
+              <div class="table-header">
+                <div class="table-title">
+                  7 solicitudes requieren aprobación
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Empleado</th>
+                    <th>Tipo</th>
+                    <th>Período</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Carlos García</div>
+                      <div class="emp-dept">Operaciones</div>
+                    </td>
+                    <td><span class="type-badge">Personal</span></td>
+                    <td>30 Jun 2026</td>
+                    <td>Cita médica personal</td>
+                    <td>
+                      <span class="status-badge badge-pending">Pendiente</span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-success">Aprobar</button>
+                        <button class="btn btn-sm btn-danger">Rechazar</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">María López</div>
+                      <div class="emp-dept">Finanzas</div>
+                    </td>
+                    <td>
+                      <span
+                        class="type-badge"
+                        style="background-color: #fed7aa; color: #7c2d12"
+                        >Médico</span
+                      >
+                    </td>
+                    <td>1-2 Jul 2026</td>
+                    <td>Control médico especializado</td>
+                    <td>
+                      <span class="status-badge badge-pending">Pendiente</span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-success">Aprobar</button>
+                        <button class="btn btn-sm btn-danger">Rechazar</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Juan Rodríguez</div>
+                      <div class="emp-dept">RR.HH.</div>
+                    </td>
+                    <td>
+                      <span
+                        class="type-badge"
+                        style="background-color: #fed7d7; color: #742a2a"
+                        >Duelo</span
+                      >
+                    </td>
+                    <td>3-4 Jul 2026</td>
+                    <td>Fallecimiento de familiar cercano</td>
+                    <td>
+                      <span class="status-badge badge-pending">Pendiente</span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-success">Aprobar</button>
+                        <button class="btn btn-sm btn-danger">Rechazar</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Ana Martínez</div>
+                      <div class="emp-dept">Operaciones</div>
+                    </td>
+                    <td><span class="type-badge">Personal</span></td>
+                    <td>29 Jun 2026 (Tarde)</td>
+                    <td>Trámite administrativo</td>
+                    <td>
+                      <span class="status-badge badge-pending">Pendiente</span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-success">Aprobar</button>
+                        <button class="btn btn-sm btn-danger">Rechazar</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Diego Flores</div>
+                      <div class="emp-dept">Finanzas</div>
+                    </td>
+                    <td>
+                      <span
+                        class="type-badge"
+                        style="background-color: #c6f6d5; color: #22543d"
+                        >Compensación</span
+                      >
+                    </td>
+                    <td>5-6 Jul 2026</td>
+                    <td>Horas trabajadas en fin de semana</td>
+                    <td>
+                      <span class="status-badge badge-pending">Pendiente</span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-success">Aprobar</button>
+                        <button class="btn btn-sm btn-danger">Rechazar</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Pedro Sánchez</div>
+                      <div class="emp-dept">Operaciones</div>
+                    </td>
+                    <td>
+                      <span
+                        class="type-badge"
+                        style="background-color: #fed7aa; color: #7c2d12"
+                        >Médico</span
+                      >
+                    </td>
+                    <td>2 Jul 2026</td>
+                    <td>Emergencia dental</td>
+                    <td>
+                      <span class="status-badge badge-pending">Pendiente</span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-success">Aprobar</button>
+                        <button class="btn btn-sm btn-danger">Rechazar</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Laura Gómez</div>
+                      <div class="emp-dept">RR.HH.</div>
+                    </td>
+                    <td>
+                      <span
+                        class="type-badge"
+                        style="background-color: #fed7d7; color: #742a2a"
+                        >Calamidad</span
+                      >
+                    </td>
+                    <td>8 Jul 2026</td>
+                    <td>Evento fortuito en domicilio</td>
+                    <td>
+                      <span class="status-badge badge-pending">Pendiente</span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn btn-sm btn-success">Aprobar</button>
+                        <button class="btn btn-sm btn-danger">Rechazar</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                ></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+              Historial de Permisos
+            </div>
+            <div class="table-section">
+              <div class="table-header">
+                <div class="table-title">
+                  Solicitudes históricas y resueltas
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Empleado</th>
+                    <th>Tipo</th>
+                    <th>Período</th>
+                    <th>Solicitado</th>
+                    <th>Aprobado/Rechazado</th>
+                    <th>Estado Final</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Carlos García</div>
+                      <div class="emp-dept">Operaciones</div>
+                    </td>
+                    <td><span class="type-badge">Personal</span></td>
+                    <td>12 Jun 2026</td>
+                    <td>10 Jun 2026</td>
+                    <td>Juan Rodríguez</td>
+                    <td>
+                      <span class="status-badge badge-approved">Aprobado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">María López</div>
+                      <div class="emp-dept">Finanzas</div>
+                    </td>
+                    <td>
+                      <span
+                        class="type-badge"
+                        style="background-color: #fed7aa; color: #7c2d12"
+                        >Médico</span
+                      >
+                    </td>
+                    <td>5 Jun 2026</td>
+                    <td>5 Jun 2026</td>
+                    <td>Juan Rodríguez</td>
+                    <td>
+                      <span class="status-badge badge-approved">Aprobado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Ana Martínez</div>
+                      <div class="emp-dept">Operaciones</div>
+                    </td>
+                    <td><span class="type-badge">Personal</span></td>
+                    <td>20 Jun 2026</td>
+                    <td>20 Jun 2026</td>
+                    <td>Juan Rodríguez</td>
+                    <td>
+                      <span class="status-badge badge-rejected">Rechazado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Diego Flores</div>
+                      <div class="emp-dept">Finanzas</div>
+                    </td>
+                    <td>
+                      <span
+                        class="type-badge"
+                        style="background-color: #c6f6d5; color: #22543d"
+                        >Compensación</span
+                      >
+                    </td>
+                    <td>18-19 Jun 2026</td>
+                    <td>18 Jun 2026</td>
+                    <td>Juan Rodríguez</td>
+                    <td>
+                      <span class="status-badge badge-approved">Aprobado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Pedro Sánchez</div>
+                      <div class="emp-dept">Operaciones</div>
+                    </td>
+                    <td>
+                      <span
+                        class="type-badge"
+                        style="background-color: #fed7aa; color: #7c2d12"
+                        >Médico</span
+                      >
+                    </td>
+                    <td>15 Jun 2026</td>
+                    <td>15 Jun 2026</td>
+                    <td>Juan Rodríguez</td>
+                    <td>
+                      <span class="status-badge badge-approved">Aprobado</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

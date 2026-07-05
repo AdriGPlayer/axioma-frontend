@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AXIOMA - Gestión de Materias</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 30px 20px;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 40px;
+        color: #faf8f5;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo svg {
+        width: 30px;
+        height: 30px;
+      }
+
+      .nav-section {
+        margin-bottom: 30px;
+      }
+
+      .nav-section-title {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #b8b4a8;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+      }
+
+      .nav-item {
+        padding: 12px 15px;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: #faf8f5;
+      }
+
+      .nav-item:hover {
+        background-color: #2d3e54;
+        color: #c53030;
+      }
+
+      .nav-item.active {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .nav-item svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 280px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: #fff;
+        padding: 20px 30px;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .topbar-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #1a2332;
+      }
+
+      .topbar-actions {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      /* Content Area */
+      .content {
+        padding: 30px;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background-color: #a01f1f;
+      }
+
+      .btn-secondary {
+        background-color: #38a169;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background-color: #2f8659;
+      }
+
+      /* Grid Layout */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      /* Cards */
+      .card {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-top: 4px solid #c53030;
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 20px;
+      }
+
+      /* Subject Cards */
+      .subject-card {
+        padding: 20px;
+        border-radius: 8px;
+        color: #fff;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .subject-card.math {
+        background: linear-gradient(135deg, #c53030 0%, #a01f1f 100%);
+      }
+
+      .subject-card.science {
+        background: linear-gradient(135deg, #38a169 0%, #2f8659 100%);
+      }
+
+      .subject-card.language {
+        background: linear-gradient(135deg, #d69e2e 0%, #b88619 100%);
+      }
+
+      .subject-card.history {
+        background: linear-gradient(135deg, #1a2332 0%, #2d3e54 100%);
+      }
+
+      .subject-card-name {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .subject-card-code {
+        font-size: 12px;
+        opacity: 0.8;
+        margin-top: 8px;
+      }
+
+      .subject-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        font-size: 12px;
+      }
+
+      /* Form */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 8px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="email"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: border-color 0.3s ease;
+      }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus,
+      input[type="email"]:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      /* Table */
+      .table-container {
+        overflow-x: auto;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+        transition: background-color 0.2s ease;
+      }
+
+      tbody tr:hover {
+        background-color: #f9f9f9;
+      }
+
+      td {
+        padding: 15px;
+        font-size: 14px;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .status-active {
+        background-color: #c6f6d5;
+        color: #22543d;
+      }
+
+      .status-inactive {
+        background-color: #fed7d7;
+        color: #742a2a;
+      }
+
+      /* Action Buttons */
+      .action-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        margin-right: 5px;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+      }
+
+      .action-btn:hover {
+        background-color: #f0f0f0;
+      }
+
+      .action-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: #1a2332;
+      }
+
+      /* Section */
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .section-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-title svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 0;
+          opacity: 0;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 15px;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+            />
+          </svg>
+          AXIOMA
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Control Escolar</div>
+          <a class="nav-item active" href="#materias">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
+              />
+            </svg>
+            Materias
+          </a>
+          <a class="nav-item" href="calificaciones.html">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75-3.54-4.04 5.25h5.79l1.54-2.04 2.5 3.25H19V7h-10z"
+              />
+            </svg>
+            Calificaciones
+          </a>
+          <a class="nav-item" href="kardex.html">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"
+              />
+            </svg>
+            Kardex
+          </a>
+          <a class="nav-item" href="boletas.html">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 9.5c0 .83-.67 1.5-1.5 1.5S11 13.33 11 12.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm5 4c-2.33-3.5-4.5-5-5-5s-2.67 1.5-5 5v2h10v-2z"
+              />
+            </svg>
+            Boletas
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main">
+        <!-- Topbar -->
+        <div class="topbar">
+          <h1 class="topbar-title">Gestión de Materias</h1>
+          <div class="topbar-actions">
+            <button class="btn btn-primary">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+              </svg>
+              Agregar Materia
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Quick Add Form -->
+          <div class="section">
+            <div class="card">
+              <h2 class="card-title">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  style="
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: middle;
+                    margin-right: 8px;
+                  "
+                >
+                  <path
+                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 9.5c0 .83-.67 1.5-1.5 1.5S11 13.33 11 12.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm5 4c-2.33-3.5-4.5-5-5-5s-2.67 1.5-5 5v2h10v-2z"
+                  />
+                </svg>
+                Nueva Materia
+              </h2>
+              <form>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="subject-name">Nombre de la Materia</label>
+                    <input
+                      type="text"
+                      id="subject-name"
+                      placeholder="Ej: Matemáticas Avanzadas"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="subject-code">Código</label>
+                    <input
+                      type="text"
+                      id="subject-code"
+                      placeholder="Ej: MAT-101"
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="subject-level">Nivel</label>
+                    <select id="subject-level">
+                      <option>Primaria</option>
+                      <option>Secundaria</option>
+                      <option>Preparatoria</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="subject-grade">Grado</label>
+                    <select id="subject-grade">
+                      <option>1º</option>
+                      <option>2º</option>
+                      <option>3º</option>
+                      <option>4º</option>
+                      <option>5º</option>
+                      <option>6º</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="subject-credits">Créditos</label>
+                    <input
+                      type="number"
+                      id="subject-credits"
+                      placeholder="Ej: 3"
+                      min="0"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="subject-hours">Horas Semanales</label>
+                    <input
+                      type="number"
+                      id="subject-hours"
+                      placeholder="Ej: 2"
+                      min="0"
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                    </svg>
+                    Guardar Materia
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Subject Cards -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11z"
+                />
+              </svg>
+              Materias Activas
+            </h2>
+            <div class="grid-3">
+              <div class="subject-card math">
+                <div>
+                  <div class="subject-card-name">Matemáticas</div>
+                  <div class="subject-card-code">MAT-101</div>
+                </div>
+                <div class="subject-card-footer">
+                  <span>3 Créditos</span>
+                  <span>2 Hrs/Sem</span>
+                </div>
+              </div>
+              <div class="subject-card science">
+                <div>
+                  <div class="subject-card-name">Ciencias Naturales</div>
+                  <div class="subject-card-code">CIN-102</div>
+                </div>
+                <div class="subject-card-footer">
+                  <span>3 Créditos</span>
+                  <span>3 Hrs/Sem</span>
+                </div>
+              </div>
+              <div class="subject-card language">
+                <div>
+                  <div class="subject-card-name">Español</div>
+                  <div class="subject-card-code">ESP-103</div>
+                </div>
+                <div class="subject-card-footer">
+                  <span>2 Créditos</span>
+                  <span>2 Hrs/Sem</span>
+                </div>
+              </div>
+              <div class="subject-card history">
+                <div>
+                  <div class="subject-card-name">Historia</div>
+                  <div class="subject-card-code">HIS-104</div>
+                </div>
+                <div class="subject-card-footer">
+                  <span>2 Créditos</span>
+                  <span>2 Hrs/Sem</span>
+                </div>
+              </div>
+              <div class="subject-card math">
+                <div>
+                  <div class="subject-card-name">Física</div>
+                  <div class="subject-card-code">FIS-105</div>
+                </div>
+                <div class="subject-card-footer">
+                  <span>4 Créditos</span>
+                  <span>3 Hrs/Sem</span>
+                </div>
+              </div>
+              <div class="subject-card science">
+                <div>
+                  <div class="subject-card-name">Biología</div>
+                  <div class="subject-card-code">BIO-106</div>
+                </div>
+                <div class="subject-card-footer">
+                  <span>3 Créditos</span>
+                  <span>3 Hrs/Sem</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subjects Table -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
+                />
+              </svg>
+              Catálogo de Materias
+            </h2>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Código</th>
+                    <th>Nivel</th>
+                    <th>Grado</th>
+                    <th>Créditos</th>
+                    <th>Hrs/Semana</th>
+                    <th>Profesor Asignado</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Matemáticas</td>
+                    <td>MAT-101</td>
+                    <td>Secundaria</td>
+                    <td>1º</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>Dr. Carlos López</td>
+                    <td>
+                      <span class="status-badge status-active">Activa</span>
+                    </td>
+                    <td>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          />
+                        </svg>
+                      </button>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Ciencias Naturales</td>
+                    <td>CIN-102</td>
+                    <td>Secundaria</td>
+                    <td>1º</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>Dra. María García</td>
+                    <td>
+                      <span class="status-badge status-active">Activa</span>
+                    </td>
+                    <td>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          />
+                        </svg>
+                      </button>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Español</td>
+                    <td>ESP-103</td>
+                    <td>Secundaria</td>
+                    <td>1º</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>Prof. Antonio Ruiz</td>
+                    <td>
+                      <span class="status-badge status-active">Activa</span>
+                    </td>
+                    <td>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          />
+                        </svg>
+                      </button>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Historia</td>
+                    <td>HIS-104</td>
+                    <td>Secundaria</td>
+                    <td>1º</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>Prof. Roberto Martínez</td>
+                    <td>
+                      <span class="status-badge status-active">Activa</span>
+                    </td>
+                    <td>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          />
+                        </svg>
+                      </button>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Inglés</td>
+                    <td>ING-107</td>
+                    <td>Secundaria</td>
+                    <td>1º</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>Sin asignar</td>
+                    <td>
+                      <span class="status-badge status-inactive">Inactiva</span>
+                    </td>
+                    <td>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          />
+                        </svg>
+                      </button>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Teacher Assignments -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                />
+              </svg>
+              Asignaciones de Profesor
+            </h2>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Profesor</th>
+                    <th>Materias Asignadas</th>
+                    <th>Total de Horas</th>
+                    <th>Grupos</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Dr. Carlos López</td>
+                    <td>Matemáticas, Física</td>
+                    <td>5</td>
+                    <td>1A, 1B, 2A</td>
+                    <td>
+                      <span class="status-badge status-active">Asignado</span>
+                    </td>
+                    <td>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Dra. María García</td>
+                    <td>Ciencias Naturales, Biología</td>
+                    <td>6</td>
+                    <td>1A, 1B, 1C</td>
+                    <td>
+                      <span class="status-badge status-active">Asignado</span>
+                    </td>
+                    <td>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Prof. Antonio Ruiz</td>
+                    <td>Español</td>
+                    <td>2</td>
+                    <td>1A, 2B</td>
+                    <td>
+                      <span class="status-badge status-active">Asignado</span>
+                    </td>
+                    <td>
+                      <button class="action-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

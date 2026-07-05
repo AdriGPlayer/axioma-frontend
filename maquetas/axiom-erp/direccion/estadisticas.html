@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AXIOMA - Estadísticas</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background-color: #faf8f5;
+        color: #1a2332;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background: linear-gradient(180deg, #1a2332 0%, #0f1419 100%);
+        padding: 2rem 1rem;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #faf8f5;
+        margin-bottom: 2rem;
+        padding: 0 0.5rem;
+        letter-spacing: 1px;
+      }
+
+      .nav-section {
+        margin-bottom: 2rem;
+      }
+
+      .nav-section-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #8b8b8b;
+        text-transform: uppercase;
+        padding: 1rem 0.5rem;
+        letter-spacing: 0.5px;
+      }
+
+      .nav-item {
+        padding: 0.75rem 0.5rem;
+        margin-bottom: 0.5rem;
+        color: #ccc;
+        text-decoration: none;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      .nav-item:hover {
+        background: rgba(198, 48, 48, 0.15);
+        color: #faf8f5;
+      }
+
+      .nav-item.active {
+        background: #c53030;
+        color: #faf8f5;
+        font-weight: 600;
+      }
+
+      .nav-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+
+      /* Main content */
+      .main {
+        flex: 1;
+        margin-left: 260px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .topbar {
+        background: #faf8f5;
+        border-bottom: 1px solid #e8e6e1;
+        padding: 1.5rem 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .topbar-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .topbar-actions {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      .action-btn {
+        background: #1a2332;
+        color: #faf8f5;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .action-btn:hover {
+        background: #0f1419;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 35, 50, 0.2);
+      }
+
+      /* Content area */
+      .content {
+        flex: 1;
+        padding: 2.5rem;
+        overflow-y: auto;
+      }
+
+      .content-header {
+        margin-bottom: 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .header-info h1 {
+        font-size: 2rem;
+        color: #1a2332;
+        margin-bottom: 0.5rem;
+      }
+
+      .header-info p {
+        color: #666;
+        font-size: 0.95rem;
+      }
+
+      .period-selector {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .period-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid #c53030;
+        background: transparent;
+        color: #1a2332;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .period-btn.active {
+        background: #c53030;
+        color: #faf8f5;
+      }
+
+      /* Charts section */
+      .charts-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .chart-card {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .chart-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Bar chart */
+      .bar-chart-container {
+        height: 300px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        gap: 1rem;
+        padding: 1rem 0;
+      }
+
+      .bar-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .bar-item {
+        width: 100%;
+        background: linear-gradient(180deg, #c53030 0%, #a02020 100%);
+        border-radius: 4px 4px 0 0;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.8rem;
+        min-height: 30px;
+      }
+
+      .bar-item.alt {
+        background: linear-gradient(180deg, #38a169 0%, #2d7a52 100%);
+      }
+
+      .bar-item.alt2 {
+        background: linear-gradient(180deg, #d69e2e 0%, #a86a1e 100%);
+      }
+
+      .bar-label {
+        font-size: 0.8rem;
+        color: #666;
+        text-align: center;
+        font-weight: 500;
+      }
+
+      /* Line chart simulation with CSS */
+      .line-chart {
+        position: relative;
+        width: 100%;
+        height: 250px;
+        background: linear-gradient(
+          to bottom,
+          rgba(197, 48, 48, 0.1) 0%,
+          transparent 100%
+        );
+        border-radius: 6px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .line-point {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #c53030;
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .point-1 {
+        bottom: 15%;
+        left: 5%;
+      }
+      .point-2 {
+        bottom: 28%;
+        left: 18%;
+      }
+      .point-3 {
+        bottom: 42%;
+        left: 31%;
+      }
+      .point-4 {
+        bottom: 55%;
+        left: 44%;
+      }
+      .point-5 {
+        bottom: 65%;
+        left: 57%;
+      }
+      .point-6 {
+        bottom: 72%;
+        left: 70%;
+      }
+      .point-7 {
+        bottom: 80%;
+        left: 83%;
+      }
+      .point-8 {
+        bottom: 75%;
+        left: 96%;
+      }
+
+      .line-legend {
+        display: flex;
+        gap: 2rem;
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      /* Pie chart */
+      .pie-chart-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .pie-chart {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: conic-gradient(
+          #c53030 0deg 108deg,
+          #38a169 108deg 216deg,
+          #d69e2e 216deg 280deg,
+          #1a2332 280deg 360deg
+        );
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .pie-legend {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+      }
+
+      /* Donut chart */
+      .donut-chart-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .donut-chart {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: conic-gradient(
+          #c53030 0deg 90deg,
+          #38a169 90deg 200deg,
+          #d69e2e 200deg 270deg,
+          #8b5cf6 270deg 360deg
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .donut-center {
+        width: 120px;
+        height: 120px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .donut-value {
+        font-size: 1.8rem;
+      }
+
+      .donut-label {
+        font-size: 0.75rem;
+        color: #666;
+      }
+
+      /* Statistical tables */
+      .tables-container {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2.5rem;
+      }
+
+      .table-section {
+        margin-bottom: 2.5rem;
+      }
+
+      .table-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .table-section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e8e6e1;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        text-align: left;
+        padding: 1rem;
+        border-bottom: 2px solid #e8e6e1;
+        color: #1a2332;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: #faf8f5;
+      }
+
+      td {
+        padding: 0.9rem 1rem;
+        border-bottom: 1px solid #e8e6e1;
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      tr:hover {
+        background: #faf8f5;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .value-highlight {
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .value-positive {
+        color: #38a169;
+        font-weight: 600;
+      }
+
+      .value-negative {
+        color: #c53030;
+        font-weight: 600;
+      }
+
+      /* Footer */
+      .content-footer {
+        text-align: center;
+        padding: 1.5rem 0;
+        color: #999;
+        font-size: 0.85rem;
+        border-top: 1px solid #e8e6e1;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+        }
+
+        .charts-container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 160px;
+        }
+
+        .main {
+          margin-left: 160px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 1rem;
+          text-align: center;
+        }
+
+        .content {
+          padding: 1.5rem;
+        }
+
+        .content-header {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .period-selector {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo">AXIOMA</div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Dirección</div>
+          <a href="index.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            </svg>
+            Dashboard
+          </a>
+          <a href="indicadores.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="2" x2="12" y2="22"></line>
+              <path
+                d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+              ></path>
+            </svg>
+            Indicadores
+          </a>
+          <a href="estadisticas.html" class="nav-item active">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Estadísticas
+          </a>
+          <a href="graficas.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline
+                points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"
+              ></polyline>
+            </svg>
+            Gráficas
+          </a>
+          <a href="kpi.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="1"></circle>
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12"></path>
+              <polyline points="2 21 2 11 12 11"></polyline>
+            </svg>
+            KPI Detallado
+          </a>
+          <a href="reportes.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              ></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            Reportes
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Académico</div>
+          <a href="#" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+              ></path>
+            </svg>
+            Estudiantes
+          </a>
+          <a href="#" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Docentes
+          </a>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="main">
+        <!-- Top bar -->
+        <div class="topbar">
+          <div class="topbar-title">Análisis Estadístico</div>
+          <div class="topbar-actions">
+            <button class="action-btn">
+              <svg
+                style="width: 16px; height: 16px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Descargar
+            </button>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Header -->
+          <div class="content-header">
+            <div class="header-info">
+              <h1>Análisis Estadístico Completo</h1>
+              <p>Comparativa de períodos académicos | Junio 2026</p>
+            </div>
+            <div class="period-selector">
+              <button class="period-btn active">2026-I</button>
+              <button class="period-btn">2025-II</button>
+              <button class="period-btn">Anual</button>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="charts-container">
+            <!-- Bar Chart -->
+            <div class="chart-card">
+              <div class="chart-title">Matrícula por Nivel Académico</div>
+              <div class="bar-chart-container">
+                <div class="bar-group">
+                  <div class="bar-item" style="height: 280px">1,240</div>
+                  <div class="bar-label">Primaria</div>
+                </div>
+                <div class="bar-group">
+                  <div class="bar-item alt" style="height: 220px">975</div>
+                  <div class="bar-label">Básica</div>
+                </div>
+                <div class="bar-group">
+                  <div class="bar-item alt2" style="height: 240px">1,085</div>
+                  <div class="bar-label">Media</div>
+                </div>
+                <div class="bar-group">
+                  <div class="bar-item" style="height: 260px">1,158</div>
+                  <div class="bar-label">Superior</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Line Chart -->
+            <div class="chart-card">
+              <div class="chart-title">Tendencia de Matrícula (12 meses)</div>
+              <div class="line-chart">
+                <div class="line-point point-1"></div>
+                <div class="line-point point-2"></div>
+                <div class="line-point point-3"></div>
+                <div class="line-point point-4"></div>
+                <div class="line-point point-5"></div>
+                <div class="line-point point-6"></div>
+                <div class="line-point point-7"></div>
+                <div class="line-point point-8"></div>
+              </div>
+              <div class="line-legend">
+                <div style="flex: 1"><strong>Jun 2025:</strong> 5,850</div>
+                <div style="flex: 1"><strong>Jun 2026:</strong> 6,714</div>
+                <div style="flex: 1"><strong>Crecimiento:</strong> +14.7%</div>
+              </div>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="chart-card">
+              <div class="chart-title">Distribución por Jornada</div>
+              <div class="pie-chart-container">
+                <div class="pie-chart"></div>
+                <div class="pie-legend">
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #c53030"
+                    ></span>
+                    <span>Matutina 45% (3,021)</span>
+                  </div>
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #38a169"
+                    ></span>
+                    <span>Vespertina 30% (2,014)</span>
+                  </div>
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #d69e2e"
+                    ></span>
+                    <span>Nocturna 17% (1,141)</span>
+                  </div>
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #1a2332"
+                    ></span>
+                    <span>Virtual 8% (537)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Donut Chart -->
+            <div class="chart-card">
+              <div class="chart-title">Tasa de Aprobación por Nivel</div>
+              <div class="donut-chart-container">
+                <div class="donut-chart">
+                  <div class="donut-center">
+                    <div class="donut-value">91.4%</div>
+                    <div class="donut-label">Promedio</div>
+                  </div>
+                </div>
+                <div class="pie-legend" style="gap: 1rem">
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #c53030"
+                    ></span>
+                    <span>Primaria 95%</span>
+                  </div>
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #38a169"
+                    ></span>
+                    <span>Básica 88%</span>
+                  </div>
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #d69e2e"
+                    ></span>
+                    <span>Media 86%</span>
+                  </div>
+                  <div class="legend-item">
+                    <span
+                      class="legend-color"
+                      style="background: #8b5cf6"
+                    ></span>
+                    <span>Superior 92%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistical Tables -->
+          <div class="tables-container">
+            <!-- Students by Level -->
+            <div class="table-section">
+              <div class="table-section-title">
+                Estudiantes por Nivel Educativo
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nivel</th>
+                    <th>Hombres</th>
+                    <th>Mujeres</th>
+                    <th>Total</th>
+                    <th>Variación</th>
+                    <th>% Aprobados</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Primaria</strong></td>
+                    <td>628</td>
+                    <td>612</td>
+                    <td class="value-highlight">1,240</td>
+                    <td class="value-positive">+85</td>
+                    <td><strong>95.2%</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Básica</strong></td>
+                    <td>495</td>
+                    <td>480</td>
+                    <td class="value-highlight">975</td>
+                    <td class="value-positive">+42</td>
+                    <td><strong>88.4%</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Media</strong></td>
+                    <td>548</td>
+                    <td>537</td>
+                    <td class="value-highlight">1,085</td>
+                    <td class="value-positive">+64</td>
+                    <td><strong>86.8%</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Superior</strong></td>
+                    <td>592</td>
+                    <td>566</td>
+                    <td class="value-highlight">1,158</td>
+                    <td class="value-positive">+54</td>
+                    <td><strong>92.6%</strong></td>
+                  </tr>
+                  <tr style="background: #faf8f5; font-weight: 600">
+                    <td>TOTAL</td>
+                    <td>2,263</td>
+                    <td>2,195</td>
+                    <td class="value-highlight">4,458</td>
+                    <td class="value-positive">+245</td>
+                    <td><strong>90.75%</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Performance by Department -->
+            <div class="table-section">
+              <div class="table-section-title">
+                Desempeño Académico por Departamento
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Departamento</th>
+                    <th>Promedio General</th>
+                    <th>Estudiantes</th>
+                    <th>Docentes</th>
+                    <th>Tasa Aprobación</th>
+                    <th>Tendencia</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Matemáticas</strong></td>
+                    <td>7.6/10</td>
+                    <td>1,245</td>
+                    <td>28</td>
+                    <td>87.3%</td>
+                    <td class="value-positive">↑ +0.4</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lenguaje</strong></td>
+                    <td>8.2/10</td>
+                    <td>1,180</td>
+                    <td>24</td>
+                    <td>92.1%</td>
+                    <td class="value-positive">↑ +0.6</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Ciencias Naturales</strong></td>
+                    <td>7.9/10</td>
+                    <td>1,125</td>
+                    <td>22</td>
+                    <td>89.8%</td>
+                    <td class="value-positive">↑ +0.3</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Ciencias Sociales</strong></td>
+                    <td>8.0/10</td>
+                    <td>1,092</td>
+                    <td>20</td>
+                    <td>90.5%</td>
+                    <td class="value-negative">↓ -0.2</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Educación Física</strong></td>
+                    <td>8.5/10</td>
+                    <td>1,158</td>
+                    <td>18</td>
+                    <td>95.2%</td>
+                    <td class="value-positive">↑ +0.8</td>
+                  </tr>
+                  <tr style="background: #faf8f5; font-weight: 600">
+                    <td>PROMEDIO GENERAL</td>
+                    <td>7.84/10</td>
+                    <td>5,800</td>
+                    <td>112</td>
+                    <td>91.0%</td>
+                    <td class="value-positive">↑ +0.38</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Enrollment Comparison -->
+            <div class="table-section">
+              <div class="table-section-title">
+                Comparativa de Períodos: Matrícula y Retención
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Período</th>
+                    <th>Matrícula Inicial</th>
+                    <th>Matrícula Vigente</th>
+                    <th>Deserciones</th>
+                    <th>Tasa Retención</th>
+                    <th>Nuevos Ingresos</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>2026-I (Actual)</strong></td>
+                    <td>6,850</td>
+                    <td class="value-highlight">6,714</td>
+                    <td>136</td>
+                    <td><strong>98.0%</strong></td>
+                    <td class="value-positive">+245</td>
+                  </tr>
+                  <tr>
+                    <td><strong>2025-II</strong></td>
+                    <td>5,950</td>
+                    <td class="value-highlight">5,850</td>
+                    <td>100</td>
+                    <td><strong>98.3%</strong></td>
+                    <td class="value-positive">+180</td>
+                  </tr>
+                  <tr>
+                    <td><strong>2025-I</strong></td>
+                    <td>5,340</td>
+                    <td class="value-highlight">5,280</td>
+                    <td>60</td>
+                    <td><strong>98.9%</strong></td>
+                    <td class="value-positive">+142</td>
+                  </tr>
+                  <tr>
+                    <td><strong>2024-II</strong></td>
+                    <td>5,125</td>
+                    <td class="value-highlight">5,050</td>
+                    <td>75</td>
+                    <td><strong>98.5%</strong></td>
+                    <td class="value-positive">+165</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="content-footer">
+            Datos actualizados automáticamente. AXIOMA ERP v2.0.1 | © 2024-2026
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

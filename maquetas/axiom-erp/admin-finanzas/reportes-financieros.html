@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reportes Financieros - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .sidebar h1 {
+        font-size: 22px;
+        margin-bottom: 30px;
+        color: #faf8f5;
+      }
+
+      .sidebar ul {
+        list-style: none;
+      }
+
+      .sidebar li {
+        margin-bottom: 15px;
+      }
+
+      .sidebar a {
+        color: #faf8f5;
+        text-decoration: none;
+        padding: 10px 15px;
+        display: block;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+
+      .sidebar a:hover,
+      .sidebar a.active {
+        background-color: #c53030;
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .topbar {
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .topbar h2 {
+        font-size: 20px;
+      }
+
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #1a2332;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: opacity 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+
+      .btn-secondary {
+        background-color: #38a169;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        opacity: 0.9;
+      }
+
+      .chart-placeholder {
+        width: 100%;
+        height: 350px;
+        background: linear-gradient(135deg, #f5f5f5 0%, #efefef 100%);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 14px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .action-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #1a2332;
+        font-size: 14px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #1a2332;
+        box-shadow: 0 0 0 2px rgba(26, 35, 50, 0.1);
+      }
+
+      .financial-statement {
+        font-size: 14px;
+        line-height: 1.8;
+      }
+
+      .statement-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .statement-header {
+        font-weight: bold;
+        padding: 12px 0;
+        border-bottom: 2px solid #1a2332;
+      }
+
+      .statement-subheader {
+        font-weight: bold;
+        padding: 10px 0 8px 20px;
+        background-color: #f5f5f5;
+      }
+
+      .statement-indent {
+        padding-left: 40px;
+      }
+
+      .statement-total {
+        font-weight: bold;
+        padding: 10px 0;
+        border-bottom: 2px solid #1a2332;
+        background-color: #f9f9f9;
+      }
+
+      .currency {
+        text-align: right;
+        min-width: 120px;
+        font-weight: bold;
+      }
+
+      .currency-positive {
+        color: #38a169;
+      }
+
+      .currency-negative {
+        color: #c53030;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      th {
+        background-color: #f5f5f5;
+        padding: 12px;
+        text-align: left;
+        font-weight: bold;
+        color: #1a2332;
+        border-bottom: 2px solid #ddd;
+        font-size: 13px;
+      }
+
+      td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+      }
+
+      tr:hover {
+        background-color: #f9f9f9;
+      }
+
+      .overflow-x {
+        overflow-x: auto;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <h1>AXIOMA</h1>
+        <ul>
+          <li><a href="index.html">Dashboard</a></li>
+          <li><a href="colegiaturas.html">Colegiaturas</a></li>
+          <li><a href="facturacion.html">Facturación</a></li>
+          <li><a href="notas-credito.html">Notas de Crédito</a></li>
+          <li><a href="cobranza.html">Cobranza</a></li>
+          <li><a href="adeudos.html">Adeudos</a></li>
+          <li><a href="caja.html">Caja</a></li>
+          <li>
+            <a href="reportes-financieros.html" class="active">Reportes</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="main-content">
+        <div class="topbar">
+          <h2>Reportes Financieros</h2>
+          <div>
+            <svg
+              style="width: 24px; height: 24px; vertical-align: middle"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="card">
+            <h3 class="section-title">Filtros de Reporte</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Período</label>
+                <select>
+                  <option>Junio 2026</option>
+                  <option>Mayo 2026</option>
+                  <option>Semestre 1 2026</option>
+                  <option>Año 2026</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Tipo de Reporte</label>
+                <select>
+                  <option>Estado de Resultados</option>
+                  <option>Balance General</option>
+                  <option>Flujo de Efectivo</option>
+                  <option>Análisis de Ingresos</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Formato</label>
+                <select>
+                  <option>PDF</option>
+                  <option>Excel</option>
+                  <option>Pantalla</option>
+                </select>
+              </div>
+              <div style="display: flex; align-items: flex-end">
+                <button class="btn btn-primary" style="margin-bottom: 0">
+                  Generar Reporte
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="section-title">Estado de Resultados (Junio 2026)</h3>
+              <div class="financial-statement">
+                <div class="statement-header">INGRESOS</div>
+                <div class="statement-subheader">Ingresos Operativos</div>
+                <div class="statement-row statement-indent">
+                  <span>Colegiaturas</span>
+                  <span class="currency currency-positive">$42,100.00</span>
+                </div>
+                <div class="statement-row statement-indent">
+                  <span>Cuotas de Inscripción</span>
+                  <span class="currency currency-positive">$3,200.00</span>
+                </div>
+                <div class="statement-row statement-indent">
+                  <span>Venta de Materiales</span>
+                  <span class="currency currency-positive">$2,050.00</span>
+                </div>
+                <div class="statement-row statement-indent">
+                  <span>Otros Ingresos</span>
+                  <span class="currency currency-positive">$900.00</span>
+                </div>
+                <div class="statement-total">
+                  <span>Total Ingresos</span>
+                  <span class="currency currency-positive">$48,250.00</span>
+                </div>
+                <br />
+                <div class="statement-header">GASTOS</div>
+                <div class="statement-subheader">Gastos Operativos</div>
+                <div class="statement-row statement-indent">
+                  <span>Salarios y Beneficios</span>
+                  <span class="currency currency-negative">-$28,500.00</span>
+                </div>
+                <div class="statement-row statement-indent">
+                  <span>Servicios (Agua, Luz, etc.)</span>
+                  <span class="currency currency-negative">-$3,200.00</span>
+                </div>
+                <div class="statement-row statement-indent">
+                  <span>Materiales Educativos</span>
+                  <span class="currency currency-negative">-$2,800.00</span>
+                </div>
+                <div class="statement-row statement-indent">
+                  <span>Mantenimiento</span>
+                  <span class="currency currency-negative">-$1,500.00</span>
+                </div>
+                <div class="statement-total">
+                  <span>Total Gastos</span>
+                  <span class="currency currency-negative">-$36,000.00</span>
+                </div>
+                <br />
+                <div
+                  class="statement-total"
+                  style="border-top: 2px solid #38a169"
+                >
+                  <span>UTILIDAD NETA</span>
+                  <span class="currency currency-positive">$12,250.00</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Ingresos por Categoría</h3>
+              <div class="chart-placeholder">
+                Gráfico de pastel - Distribución de ingresos
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-title">Flujo de Efectivo (Junio 2026)</h3>
+            <div class="chart-placeholder" style="height: 300px">
+              Gráfico de flujo de efectivo diario
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="section-title">Desglose de Gastos</h3>
+              <div class="chart-placeholder">
+                Gráfico de barras - Análisis de gastos
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Comparativa de Períodos</h3>
+              <div class="overflow-x">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Concepto</th>
+                      <th>Mayo 2026</th>
+                      <th>Junio 2026</th>
+                      <th>Variación</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Ingresos Totales</td>
+                      <td>$47,850.00</td>
+                      <td>$48,250.00</td>
+                      <td style="color: #38a169; font-weight: bold">
+                        +$400.00 (0.84%)
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Gastos Totales</td>
+                      <td>$35,200.00</td>
+                      <td>$36,000.00</td>
+                      <td style="color: #c53030; font-weight: bold">
+                        -$800.00 (-2.27%)
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Utilidad Neta</td>
+                      <td>$12,650.00</td>
+                      <td>$12,250.00</td>
+                      <td style="color: #c53030; font-weight: bold">
+                        -$400.00 (-3.16%)
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-title">
+              Balance General (Situación al 29/06/2026)
+            </h3>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+              "
+            >
+              <div>
+                <div class="statement-header" style="margin-bottom: 15px">
+                  ACTIVOS
+                </div>
+                <div class="financial-statement">
+                  <div class="statement-subheader">Activos Circulantes</div>
+                  <div class="statement-row statement-indent">
+                    <span>Caja y Bancos</span>
+                    <span class="currency currency-positive">$15,400.00</span>
+                  </div>
+                  <div class="statement-row statement-indent">
+                    <span>Cuentas por Cobrar</span>
+                    <span class="currency currency-positive">$12,100.00</span>
+                  </div>
+                  <div class="statement-total statement-indent">
+                    <span>Total Activos Circulantes</span>
+                    <span class="currency currency-positive">$27,500.00</span>
+                  </div>
+                  <br />
+                  <div class="statement-subheader">Activos No Circulantes</div>
+                  <div class="statement-row statement-indent">
+                    <span>Propiedad, Planta y Equipo</span>
+                    <span class="currency currency-positive">$85,000.00</span>
+                  </div>
+                  <div class="statement-total statement-indent">
+                    <span>Total Activos No Circulantes</span>
+                    <span class="currency currency-positive">$85,000.00</span>
+                  </div>
+                  <br />
+                  <div class="statement-total">
+                    <span>TOTAL ACTIVOS</span>
+                    <span class="currency currency-positive">$112,500.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="statement-header" style="margin-bottom: 15px">
+                  PASIVOS Y PATRIMONIO
+                </div>
+                <div class="financial-statement">
+                  <div class="statement-subheader">Pasivos</div>
+                  <div class="statement-row statement-indent">
+                    <span>Cuentas por Pagar</span>
+                    <span class="currency currency-negative">-$8,500.00</span>
+                  </div>
+                  <div class="statement-row statement-indent">
+                    <span>Obligaciones a Corto Plazo</span>
+                    <span class="currency currency-negative">-$5,200.00</span>
+                  </div>
+                  <div class="statement-total statement-indent">
+                    <span>Total Pasivos</span>
+                    <span class="currency currency-negative">-$13,700.00</span>
+                  </div>
+                  <br />
+                  <div class="statement-subheader">Patrimonio</div>
+                  <div class="statement-row statement-indent">
+                    <span>Capital Social</span>
+                    <span class="currency currency-positive">$80,000.00</span>
+                  </div>
+                  <div class="statement-row statement-indent">
+                    <span>Retenciones Acumuladas</span>
+                    <span class="currency currency-positive">$18,800.00</span>
+                  </div>
+                  <div class="statement-total statement-indent">
+                    <span>Total Patrimonio</span>
+                    <span class="currency currency-positive">$98,800.00</span>
+                  </div>
+                  <br />
+                  <div class="statement-total">
+                    <span>TOTAL PASIVOS + PATRIMONIO</span>
+                    <span class="currency currency-positive">$112,500.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-title">Indicadores Financieros (Junio 2026)</h3>
+            <div class="overflow-x">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Indicador</th>
+                    <th>Fórmula</th>
+                    <th>Resultado</th>
+                    <th>Interpretación</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Margen de Ganancia Neta</td>
+                    <td>Utilidad Neta / Ingresos</td>
+                    <td><strong>25.40%</strong></td>
+                    <td style="color: #38a169">Saludable</td>
+                  </tr>
+                  <tr>
+                    <td>Razón Corriente</td>
+                    <td>Activos Circulantes / Pasivos</td>
+                    <td><strong>2.01</strong></td>
+                    <td style="color: #38a169">Buena liquidez</td>
+                  </tr>
+                  <tr>
+                    <td>Retorno sobre Activos</td>
+                    <td>Utilidad Neta / Total Activos</td>
+                    <td><strong>10.89%</strong></td>
+                    <td style="color: #38a169">Adecuado</td>
+                  </tr>
+                  <tr>
+                    <td>Endeudamiento</td>
+                    <td>Pasivo Total / Patrimonio</td>
+                    <td><strong>0.14</strong></td>
+                    <td style="color: #38a169">Bajo riesgo</td>
+                  </tr>
+                  <tr>
+                    <td>Cobranza Pendiente</td>
+                    <td>Cuentas por Cobrar / Ingresos</td>
+                    <td><strong>25.05%</strong></td>
+                    <td style="color: #f6ad55">Moderado</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-title">Acciones</h3>
+            <div class="action-bar">
+              <button class="btn btn-primary">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                  ></path>
+                </svg>
+                Descargar Reporte PDF
+              </button>
+              <button class="btn btn-secondary">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                  ></path>
+                </svg>
+                Exportar a Excel
+              </button>
+              <button class="btn btn-secondary">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  ></path>
+                </svg>
+                Enviar por Email
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

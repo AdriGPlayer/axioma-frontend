@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nómina - AXIOMA HR</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background-color: #f5f3f0;
+        color: #1a2332;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background-color: #1a2332;
+        padding: 24px 16px;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        font-size: 20px;
+        font-weight: 700;
+        color: #faf8f5;
+        margin-bottom: 32px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .nav-item {
+        padding: 12px 16px;
+        border-radius: 8px;
+        color: #cbd5e0;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .nav-item:hover {
+        background-color: rgba(250, 248, 245, 0.1);
+        color: #faf8f5;
+      }
+
+      .nav-item.active {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .nav-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 260px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: #faf8f5;
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e8dfd7;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .topbar-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a2332;
+      }
+
+      .topbar-actions {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background-color: #a01e1e;
+        box-shadow: 0 4px 12px rgba(197, 48, 48, 0.3);
+      }
+
+      .btn-secondary {
+        background-color: #e8dfd7;
+        color: #1a2332;
+      }
+
+      .btn-secondary:hover {
+        background-color: #ddd0c5;
+      }
+
+      .btn-success {
+        background-color: #38a169;
+        color: #faf8f5;
+      }
+
+      .btn-success:hover {
+        background-color: #276749;
+      }
+
+      /* Content Area */
+      .content {
+        flex: 1;
+        padding: 32px;
+        overflow-y: auto;
+      }
+
+      /* Section */
+      .section {
+        margin-bottom: 32px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #1a2332;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Period Selector */
+      .period-selector {
+        background-color: #faf8f5;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e8dfd7;
+        margin-bottom: 24px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+      }
+
+      .period-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .period-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .period-input {
+        padding: 10px 12px;
+        border: 1px solid #d4cec4;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        background-color: #fff;
+        min-width: 180px;
+      }
+
+      .period-input:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      /* Summary Cards */
+      .summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      .summary-card {
+        background-color: #faf8f5;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e8dfd7;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .card-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .card-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a2332;
+      }
+
+      .card-detail {
+        font-size: 12px;
+        color: #666;
+        display: flex;
+        justify-content: space-between;
+        padding-top: 12px;
+        border-top: 1px solid #e8dfd7;
+      }
+
+      /* Table */
+      .table-section {
+        background-color: #faf8f5;
+        border-radius: 12px;
+        border: 1px solid #e8dfd7;
+        overflow: hidden;
+        margin-bottom: 32px;
+      }
+
+      .table-header {
+        padding: 16px 24px;
+        background-color: #f0ebe5;
+        border-bottom: 1px solid #e8dfd7;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .table-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a2332;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background-color: #f0ebe5;
+        border-bottom: 2px solid #e8dfd7;
+      }
+
+      th {
+        padding: 12px 24px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 700;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        padding: 14px 24px;
+        border-bottom: 1px solid #e8dfd7;
+        font-size: 14px;
+      }
+
+      tr:hover {
+        background-color: #f9f7f3;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .emp-name {
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .emp-dept {
+        font-size: 13px;
+        color: #999;
+      }
+
+      .amount {
+        font-weight: 600;
+        color: #1a2332;
+        text-align: right;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-pending {
+        background-color: #fed7aa;
+        color: #7c2d12;
+      }
+
+      .badge-completed {
+        background-color: #c6f6d5;
+        color: #22543d;
+      }
+
+      .badge-error {
+        background-color: #fed7d7;
+        color: #742a2a;
+      }
+
+      /* Chart Container */
+      .chart-section {
+        background-color: #faf8f5;
+        border-radius: 12px;
+        padding: 24px;
+        border: 1px solid #e8dfd7;
+      }
+
+      .chart-title {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #1a2332;
+      }
+
+      .chart-placeholder {
+        height: 250px;
+        background: linear-gradient(135deg, #f0ebe5 0%, #f9f7f3 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 14px;
+      }
+
+      .ytd-breakdown {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .breakdown-item {
+        background: #fff;
+        border: 1px solid #e8dfd7;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+      }
+
+      .breakdown-label {
+        font-size: 11px;
+        color: #999;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .breakdown-value {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a2332;
+      }
+
+      /* Tabs */
+      .tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: 24px;
+        border-bottom: 2px solid #e8dfd7;
+      }
+
+      .tab {
+        padding: 12px 24px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        color: #999;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        margin-bottom: -2px;
+      }
+
+      .tab.active {
+        color: #c53030;
+        border-bottom-color: #c53030;
+      }
+
+      .tab:hover {
+        color: #1a2332;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .main {
+          margin-left: 200px;
+        }
+
+        .summary {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          padding: 12px;
+        }
+
+        .main {
+          margin-left: 0;
+        }
+
+        .sidebar-nav {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        .nav-item {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+
+        .content {
+          padding: 16px;
+        }
+
+        .period-selector {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .period-input {
+          min-width: 100%;
+        }
+
+        .summary {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .table-header {
+          flex-direction: column;
+          gap: 12px;
+          align-items: flex-start;
+        }
+
+        table {
+          font-size: 12px;
+        }
+
+        th,
+        td {
+          padding: 10px 12px;
+        }
+
+        .ytd-breakdown {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <svg
+            class="nav-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          AXIOMA HR
+        </div>
+        <nav class="sidebar-nav">
+          <a href="asistencias.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+              ></path>
+              <path d="M21 3v5h-5"></path>
+              <path
+                d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+              ></path>
+              <path d="M3 21v-5h5"></path>
+            </svg>
+            Asistencias
+          </a>
+          <a href="vacaciones.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Vacaciones
+          </a>
+          <a href="permisos.html" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 12l2 2 4-4"></path>
+              <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            Permisos
+          </a>
+          <a href="nomina.html" class="nav-item active">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+              ></path>
+            </svg>
+            Nómina
+          </a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <h1 class="topbar-title">Gestión de Nómina</h1>
+          <div class="topbar-actions">
+            <button class="btn btn-primary">
+              <svg
+                style="width: 16px; height: 16px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 5v14M5 12h14"></path>
+              </svg>
+              Procesar Nómina
+            </button>
+          </div>
+        </header>
+
+        <div class="content">
+          <div class="section">
+            <div class="period-selector">
+              <div class="period-group">
+                <label class="period-label">Período de Nómina</label>
+                <select class="period-input">
+                  <option>Junio 2026 (01-30 Jun)</option>
+                  <option>Mayo 2026 (01-31 May)</option>
+                  <option>Abril 2026 (01-30 Abr)</option>
+                  <option>Marzo 2026 (01-31 Mar)</option>
+                </select>
+              </div>
+              <div class="period-group">
+                <label class="period-label">Estado</label>
+                <select class="period-input">
+                  <option>Todos</option>
+                  <option>Procesado</option>
+                  <option>Pendiente</option>
+                  <option>Cancelado</option>
+                </select>
+              </div>
+              <div class="period-group">
+                <label class="period-label">Departamento</label>
+                <select class="period-input">
+                  <option>Todos los departamentos</option>
+                  <option>Recursos Humanos</option>
+                  <option>Operaciones</option>
+                  <option>Finanzas</option>
+                </select>
+              </div>
+              <button class="btn btn-secondary" style="margin-top: 24px">
+                <svg
+                  style="width: 16px; height: 16px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                Filtrar
+              </button>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+              Resumen de Nómina - Junio 2026
+            </div>
+            <div class="summary">
+              <div class="summary-card">
+                <div class="card-label">Total de Salarios</div>
+                <div class="card-value">$145,800</div>
+                <div class="card-detail">
+                  <span>18 empleados</span>
+                  <span>Base + Bonificaciones</span>
+                </div>
+              </div>
+              <div class="summary-card">
+                <div class="card-label">Deducciones</div>
+                <div class="card-value">$32,460</div>
+                <div class="card-detail">
+                  <span>ISAPRE: $18,500</span>
+                  <span>Impuestos: $13,960</span>
+                </div>
+              </div>
+              <div class="summary-card">
+                <div class="card-label">Sueldo Neto Total</div>
+                <div class="card-value">$113,340</div>
+                <div class="card-detail">
+                  <span>-22.3% deducciones</span>
+                  <span>A pagar</span>
+                </div>
+              </div>
+              <div class="summary-card">
+                <div class="card-label">Estado de Proceso</div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-top: 4px;
+                  "
+                >
+                  <span class="status-badge badge-completed" style="margin: 0"
+                    >Procesada</span
+                  >
+                </div>
+                <div class="card-detail">
+                  <span>Procesada el 28 Jun</span>
+                  <span>Listo para pago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tabs">
+            <button class="tab active">Nómina Actual</button>
+            <button class="tab">Historial</button>
+            <button class="tab">Análisis Anual</button>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              Detalle de Nómina por Empleado
+            </div>
+            <div class="table-section">
+              <div class="table-header">
+                <div class="table-title">Período: Junio 2026 (01-30 Jun)</div>
+                <button class="btn btn-secondary" style="font-size: 12px">
+                  <svg
+                    style="width: 14px; height: 14px"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Descargar
+                </button>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Empleado</th>
+                    <th>Departamento</th>
+                    <th style="text-align: right">Sueldo Base</th>
+                    <th style="text-align: right">Bonif./Extras</th>
+                    <th style="text-align: right">Bruto</th>
+                    <th style="text-align: right">Deducciones</th>
+                    <th style="text-align: right">Neto</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Carlos García</div>
+                      <div class="emp-dept">Operaciones</div>
+                    </td>
+                    <td>Operaciones</td>
+                    <td class="amount">$8,500</td>
+                    <td class="amount">$1,200</td>
+                    <td class="amount">$9,700</td>
+                    <td class="amount">-$2,160</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $7,540
+                    </td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">María López</div>
+                      <div class="emp-dept">Finanzas</div>
+                    </td>
+                    <td>Finanzas</td>
+                    <td class="amount">$10,000</td>
+                    <td class="amount">$1,500</td>
+                    <td class="amount">$11,500</td>
+                    <td class="amount">-$2,580</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $8,920
+                    </td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Juan Rodríguez</div>
+                      <div class="emp-dept">RR.HH.</div>
+                    </td>
+                    <td>RR.HH.</td>
+                    <td class="amount">$9,200</td>
+                    <td class="amount">$800</td>
+                    <td class="amount">$10,000</td>
+                    <td class="amount">-$2,240</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $7,760
+                    </td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Ana Martínez</div>
+                      <div class="emp-dept">Operaciones</div>
+                    </td>
+                    <td>Operaciones</td>
+                    <td class="amount">$8,800</td>
+                    <td class="amount">$1,000</td>
+                    <td class="amount">$9,800</td>
+                    <td class="amount">-$2,195</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $7,605
+                    </td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Diego Flores</div>
+                      <div class="emp-dept">Finanzas</div>
+                    </td>
+                    <td>Finanzas</td>
+                    <td class="amount">$9,500</td>
+                    <td class="amount">$1,300</td>
+                    <td class="amount">$10,800</td>
+                    <td class="amount">-$2,420</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $8,380
+                    </td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="emp-name">Pedro Sánchez</div>
+                      <div class="emp-dept">Operaciones</div>
+                    </td>
+                    <td>Operaciones</td>
+                    <td class="amount">$8,200</td>
+                    <td class="amount">$900</td>
+                    <td class="amount">$9,100</td>
+                    <td class="amount">-$2,035</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $7,065
+                    </td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagado</span>
+                    </td>
+                  </tr>
+                  <tr style="background-color: #f0ebe5; font-weight: 700">
+                    <td colspan="2">TOTAL</td>
+                    <td class="amount">$54,200</td>
+                    <td class="amount">$6,700</td>
+                    <td class="amount">$60,900</td>
+                    <td class="amount">-$13,630</td>
+                    <td class="amount" style="color: #38a169">$47,270</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+              Análisis Año a la Fecha (YTD) - 2026
+            </div>
+            <div class="chart-section">
+              <div class="chart-title">Comparativa de Salarios 2026</div>
+              <div class="chart-placeholder">
+                <div style="text-align: center">
+                  <div style="font-size: 12px; margin-bottom: 12px">
+                    Evolución de nómina (Ene - Jun)
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 12px;
+                      justify-content: center;
+                      align-items: flex-end;
+                      height: 150px;
+                    "
+                  >
+                    <div style="text-align: center">
+                      <div
+                        style="
+                          width: 30px;
+                          height: 80px;
+                          background: #38a169;
+                          margin: 0 auto 8px;
+                          border-radius: 4px;
+                        "
+                      ></div>
+                      <div style="font-size: 10px">Ene</div>
+                    </div>
+                    <div style="text-align: center">
+                      <div
+                        style="
+                          width: 30px;
+                          height: 95px;
+                          background: #38a169;
+                          margin: 0 auto 8px;
+                          border-radius: 4px;
+                        "
+                      ></div>
+                      <div style="font-size: 10px">Feb</div>
+                    </div>
+                    <div style="text-align: center">
+                      <div
+                        style="
+                          width: 30px;
+                          height: 90px;
+                          background: #38a169;
+                          margin: 0 auto 8px;
+                          border-radius: 4px;
+                        "
+                      ></div>
+                      <div style="font-size: 10px">Mar</div>
+                    </div>
+                    <div style="text-align: center">
+                      <div
+                        style="
+                          width: 30px;
+                          height: 110px;
+                          background: #38a169;
+                          margin: 0 auto 8px;
+                          border-radius: 4px;
+                        "
+                      ></div>
+                      <div style="font-size: 10px">Abr</div>
+                    </div>
+                    <div style="text-align: center">
+                      <div
+                        style="
+                          width: 30px;
+                          height: 100px;
+                          background: #38a169;
+                          margin: 0 auto 8px;
+                          border-radius: 4px;
+                        "
+                      ></div>
+                      <div style="font-size: 10px">May</div>
+                    </div>
+                    <div style="text-align: center">
+                      <div
+                        style="
+                          width: 30px;
+                          height: 120px;
+                          background: #c53030;
+                          margin: 0 auto 8px;
+                          border-radius: 4px;
+                        "
+                      ></div>
+                      <div style="font-size: 10px">Jun</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ytd-breakdown">
+                <div class="breakdown-item">
+                  <div class="breakdown-label">Total Bruto YTD</div>
+                  <div class="breakdown-value">$369,850</div>
+                </div>
+                <div class="breakdown-item">
+                  <div class="breakdown-label">Total Neto YTD</div>
+                  <div class="breakdown-value">$288,240</div>
+                </div>
+                <div class="breakdown-item">
+                  <div class="breakdown-label">Total Deducciones</div>
+                  <div class="breakdown-value">$81,610</div>
+                </div>
+                <div class="breakdown-item">
+                  <div class="breakdown-label">Promedio Mensual</div>
+                  <div class="breakdown-value">$61,641</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="1"></circle>
+                <path d="M12 1v6m0 6v6"></path>
+                <path d="M4.22 4.22l4.24 4.24m4.24 4.24l4.24 4.24"></path>
+                <path d="M1 12h6m6 0h6"></path>
+                <path d="M4.22 19.78l4.24-4.24m4.24-4.24l4.24-4.24"></path>
+              </svg>
+              Historial de Nóminas Procesadas
+            </div>
+            <div class="table-section">
+              <div class="table-header">
+                <div class="table-title">Últimas 5 nóminas procesadas</div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Período</th>
+                    <th style="text-align: right">Total Bruto</th>
+                    <th style="text-align: right">Deducciones</th>
+                    <th style="text-align: right">Total Neto</th>
+                    <th>Empleados</th>
+                    <th>Procesada</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Junio 2026</td>
+                    <td class="amount">$60,900</td>
+                    <td class="amount">-$13,630</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $47,270
+                    </td>
+                    <td>6</td>
+                    <td>28 Jun 2026</td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagada</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Mayo 2026</td>
+                    <td class="amount">$58,500</td>
+                    <td class="amount">-$13,110</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $45,390
+                    </td>
+                    <td>6</td>
+                    <td>28 May 2026</td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagada</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Abril 2026</td>
+                    <td class="amount">$61,250</td>
+                    <td class="amount">-$13,680</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $47,570
+                    </td>
+                    <td>6</td>
+                    <td>28 Abr 2026</td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagada</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Marzo 2026</td>
+                    <td class="amount">$59,800</td>
+                    <td class="amount">-$13,380</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $46,420
+                    </td>
+                    <td>6</td>
+                    <td>28 Mar 2026</td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagada</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Febrero 2026</td>
+                    <td class="amount">$57,400</td>
+                    <td class="amount">-$12,860</td>
+                    <td class="amount" style="color: #38a169; font-weight: 700">
+                      $44,540
+                    </td>
+                    <td>6</td>
+                    <td>28 Feb 2026</td>
+                    <td>
+                      <span class="status-badge badge-completed">Pagada</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parentescos - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: #faf8f5;
+        color: #333;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      header {
+        background: #1a2332;
+        color: #faf8f5;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background: #a82020;
+      }
+
+      .btn-secondary {
+        background: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background: #0f1419;
+      }
+
+      .search-section {
+        background: white;
+        border-radius: 8px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e0d9d3;
+        display: flex;
+        gap: 10px;
+      }
+
+      .search-box input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #e0d9d3;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .table-section {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0d9d3;
+        overflow: hidden;
+      }
+
+      .table-header {
+        padding: 15px 20px;
+        border-bottom: 2px solid #e0d9d3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .table-header h2 {
+        color: #1a2332;
+        font-size: 18px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: #f5f3f1;
+      }
+
+      th {
+        padding: 12px 15px;
+        text-align: left;
+        color: #1a2332;
+        font-weight: 600;
+        font-size: 13px;
+        border-bottom: 2px solid #e0d9d3;
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0d9d3;
+        font-size: 14px;
+      }
+
+      tbody tr:hover {
+        background: #faf8f5;
+      }
+
+      .icon-cell {
+        font-size: 20px;
+        text-align: center;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 6px;
+      }
+
+      .btn-small {
+        padding: 6px 10px;
+        font-size: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-edit {
+        background: #1a2332;
+        color: #faf8f5;
+      }
+
+      .btn-edit:hover {
+        background: #0f1419;
+      }
+
+      .btn-delete {
+        background: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-delete:hover {
+        background: #a82020;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-active {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .badge-inactive {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .pagination {
+        padding: 15px 20px;
+        border-top: 1px solid #e0d9d3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f5f3f1;
+      }
+
+      .pagination-info {
+        color: #666;
+        font-size: 13px;
+      }
+
+      .pagination-controls {
+        display: flex;
+        gap: 5px;
+      }
+
+      .pagination-btn {
+        padding: 6px 10px;
+        border: 1px solid #e0d9d3;
+        background: white;
+        color: #1a2332;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.3s;
+      }
+
+      .pagination-btn:hover {
+        border-color: #c53030;
+        color: #c53030;
+      }
+
+      .pagination-btn.active {
+        background: #c53030;
+        color: #faf8f5;
+        border-color: #c53030;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0d9d3;
+      }
+
+      .modal-header h3 {
+        color: #1a2332;
+        font-size: 20px;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #1a2332;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #1a2332;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e0d9d3;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      input[type="text"]:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: flex-end;
+      }
+
+      .emoji-picker {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+        padding: 10px;
+        background: #f5f3f1;
+        border-radius: 4px;
+        margin-top: 5px;
+      }
+
+      .emoji-option {
+        padding: 8px;
+        text-align: center;
+        font-size: 24px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 4px;
+        transition: all 0.2s;
+      }
+
+      .emoji-option:hover {
+        background: white;
+        border-color: #c53030;
+        transform: scale(1.1);
+      }
+
+      .info-card {
+        background: #f5f3f1;
+        border-left: 4px solid #c53030;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+      }
+
+      .info-card p {
+        color: #666;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Parentescos / Relaciones</h1>
+        <button
+          class="btn btn-primary"
+          onclick="
+            document
+              .getElementById('addRelationshipModal')
+              .classList.add('active')
+          "
+        >
+          + Nuevo Parentesco
+        </button>
+      </header>
+
+      <div class="info-card">
+        <p>
+          Los parentescos definen las relaciones familiares de los estudiantes
+          con sus acudientes/tutores. Use estos valores para asignar
+          responsables académicos y de emergencia.
+        </p>
+      </div>
+
+      <div class="search-section">
+        <input type="text" placeholder="Buscar parentescos..." />
+        <button class="btn btn-secondary">Filtrar</button>
+      </div>
+
+      <div class="table-section">
+        <div class="table-header">
+          <h2>Catálogo de Parentescos</h2>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Icono</th>
+              <th>Código</th>
+              <th>Nombre del Parentesco</th>
+              <th>Descripción</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="icon-cell">👨‍👩‍👧‍👦</td>
+              <td>PADRE</td>
+              <td><strong>Padre</strong></td>
+              <td>Progenitor varón</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="icon-cell">👩</td>
+              <td>MADRE</td>
+              <td><strong>Madre</strong></td>
+              <td>Progenitor hembra</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="icon-cell">👴</td>
+              <td>ABUELO</td>
+              <td><strong>Abuelo</strong></td>
+              <td>Padre del padre</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="icon-cell">👵</td>
+              <td>ABUELA</td>
+              <td><strong>Abuela</strong></td>
+              <td>Madre del padre</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="icon-cell">🤝</td>
+              <td>TUTOR</td>
+              <td><strong>Tutor Legal</strong></td>
+              <td>Responsable legal designado</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="icon-cell">👨‍🤝‍👨</td>
+              <td>TIO</td>
+              <td><strong>Tío</strong></td>
+              <td>Hermano de los padres</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="icon-cell">👩‍🤝‍👩</td>
+              <td>TIA</td>
+              <td><strong>Tía</strong></td>
+              <td>Hermana de los padres</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="icon-cell">👦</td>
+              <td>HERMANO</td>
+              <td><strong>Hermano</strong></td>
+              <td>Varón con los mismos progenitores</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="icon-cell">👧</td>
+              <td>HERMANA</td>
+              <td><strong>Hermana</strong></td>
+              <td>Hembra con los mismos progenitores</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="icon-cell">👨</td>
+              <td>ACUDIENTE</td>
+              <td><strong>Acudiente</strong></td>
+              <td>Persona responsable del estudiante</td>
+              <td><span class="badge badge-active">Activo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-small btn-edit">Editar</button>
+                  <button class="btn-small btn-delete">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <div class="pagination-info">Mostrando 1-10 de 10 parentescos</div>
+          <div class="pagination-controls">
+            <button class="pagination-btn">Anterior</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">Siguiente</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="addRelationshipModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Nuevo Parentesco</h3>
+          <button
+            class="close-btn"
+            onclick="
+              document
+                .getElementById('addRelationshipModal')
+                .classList.remove('active')
+            "
+          >
+            ×
+          </button>
+        </div>
+        <form>
+          <div class="form-group">
+            <label>Selecciona un icono</label>
+            <div class="emoji-picker">
+              <div class="emoji-option">👨</div>
+              <div class="emoji-option">👩</div>
+              <div class="emoji-option">👴</div>
+              <div class="emoji-option">👵</div>
+              <div class="emoji-option">👦</div>
+              <div class="emoji-option">👧</div>
+              <div class="emoji-option">🤝</div>
+              <div class="emoji-option">👨‍👩‍👧‍👦</div>
+              <div class="emoji-option">👨‍🤝‍👨</div>
+              <div class="emoji-option">👩‍🤝‍👩</div>
+              <div class="emoji-option">👨‍👩‍👧</div>
+              <div class="emoji-option">💑</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Código del Parentesco</label>
+            <input type="text" placeholder="Ej: PADRE, PRIMO, etc." required />
+          </div>
+
+          <div class="form-group">
+            <label>Nombre del Parentesco</label>
+            <input type="text" placeholder="Ej: Padre, Primo lejano" required />
+          </div>
+
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea
+              placeholder="Describe la relación familiar..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Estado</label>
+            <select required>
+              <option value="active">Activo</option>
+              <option value="inactive">Inactivo</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="
+                document
+                  .getElementById('addRelationshipModal')
+                  .classList.remove('active')
+              "
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Crear Parentesco
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

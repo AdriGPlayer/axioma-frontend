@@ -1,0 +1,1367 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Empleados - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --color-primary: #1a2332;
+        --color-secondary: #faf8f5;
+        --color-accent: #c53030;
+        --color-success: #38a169;
+        --color-warning: #d69e2e;
+        --color-border: #e2e8f0;
+        --color-text: #2d3748;
+        --color-text-light: #718096;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background-color: var(--color-secondary);
+        color: var(--color-text);
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background-color: var(--color-primary);
+        padding: 24px 16px;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1000;
+      }
+
+      .sidebar-logo {
+        color: var(--color-secondary);
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 32px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-logo svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu-item {
+        margin-bottom: 8px;
+      }
+
+      .sidebar-menu-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        color: rgba(250, 248, 245, 0.7);
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
+
+      .sidebar-menu-link:hover {
+        background-color: rgba(250, 248, 245, 0.1);
+        color: var(--color-secondary);
+      }
+
+      .sidebar-menu-link.active {
+        background-color: var(--color-accent);
+        color: var(--color-secondary);
+      }
+
+      .sidebar-menu-link svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: white;
+        padding: 16px 32px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .topbar-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--color-primary);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .topbar-icon-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-light);
+        transition: color 0.3s ease;
+      }
+
+      .topbar-icon-button:hover {
+        color: var(--color-primary);
+      }
+
+      .topbar-icon-button svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--color-accent),
+          var(--color-warning)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      /* Page Content */
+      .page-content {
+        flex: 1;
+        padding: 32px;
+        overflow-y: auto;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 32px;
+      }
+
+      .page-title-section h2 {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-bottom: 8px;
+      }
+
+      .page-subtitle {
+        font-size: 14px;
+        color: var(--color-text-light);
+      }
+
+      .page-actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      .btn-primary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background-color: var(--color-accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        background-color: #a82a2a;
+        box-shadow: 0 4px 12px rgba(197, 48, 48, 0.3);
+      }
+
+      .btn-primary svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Filter Section */
+      .filters-section {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+
+      .filters-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 16px;
+        align-items: end;
+      }
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .filter-label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--color-text-light);
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+      }
+
+      .search-input,
+      .filter-select {
+        padding: 10px 12px;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--color-text);
+        transition: all 0.3s ease;
+      }
+
+      .search-input {
+        position: relative;
+        padding-left: 36px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23718096" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>');
+        background-repeat: no-repeat;
+        background-position: 10px center;
+        background-size: 18px;
+      }
+
+      .search-input:focus,
+      .filter-select:focus {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      .filter-select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%232d3748" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 18px;
+        padding-right: 36px;
+      }
+
+      /* Employees Table */
+      .employees-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+      }
+
+      .employees-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      .employees-table thead {
+        background-color: #f7fafc;
+        border-bottom: 2px solid var(--color-border);
+      }
+
+      .employees-table th {
+        padding: 14px 16px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: var(--color-text-light);
+        letter-spacing: 0.5px;
+      }
+
+      .employees-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .employees-table tbody tr {
+        transition: background-color 0.2s ease;
+      }
+
+      .employees-table tbody tr:hover {
+        background-color: #f7fafc;
+      }
+
+      .employee-name {
+        font-weight: 600;
+        color: var(--color-primary);
+      }
+
+      .employee-id {
+        font-size: 12px;
+        color: var(--color-text-light);
+        margin-top: 2px;
+      }
+
+      .employee-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        width: fit-content;
+      }
+
+      .status-active {
+        background-color: rgba(56, 161, 105, 0.1);
+        color: var(--color-success);
+      }
+
+      .status-inactive {
+        background-color: rgba(197, 48, 48, 0.1);
+        color: var(--color-accent);
+      }
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+
+      .actions-cell {
+        display: flex;
+        gap: 8px;
+      }
+
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--color-border);
+        background-color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--color-text-light);
+      }
+
+      .action-btn:hover {
+        border-color: var(--color-accent);
+        background-color: rgba(197, 48, 48, 0.05);
+        color: var(--color-accent);
+      }
+
+      .action-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Pagination */
+      .pagination-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border-top: 1px solid var(--color-border);
+        background-color: #f7fafc;
+      }
+
+      .pagination-info {
+        font-size: 13px;
+        color: var(--color-text-light);
+      }
+
+      .pagination-controls {
+        display: flex;
+        gap: 8px;
+      }
+
+      .pagination-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--color-border);
+        background-color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        color: var(--color-text);
+      }
+
+      .pagination-btn:hover:not(:disabled) {
+        border-color: var(--color-accent);
+        background-color: rgba(197, 48, 48, 0.05);
+        color: var(--color-accent);
+      }
+
+      .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .pagination-btn.active {
+        background-color: var(--color-accent);
+        color: white;
+        border-color: var(--color-accent);
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: var(--color-text-light);
+      }
+
+      .empty-state svg {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1024px) {
+        .filters-row {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 200px;
+          padding: 16px 12px;
+        }
+
+        .main-content {
+          margin-left: 200px;
+        }
+
+        .topbar {
+          padding: 12px 16px;
+        }
+
+        .page-content {
+          padding: 16px;
+        }
+
+        .page-header {
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .filters-row {
+          grid-template-columns: 1fr;
+        }
+
+        .page-actions {
+          width: 100%;
+        }
+
+        .btn-primary {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .page-title-section h2 {
+          font-size: 22px;
+        }
+
+        .employees-table {
+          font-size: 12px;
+        }
+
+        .employees-table th,
+        .employees-table td {
+          padding: 10px 8px;
+        }
+
+        .action-btn {
+          width: 28px;
+          height: 28px;
+        }
+
+        .pagination-section {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .pagination-controls {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .sidebar {
+          width: 160px;
+        }
+
+        .main-content {
+          margin-left: 160px;
+        }
+
+        .page-content {
+          padding: 12px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .topbar-title {
+          font-size: 16px;
+        }
+
+        .page-title-section h2 {
+          font-size: 20px;
+        }
+
+        .filters-section {
+          padding: 16px;
+        }
+
+        .table-wrapper {
+          overflow-x: scroll;
+        }
+
+        .employees-table {
+          min-width: 600px;
+        }
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a0aec0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+            />
+          </svg>
+          AXIOMA
+        </div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item">
+            <a href="index.html" class="sidebar-menu-link">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              Dashboard
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="empleados.html" class="sidebar-menu-link active">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              Recursos Humanos
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="#" class="sidebar-menu-link">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              Inventario
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="#" class="sidebar-menu-link">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M6 9l6-6 6 6"></path>
+                <path d="M6 9v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V9"></path>
+              </svg>
+              Finanzas
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="#" class="sidebar-menu-link">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              Reportes
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+          <div class="topbar-left">
+            <h1 class="topbar-title">Empleados</h1>
+          </div>
+          <div class="topbar-right">
+            <button class="topbar-icon-button">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+            </button>
+            <button class="topbar-icon-button">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+            </button>
+            <div class="user-profile">
+              <div class="user-avatar">JD</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="page-content">
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="page-title-section">
+              <h2>Directorio de Empleados</h2>
+              <p class="page-subtitle">
+                Gestiona y visualiza la información de todos los empleados
+              </p>
+            </div>
+            <div class="page-actions">
+              <button class="btn-primary">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                </svg>
+                Nuevo Empleado
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filters-section">
+            <div class="filters-row">
+              <div class="filter-group">
+                <label class="filter-label">Buscar Empleado</label>
+                <input
+                  type="text"
+                  class="search-input"
+                  placeholder="Nombre, ID, correo..."
+                />
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Departamento</label>
+                <select class="filter-select">
+                  <option value="">Todos</option>
+                  <option value="it">IT</option>
+                  <option value="ventas">Ventas</option>
+                  <option value="rrhh">Recursos Humanos</option>
+                  <option value="operaciones">Operaciones</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Estado</label>
+                <select class="filter-select">
+                  <option value="">Todos</option>
+                  <option value="active">Activo</option>
+                  <option value="inactive">Inactivo</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">Posición</label>
+                <select class="filter-select">
+                  <option value="">Todas</option>
+                  <option value="gerente">Gerente</option>
+                  <option value="especialista">Especialista</option>
+                  <option value="analista">Analista</option>
+                  <option value="coordinador">Coordinador</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employees Table -->
+          <div class="employees-card">
+            <div class="table-wrapper">
+              <table class="employees-table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>ID Empleado</th>
+                    <th>Departamento</th>
+                    <th>Posición</th>
+                    <th>Correo Electrónico</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                    <th>Fecha Contratación</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="employee-info">
+                        <span class="employee-name">María Rodríguez</span>
+                        <span class="employee-id">EMP-001</span>
+                      </div>
+                    </td>
+                    <td>EMP-001</td>
+                    <td>IT</td>
+                    <td>Analista de Sistemas</td>
+                    <td>maria.rodriguez@axioma.com</td>
+                    <td>+56 2 2345 6789</td>
+                    <td>
+                      <span class="status-badge status-active">
+                        <span class="status-dot"></span>
+                        Activo
+                      </span>
+                    </td>
+                    <td>15 jun 2022</td>
+                    <td>
+                      <div class="actions-cell">
+                        <button class="action-btn" title="Ver">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                            ></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Editar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M12 2c-5.33 4-8 6.5-8 7 0 8.889 7.5 20 8 21.5.5-1.5 8-12.611 8-21.5 0-.5-2.67-3-8-7z"
+                            ></path>
+                            <path d="M3 8H0m17-4v4m-6-3h6"></path>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Eliminar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path
+                              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                            ></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="employee-info">
+                        <span class="employee-name">Carlos Fernández</span>
+                        <span class="employee-id">EMP-002</span>
+                      </div>
+                    </td>
+                    <td>EMP-002</td>
+                    <td>IT</td>
+                    <td>Diseñador UX</td>
+                    <td>carlos.fernandez@axioma.com</td>
+                    <td>+56 2 2345 6790</td>
+                    <td>
+                      <span class="status-badge status-active">
+                        <span class="status-dot"></span>
+                        Activo
+                      </span>
+                    </td>
+                    <td>22 ago 2022</td>
+                    <td>
+                      <div class="actions-cell">
+                        <button class="action-btn" title="Ver">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                            ></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Editar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M12 2c-5.33 4-8 6.5-8 7 0 8.889 7.5 20 8 21.5.5-1.5 8-12.611 8-21.5 0-.5-2.67-3-8-7z"
+                            ></path>
+                            <path d="M3 8H0m17-4v4m-6-3h6"></path>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Eliminar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path
+                              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                            ></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="employee-info">
+                        <span class="employee-name">Ana Pérez</span>
+                        <span class="employee-id">EMP-003</span>
+                      </div>
+                    </td>
+                    <td>EMP-003</td>
+                    <td>Ventas</td>
+                    <td>Especialista de Marketing</td>
+                    <td>ana.perez@axioma.com</td>
+                    <td>+56 2 2345 6791</td>
+                    <td>
+                      <span class="status-badge status-active">
+                        <span class="status-dot"></span>
+                        Activo
+                      </span>
+                    </td>
+                    <td>11 ene 2023</td>
+                    <td>
+                      <div class="actions-cell">
+                        <button class="action-btn" title="Ver">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                            ></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Editar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M12 2c-5.33 4-8 6.5-8 7 0 8.889 7.5 20 8 21.5.5-1.5 8-12.611 8-21.5 0-.5-2.67-3-8-7z"
+                            ></path>
+                            <path d="M3 8H0m17-4v4m-6-3h6"></path>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Eliminar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path
+                              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                            ></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="employee-info">
+                        <span class="employee-name">Jorge García</span>
+                        <span class="employee-id">EMP-004</span>
+                      </div>
+                    </td>
+                    <td>EMP-004</td>
+                    <td>IT</td>
+                    <td>Ingeniero de Software</td>
+                    <td>jorge.garcia@axioma.com</td>
+                    <td>+56 2 2345 6792</td>
+                    <td>
+                      <span class="status-badge status-active">
+                        <span class="status-dot"></span>
+                        Activo
+                      </span>
+                    </td>
+                    <td>05 mar 2023</td>
+                    <td>
+                      <div class="actions-cell">
+                        <button class="action-btn" title="Ver">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                            ></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Editar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M12 2c-5.33 4-8 6.5-8 7 0 8.889 7.5 20 8 21.5.5-1.5 8-12.611 8-21.5 0-.5-2.67-3-8-7z"
+                            ></path>
+                            <path d="M3 8H0m17-4v4m-6-3h6"></path>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Eliminar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path
+                              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                            ></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="employee-info">
+                        <span class="employee-name">Laura Martínez</span>
+                        <span class="employee-id">EMP-005</span>
+                      </div>
+                    </td>
+                    <td>EMP-005</td>
+                    <td>Recursos Humanos</td>
+                    <td>Gerente de RRHH</td>
+                    <td>laura.martinez@axioma.com</td>
+                    <td>+56 2 2345 6793</td>
+                    <td>
+                      <span class="status-badge status-active">
+                        <span class="status-dot"></span>
+                        Activo
+                      </span>
+                    </td>
+                    <td>10 feb 2021</td>
+                    <td>
+                      <div class="actions-cell">
+                        <button class="action-btn" title="Ver">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                            ></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Editar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M12 2c-5.33 4-8 6.5-8 7 0 8.889 7.5 20 8 21.5.5-1.5 8-12.611 8-21.5 0-.5-2.67-3-8-7z"
+                            ></path>
+                            <path d="M3 8H0m17-4v4m-6-3h6"></path>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Eliminar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path
+                              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                            ></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="employee-info">
+                        <span class="employee-name">Roberto Sánchez</span>
+                        <span class="employee-id">EMP-006</span>
+                      </div>
+                    </td>
+                    <td>EMP-006</td>
+                    <td>Operaciones</td>
+                    <td>Coordinador Logística</td>
+                    <td>roberto.sanchez@axioma.com</td>
+                    <td>+56 2 2345 6794</td>
+                    <td>
+                      <span class="status-badge status-inactive">
+                        <span class="status-dot"></span>
+                        Inactivo
+                      </span>
+                    </td>
+                    <td>18 abr 2022</td>
+                    <td>
+                      <div class="actions-cell">
+                        <button class="action-btn" title="Ver">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                            ></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Editar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M12 2c-5.33 4-8 6.5-8 7 0 8.889 7.5 20 8 21.5.5-1.5 8-12.611 8-21.5 0-.5-2.67-3-8-7z"
+                            ></path>
+                            <path d="M3 8H0m17-4v4m-6-3h6"></path>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Eliminar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path
+                              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                            ></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="employee-info">
+                        <span class="employee-name">Patricia González</span>
+                        <span class="employee-id">EMP-007</span>
+                      </div>
+                    </td>
+                    <td>EMP-007</td>
+                    <td>Ventas</td>
+                    <td>Ejecutivo de Ventas</td>
+                    <td>patricia.gonzalez@axioma.com</td>
+                    <td>+56 2 2345 6795</td>
+                    <td>
+                      <span class="status-badge status-active">
+                        <span class="status-dot"></span>
+                        Activo
+                      </span>
+                    </td>
+                    <td>14 may 2023</td>
+                    <td>
+                      <div class="actions-cell">
+                        <button class="action-btn" title="Ver">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                            ></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Editar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M12 2c-5.33 4-8 6.5-8 7 0 8.889 7.5 20 8 21.5.5-1.5 8-12.611 8-21.5 0-.5-2.67-3-8-7z"
+                            ></path>
+                            <path d="M3 8H0m17-4v4m-6-3h6"></path>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Eliminar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path
+                              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                            ></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="employee-info">
+                        <span class="employee-name">Miguel Torres</span>
+                        <span class="employee-id">EMP-008</span>
+                      </div>
+                    </td>
+                    <td>EMP-008</td>
+                    <td>Operaciones</td>
+                    <td>Especialista de Almacén</td>
+                    <td>miguel.torres@axioma.com</td>
+                    <td>+56 2 2345 6796</td>
+                    <td>
+                      <span class="status-badge status-active">
+                        <span class="status-dot"></span>
+                        Activo
+                      </span>
+                    </td>
+                    <td>02 jul 2023</td>
+                    <td>
+                      <div class="actions-cell">
+                        <button class="action-btn" title="Ver">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                            ></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Editar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              d="M12 2c-5.33 4-8 6.5-8 7 0 8.889 7.5 20 8 21.5.5-1.5 8-12.611 8-21.5 0-.5-2.67-3-8-7z"
+                            ></path>
+                            <path d="M3 8H0m17-4v4m-6-3h6"></path>
+                          </svg>
+                        </button>
+                        <button class="action-btn" title="Eliminar">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path
+                              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                            ></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-section">
+              <div class="pagination-info">
+                Mostrando 1 a 8 de 248 empleados
+              </div>
+              <div class="pagination-controls">
+                <button class="pagination-btn" disabled>Anterior</button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn">2</button>
+                <button class="pagination-btn">3</button>
+                <button class="pagination-btn">...</button>
+                <button class="pagination-btn">31</button>
+                <button class="pagination-btn">Siguiente</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

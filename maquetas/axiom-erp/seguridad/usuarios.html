@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Usuarios - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 250px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px 0;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: 20px 15px;
+        border-bottom: 1px solid #2d3e52;
+        margin-bottom: 20px;
+      }
+
+      .sidebar-header h1 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #faf8f5;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        padding: 0;
+      }
+
+      .sidebar-menu a {
+        display: block;
+        padding: 12px 20px;
+        color: #b0b8c4;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+      }
+
+      .sidebar-menu a:hover {
+        background-color: #2d3e52;
+        color: #faf8f5;
+        border-left-color: #c53030;
+      }
+
+      .sidebar-menu a.active {
+        color: #faf8f5;
+        background-color: #2d3e52;
+        border-left-color: #c53030;
+      }
+
+      /* Main Content */
+      .main {
+        margin-left: 250px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e0e6ed;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .topbar-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a2332;
+      }
+
+      .topbar-right {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 15px;
+        background-color: #f5f7fa;
+        border-radius: 6px;
+      }
+
+      /* Content Area */
+      .content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+      }
+
+      /* Header with Actions */
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: #c53030;
+        color: #faf8f5;
+      }
+
+      .btn-primary:hover {
+        background-color: #a01f1f;
+      }
+
+      .btn-secondary {
+        background-color: #38a169;
+        color: #faf8f5;
+      }
+
+      .btn-secondary:hover {
+        background-color: #2f7d56;
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: #1a2332;
+        border: 1px solid #e0e6ed;
+      }
+
+      .btn-outline:hover {
+        background-color: #f5f7fa;
+      }
+
+      /* Search and Filter */
+      .filters {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+        align-items: center;
+      }
+
+      .search-box {
+        flex: 1;
+        position: relative;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      .filter-select {
+        padding: 10px 15px;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        font-size: 14px;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      /* Table */
+      .table-container {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background-color: #1a2332;
+        color: #faf8f5;
+      }
+
+      th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        padding: 15px;
+        border-top: 1px solid #e0e6ed;
+      }
+
+      tbody tr:hover {
+        background-color: #f9fafb;
+      }
+
+      /* User Status Badge */
+      .badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .badge-active {
+        background-color: #c6f6d5;
+        color: #22543d;
+      }
+
+      .badge-inactive {
+        background-color: #fed7d7;
+        color: #742a2a;
+      }
+
+      .badge-locked {
+        background-color: #feebc8;
+        color: #7c2d12;
+      }
+
+      /* Role Badge */
+      .role-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        background-color: #edf2f7;
+        color: #2d3748;
+      }
+
+      /* Action Buttons */
+      .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .action-btn {
+        padding: 6px 12px;
+        background-color: transparent;
+        border: 1px solid #e0e6ed;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #1a2332;
+        transition: all 0.3s ease;
+      }
+
+      .action-btn:hover {
+        background-color: #f5f7fa;
+        border-color: #c53030;
+        color: #c53030;
+      }
+
+      .action-btn.danger:hover {
+        background-color: #fed7d7;
+        border-color: #c53030;
+        color: #c53030;
+      }
+
+      /* Forms */
+      .form-section {
+        background-color: white;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .form-section h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0e6ed;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 10px 12px;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #c53030;
+        box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.1);
+      }
+
+      /* Permissions Preview */
+      .permissions-preview {
+        background-color: #f9fafb;
+        border-left: 4px solid #38a169;
+        padding: 15px;
+        border-radius: 4px;
+        margin-top: 15px;
+      }
+
+      .permissions-preview h4 {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 10px;
+      }
+
+      .permission-item {
+        display: inline-block;
+        margin-right: 15px;
+        margin-bottom: 8px;
+        padding: 6px 12px;
+        background-color: white;
+        border: 1px solid #e0e6ed;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+
+      /* SVG Icon Styles */
+      svg {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      /* Pagination */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
+        padding: 20px;
+      }
+
+      .pagination a,
+      .pagination span {
+        padding: 8px 12px;
+        border: 1px solid #e0e6ed;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #1a2332;
+        cursor: pointer;
+      }
+
+      .pagination a:hover {
+        background-color: #f5f7fa;
+        border-color: #c53030;
+      }
+
+      .pagination .active {
+        background-color: #c53030;
+        color: #faf8f5;
+        border-color: #c53030;
+      }
+
+      /* Modal/Card Sections */
+      .card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      .card-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h1>AXIOMA</h1>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="usuarios.html" class="active">Usuarios</a></li>
+          <li><a href="roles.html">Roles</a></li>
+          <li><a href="permisos.html">Permisos</a></li>
+          <li><a href="bitacora.html">Bitácora</a></li>
+          <li><a href="auditoria.html">Auditoría</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main">
+        <!-- Topbar -->
+        <header class="topbar">
+          <h2 class="topbar-title">Gestión de Usuarios</h2>
+          <div class="topbar-right">
+            <div class="user-profile">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Admin</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Section Header -->
+          <div class="section-header">
+            <h3 style="font-size: 24px; font-weight: 600; color: #1a2332">
+              Usuarios Activos
+            </h3>
+            <button class="btn btn-primary">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Agregar Usuario
+            </button>
+          </div>
+
+          <!-- Filters -->
+          <div class="filters">
+            <div class="search-box">
+              <input
+                type="text"
+                placeholder="Buscar por nombre, email o usuario..."
+              />
+            </div>
+            <select class="filter-select">
+              <option>Todos los Estados</option>
+              <option>Activo</option>
+              <option>Inactivo</option>
+              <option>Bloqueado</option>
+            </select>
+            <select class="filter-select">
+              <option>Todos los Roles</option>
+              <option>Administrador</option>
+              <option>Director</option>
+              <option>Docente</option>
+              <option>Personal</option>
+            </select>
+          </div>
+
+          <!-- Users Table -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Último Acceso</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>admin01</strong></td>
+                  <td>Carlos Rodríguez</td>
+                  <td>carlos.rodriguez@axioma.edu</td>
+                  <td><span class="role-badge">Administrador</span></td>
+                  <td>Hace 2 horas</td>
+                  <td><span class="badge badge-active">Activo</span></td>
+                  <td>
+                    <div class="actions">
+                      <button class="action-btn">Editar</button>
+                      <button class="action-btn">Permisos</button>
+                      <button class="action-btn">Historial</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>director01</strong></td>
+                  <td>María García López</td>
+                  <td>maria.garcia@axioma.edu</td>
+                  <td><span class="role-badge">Director</span></td>
+                  <td>Hace 1 hora</td>
+                  <td><span class="badge badge-active">Activo</span></td>
+                  <td>
+                    <div class="actions">
+                      <button class="action-btn">Editar</button>
+                      <button class="action-btn">Permisos</button>
+                      <button class="action-btn">Historial</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>jsmith</strong></td>
+                  <td>John Smith</td>
+                  <td>john.smith@axioma.edu</td>
+                  <td><span class="role-badge">Docente</span></td>
+                  <td>Ayer 4:30 PM</td>
+                  <td><span class="badge badge-inactive">Inactivo</span></td>
+                  <td>
+                    <div class="actions">
+                      <button class="action-btn">Editar</button>
+                      <button class="action-btn">Permisos</button>
+                      <button class="action-btn">Historial</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>msanchez</strong></td>
+                  <td>Miguel Sánchez</td>
+                  <td>miguel.sanchez@axioma.edu</td>
+                  <td><span class="role-badge">Personal</span></td>
+                  <td>Hace 3 días</td>
+                  <td><span class="badge badge-locked">Bloqueado</span></td>
+                  <td>
+                    <div class="actions">
+                      <button class="action-btn">Editar</button>
+                      <button class="action-btn danger">Desbloquear</button>
+                      <button class="action-btn">Historial</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>lmoreno</strong></td>
+                  <td>Laura Moreno</td>
+                  <td>laura.moreno@axioma.edu</td>
+                  <td><span class="role-badge">Docente</span></td>
+                  <td>Hoy 10:15 AM</td>
+                  <td><span class="badge badge-active">Activo</span></td>
+                  <td>
+                    <div class="actions">
+                      <button class="action-btn">Editar</button>
+                      <button class="action-btn">Permisos</button>
+                      <button class="action-btn">Historial</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Add User Form -->
+          <div class="form-section">
+            <h3>Agregar Nuevo Usuario</h3>
+            <form>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Usuario</label>
+                  <input type="text" placeholder="nombre.usuario" required />
+                </div>
+                <div class="form-group">
+                  <label>Nombre Completo</label>
+                  <input type="text" placeholder="Juan Pérez" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    placeholder="juan.perez@axioma.edu"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Rol</label>
+                  <select required>
+                    <option>Seleccionar rol</option>
+                    <option>Administrador</option>
+                    <option>Director</option>
+                    <option>Docente</option>
+                    <option>Personal</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Contraseña Temporal</label>
+                  <input type="password" placeholder="Contraseña" required />
+                </div>
+                <div class="form-group">
+                  <label>Confirmar Contraseña</label>
+                  <input type="password" placeholder="Confirmar" required />
+                </div>
+              </div>
+              <div style="display: flex; gap: 15px; margin-top: 25px">
+                <button type="submit" class="btn btn-primary">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Crear Usuario
+                </button>
+                <button type="reset" class="btn btn-outline">Cancelar</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Password Reset Actions -->
+          <div class="form-section">
+            <h3>Acciones de Seguridad</h3>
+            <div class="card">
+              <div class="card-title">Restablecer Contraseña</div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Seleccionar Usuario</label>
+                  <select>
+                    <option>Seleccionar usuario...</option>
+                    <option>admin01 - Carlos Rodríguez</option>
+                    <option>director01 - María García López</option>
+                    <option>jsmith - John Smith</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-secondary" style="margin-top: 15px">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"
+                  ></path>
+                </svg>
+                Generar Enlace de Restablecimiento
+              </button>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Desbloquear Cuenta</div>
+              <p style="font-size: 14px; color: #666; margin-bottom: 15px">
+                Desbloquea cuentas que han excedido el límite de intentos
+                fallidos de acceso.
+              </p>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Usuario Bloqueado</label>
+                  <select>
+                    <option>Seleccionar usuario bloqueado...</option>
+                    <option>msanchez - Miguel Sánchez</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-secondary" style="margin-top: 15px">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect
+                    x="3"
+                    y="11"
+                    width="18"
+                    height="11"
+                    rx="2"
+                    ry="2"
+                  ></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Desbloquear Cuenta
+              </button>
+            </div>
+          </div>
+
+          <!-- Permissions Preview -->
+          <div class="form-section">
+            <h3>Vista Previa de Permisos de Usuario</h3>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px">
+              Selecciona un usuario para ver sus permisos asignados:
+            </p>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Usuario</label>
+                <select>
+                  <option>Seleccionar usuario...</option>
+                  <option>admin01 - Carlos Rodríguez</option>
+                  <option>director01 - María García López</option>
+                </select>
+              </div>
+            </div>
+            <div class="permissions-preview">
+              <h4>Permisos Asignados:</h4>
+              <div class="permission-item">✓ Recursos Humanos - Lectura</div>
+              <div class="permission-item">✓ Recursos Humanos - Escritura</div>
+              <div class="permission-item">✓ Control Escolar - Lectura</div>
+              <div class="permission-item">✓ Control Escolar - Escritura</div>
+              <div class="permission-item">✓ Finanzas - Lectura</div>
+              <div class="permission-item">✓ Administración - Acceso Total</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

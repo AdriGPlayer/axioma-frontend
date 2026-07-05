@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finanzas - AXIOMA ERP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .sidebar h1 {
+        font-size: 22px;
+        margin-bottom: 30px;
+        color: #faf8f5;
+      }
+
+      .sidebar ul {
+        list-style: none;
+      }
+
+      .sidebar li {
+        margin-bottom: 15px;
+      }
+
+      .sidebar a {
+        color: #faf8f5;
+        text-decoration: none;
+        padding: 10px 15px;
+        display: block;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+
+      .sidebar a:hover,
+      .sidebar a.active {
+        background-color: #c53030;
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .topbar {
+        background-color: #1a2332;
+        color: #faf8f5;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .topbar h2 {
+        font-size: 20px;
+      }
+
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+      }
+
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .kpi-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #1a2332;
+      }
+
+      .kpi-card.revenue {
+        border-left-color: #38a169;
+      }
+
+      .kpi-card.pending {
+        border-left-color: #c53030;
+      }
+
+      .kpi-card.overdue {
+        border-left-color: #c53030;
+      }
+
+      .kpi-label {
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .kpi-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: #1a2332;
+        margin-bottom: 5px;
+      }
+
+      .kpi-card.pending .kpi-value,
+      .kpi-card.overdue .kpi-value {
+        color: #c53030;
+      }
+
+      .kpi-card.revenue .kpi-value {
+        color: #38a169;
+      }
+
+      .kpi-subtext {
+        font-size: 12px;
+        color: #999;
+      }
+
+      .section-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #1a2332;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .chart-placeholder {
+        width: 100%;
+        height: 300px;
+        background: linear-gradient(135deg, #f5f5f5 0%, #efefef 100%);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 14px;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .status-paid {
+        background-color: #e6fffa;
+        color: #38a169;
+      }
+
+      .status-pending {
+        background-color: #fff5e6;
+        color: #f6ad55;
+      }
+
+      .status-overdue {
+        background-color: #ffe6e6;
+        color: #c53030;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      th {
+        background-color: #f5f5f5;
+        padding: 12px;
+        text-align: left;
+        font-weight: bold;
+        color: #1a2332;
+        border-bottom: 2px solid #ddd;
+        font-size: 13px;
+      }
+
+      td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+      }
+
+      tr:hover {
+        background-color: #f9f9f9;
+      }
+
+      .currency {
+        color: #38a169;
+        font-weight: bold;
+      }
+
+      .overflow-x {
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <h1>AXIOMA</h1>
+        <ul>
+          <li><a href="index.html" class="active">Dashboard</a></li>
+          <li><a href="colegiaturas.html">Colegiaturas</a></li>
+          <li><a href="facturacion.html">Facturación</a></li>
+          <li><a href="notas-credito.html">Notas de Crédito</a></li>
+          <li><a href="cobranza.html">Cobranza</a></li>
+          <li><a href="adeudos.html">Adeudos</a></li>
+          <li><a href="caja.html">Caja</a></li>
+          <li><a href="reportes-financieros.html">Reportes</a></li>
+        </ul>
+      </div>
+
+      <div class="main-content">
+        <div class="topbar">
+          <h2>Dashboard Financiero</h2>
+          <div>
+            <svg
+              style="width: 24px; height: 24px; vertical-align: middle"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="kpi-grid">
+            <div class="kpi-card revenue">
+              <div class="kpi-label">Ingresos Totales</div>
+              <div class="kpi-value">$48,250</div>
+              <div class="kpi-subtext">Este mes</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Colegiaturas Pagadas</div>
+              <div class="kpi-value">$42,100</div>
+              <div class="kpi-subtext">78 estudiantes</div>
+            </div>
+            <div class="kpi-card pending">
+              <div class="kpi-label">Pagos Pendientes</div>
+              <div class="kpi-value">$8,450</div>
+              <div class="kpi-subtext">23 estudiantes</div>
+            </div>
+            <div class="kpi-card overdue">
+              <div class="kpi-label">Pagos Vencidos</div>
+              <div class="kpi-value">$3,200</div>
+              <div class="kpi-subtext">8 estudiantes</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="section-title">Cobranza por Mes</h3>
+              <div class="chart-placeholder">
+                Gráfico de barras - Ingresos mensuales
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Estado de Cobranza</h3>
+              <div class="chart-placeholder">
+                Gráfico pastel - Estado de pagos
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-title">Transacciones Recientes</h3>
+            <div class="overflow-x">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Estudiante</th>
+                    <th>Concepto</th>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Juan García López</td>
+                    <td>Colegiatura Junio 2026</td>
+                    <td class="currency">$550.00</td>
+                    <td>29/06/2026</td>
+                    <td>
+                      <span class="status-badge status-paid">Pagado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>María Rodríguez Pérez</td>
+                    <td>Colegiatura Junio 2026</td>
+                    <td class="currency">$550.00</td>
+                    <td>28/06/2026</td>
+                    <td>
+                      <span class="status-badge status-paid">Pagado</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Carlos Mendoza Cruz</td>
+                    <td>Colegiatura Junio 2026</td>
+                    <td class="currency">$550.00</td>
+                    <td>27/06/2026</td>
+                    <td>
+                      <span class="status-badge status-pending">Pendiente</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Ana Martínez González</td>
+                    <td>Cuota de inscripción</td>
+                    <td class="currency">$800.00</td>
+                    <td>25/06/2026</td>
+                    <td>
+                      <span class="status-badge status-overdue">Vencido</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Luis Fernández López</td>
+                    <td>Colegiatura Junio 2026</td>
+                    <td class="currency">$550.00</td>
+                    <td>24/06/2026</td>
+                    <td>
+                      <span class="status-badge status-paid">Pagado</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
